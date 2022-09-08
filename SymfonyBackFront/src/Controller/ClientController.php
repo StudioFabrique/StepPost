@@ -17,19 +17,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
 #[Route('/utilisateur', name: 'app_')]
-//#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_ADMIN')]
 class ClientController extends AbstractController
 {
-    #[Route('/toto', name: 'toto')]
-    public function toto(JWTTokenManagerInterface $jwt, Expediteur $expediteur): Response
-    {
-        $expediteur = new Expediteur;
-        $expediteur->setEmail('coucou@coucou.fr')->setRoles(['ROLE_ADMIN']);
-        $jwt->create($expediteur);
-
-        return $this->json(['token' => $jwt]);
-    }
-
     #[Route('/', name: 'utilisateur', methods: ['GET'])]
     public function index(
         ExpediteurRepository $expediteurs,

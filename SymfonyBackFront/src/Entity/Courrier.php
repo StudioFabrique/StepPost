@@ -45,12 +45,11 @@ class Courrier
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $telephone;
 
-    #[ORM\ManyToOne(targetEntity: Expediteur::class, inversedBy: 'courriers')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $expediteur;
-
     #[ORM\OneToMany(mappedBy: 'courrier', targetEntity: Statutcourrier::class)]
     private $statutscourrier;
+
+    #[ORM\ManyToOne(targetEntity: Expediteur::class, inversedBy: 'courriers')]
+    private $expediteur;
 
     public function __construct()
     {
@@ -187,18 +186,6 @@ class Courrier
         return $this->id;
     }
 
-    public function getExpediteur(): ?Expediteur
-    {
-        return $this->expediteur;
-    }
-
-    public function setExpediteur(?Expediteur $expediteur): self
-    {
-        $this->expediteur = $expediteur;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Statutcourrier>
      */
@@ -225,6 +212,18 @@ class Courrier
                 $statutscourrier->setCourrier(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getExpediteur(): ?Expediteur
+    {
+        return $this->expediteur;
+    }
+
+    public function setExpediteur(?Expediteur $expediteur): self
+    {
+        $this->expediteur = $expediteur;
 
         return $this;
     }

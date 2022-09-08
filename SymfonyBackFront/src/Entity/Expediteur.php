@@ -5,8 +5,8 @@ namespace App\Entity;
 use App\Repository\ExpediteurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ExpediteurRepository::class)]
 class Expediteur implements UserInterface
@@ -15,6 +15,9 @@ class Expediteur implements UserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
+
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    private $email;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
@@ -40,12 +43,6 @@ class Expediteur implements UserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $telephone;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private $email;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private $password;
-
     #[ORM\OneToMany(mappedBy: 'expediteur', targetEntity: Destinataire::class)]
     private $destinataires;
 
@@ -54,6 +51,9 @@ class Expediteur implements UserInterface
 
     #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'expediteurs')]
     private $client;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $password;
 
     public function __construct()
     {
@@ -64,6 +64,56 @@ class Expediteur implements UserInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
     public function getNom(): ?string
@@ -150,30 +200,6 @@ class Expediteur implements UserInterface
         return $this;
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Destinataire>
      */
@@ -246,41 +272,15 @@ class Expediteur implements UserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
+    public function getPassword(): ?string
     {
-        return (string) $this->email;
+        return $this->password;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
+    public function setPassword(?string $password): self
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
+        $this->password = $password;
 
         return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 }

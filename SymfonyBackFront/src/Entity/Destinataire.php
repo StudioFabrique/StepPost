@@ -43,7 +43,6 @@ class Destinataire
     private $telephone;
 
     #[ORM\ManyToOne(targetEntity: Expediteur::class, inversedBy: 'destinataires')]
-    #[ORM\JoinColumn(nullable: false)]
     private $expediteur;
 
     public function getId(): ?int

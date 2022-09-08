@@ -1,0 +1,35 @@
+#[ORM\Column(type: 'string', length: 255)]
+    private $nom;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $prenom;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $adresse;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $complement;
+
+    #[ORM\Column(name: 'codePostal', type: 'string', length: 255)]
+    private $codePostal;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $ville;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $telephone;
+
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    private $email;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $password;
+
+    #[ORM\OneToMany(mappedBy: 'expediteur', targetEntity: Destinataire::class)]
+    private $destinataires;
+
+    #[ORM\OneToMany(mappedBy: 'expediteur', targetEntity: Courrier::class)]
+    private $courriers;
+
+    #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'expediteurs')]
+    private $client;
