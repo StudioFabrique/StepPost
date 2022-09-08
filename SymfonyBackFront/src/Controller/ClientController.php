@@ -6,6 +6,7 @@ use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
 use Knp\Component\Pager\PaginatorInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,8 +18,18 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/utilisateur', name: 'app_')]
 //#[IsGranted('ROLE_ADMIN')]
-class UtilisateurController extends AbstractController
+class ClientController extends AbstractController
 {
+    #[Route('/toto', name: 'toto')]
+    public function toto(JWTTokenManagerInterface $jwt, Expediteur $expediteur): Response
+    {
+        $expediteur = new Expediteur;
+        $expediteur->setEmail('coucou@coucou.fr')->setRoles(['ROLE_ADMIN']);
+        $jwt->create($expediteur);
+
+        return $this->json(['token' => $jwt]);
+    }
+
     #[Route('/', name: 'utilisateur', methods: ['GET'])]
     public function index(
         ExpediteurRepository $expediteurs,
@@ -45,22 +56,14 @@ class UtilisateurController extends AbstractController
 
 
     #[Route('/ajouter', name: 'add')]
-    public function new(Request $request, ExpediteurRepository $expediteurRepository, UserPasswordHasherInterface $passwordHasher): Response
+    public function new(Request $request, ExpediteurRepository $expediteurRepository,): Response
     {
         $expediteur = new Expediteur();
         $form = $this->createForm(ExpediteurType::class, $expediteur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $pass = $form->getData()->getPassword();
-            $hashedPassword = $passwordHasher->hashPassword(
-                $expediteur,
-                $pass
-            );
-            $expediteur->setPassword($hashedPassword);
             $expediteurRepository->add($expediteur);
-            return $this->redirectToRoute('app_utilisateur', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('utilisateur/new.html.twig', [
@@ -77,12 +80,6 @@ class UtilisateurController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $pass = $form->getData()->getPassword();
-            $hashedPassword = $passwordHasher->hashPassword(
-                $expediteur,
-                $pass
-            );
-            $expediteur->setPassword($hashedPassword);
             $expediteurRepository->add($expediteur);
             return $this->redirectToRoute('app_utilisateur', [], Response::HTTP_SEE_OTHER);
         }

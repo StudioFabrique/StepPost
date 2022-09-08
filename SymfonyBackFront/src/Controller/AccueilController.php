@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 #[Route('/accueil', name: 'app_')]
-//#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_ADMIN')]
 class AccueilController extends AbstractController
 {
     #[Route('/', name: 'accueil')]
@@ -23,9 +23,9 @@ class AccueilController extends AbstractController
         Request $request,
         PaginatorInterface $paginator
     ): Response {
-        //if (!$this->getUser()) {
-        //    return $this->redirectToRoute('app_login');
-        //}
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
 
 
         $donner = $statutCourrierRepo->findStatusOneAll();

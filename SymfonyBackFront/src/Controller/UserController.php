@@ -15,8 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/step/user', name: 'app_')]
-//#[IsGranted('ROLE_ADMIN')]
-class StepUserController extends AbstractController
+#[IsGranted('ROLE_ADMIN')]
+class UserController extends AbstractController
 {
     #[Route('/', name: 'step_user')]
     public function index(
