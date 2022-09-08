@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block body %}
+
+<main class="w-[90%] m-auto">
+    <section class="flex justify-between items-center">
+        <form class="flex ">
+            <div class="mb-3 xl:w-50">
+                <div class="input-group relative flex flex-wrap items-stretch w-full mb-4 ">
+                    <label for="Recherche" class="text-black opacity-50 italic"> Recherche</label>
+                    <input type="search" class="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 
+                        text-base font-normal text-gray-700 bg-white bg-clip-padding border 
+                        border-solid border-gray-300 rounded transition ease-in-out m-0 
+                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                        placeholder="Rechercher" aria-label="Rechercher" aria-describedby="button-addon2">
+                </div>
+            </div>
+        </form>
+        <div>
+            <a class="text-white bg-[#140A82] p-2 rounded" href="{{ path('app_utilisateur') }}">Exporter</a>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_utilisateur') }}">Voir les
+                Utilisateurs</a>
+            <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_statistique') }}">Voir les
+                statistiques</a>
+        </div>
+    </section>
+    <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left text-gray-500 table-fixed">
+            <thead class="text-xs text-white uppercase bg-[#140A82]">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Type
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Bordereau
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Civilité
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Nom
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Prénom
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Adresse
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Complément
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        CP
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ville
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Téléphone
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Date
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        détails
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for statut in statutsCourrier %}
+                <tr class="bg-white border-b00">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900itespace-nowrap">
+                        {{statut.type == "1" ? "Lettre" }} {{statut.type == "2" ? "Colis" }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{statut.bordereau}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{statut.civilité }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{statut.name}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{statut.prenom ? statut.prenom : "Non defini"}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{statut.adresse}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{statut.complement ? statut.complement : "Non defini"}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{statut.codePostal}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{statut.ville}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{statut.telephone ? statut.telephone : "Non defini"}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{statut.date | date('d-m-Y H:i') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <a class="text-[#140A82] bg-blue-100 p-2 rounded"
+                            href="{{ path('app_suiviId', {id: statut.courrier}) }}">
+                            Voir
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+{% endblock %}

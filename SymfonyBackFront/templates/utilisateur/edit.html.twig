@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Éditer un expediteur{% endblock %}
+
+{% block body %}
+
+<main class="w-[90%] m-auto">
+    <div class="flex justify-between items-center">
+        <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Éditer Expediteur</h1>
+        <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_utilisateur') }}">Retour</a>
+    </div>
+    {{ include('utilisateur/_form.html.twig', {'button_label': 'Modifier'}) }}
+</main>
+
+{% endblock %}

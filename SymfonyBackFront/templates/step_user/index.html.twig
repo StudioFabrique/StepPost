@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Employer de step{% endblock %}
+
+{% block body %}
+<main class="w-[90%] m-auto">
+    <section class="flex justify-between items-center">
+        <form class="flex ">
+            <div class="mb-3 xl:w-50">
+                <div class="input-group relative flex flex-wrap items-stretch w-full mb-4 ">
+                    <label for="Recherche" class="text-black opacity-50 italic"> Recherche</label>
+                    <input type="search" class="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 
+                        text-base font-normal text-gray-700 bg-white bg-clip-padding border 
+                        border-solid border-gray-300 rounded transition ease-in-out m-0 
+                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                        placeholder="employer" aria-label="employer" aria-describedby="button-addon2">
+                </div>
+            </div>
+        </form>
+        <div>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_utilisateur') }}">Retour</a>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_step_user_add') }}">Ajouter</a>
+        </div>
+    </section>
+    <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left text-gray-500 table-fixed">
+            <thead class="text-xs text-white uppercase bg-[#140A82]">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Fonction
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Email
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Roles
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Nom
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Modifier
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Supprimer
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in userStep %}
+                {% set role = user.roles == [ 'ROLE_ADMIN', 'ROLE_USER'] ? 'employé de Step' : 'expediteur' %}
+                <tr class="bg-white border-b ">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        {{ user.fonction }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ user.email }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ role }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ user.nom }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                            href="{{ path('app_step_edit', ({id: user.id})) }}">
+                            Modifier
+                        </a>
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ include('step_user/_delete_form.html.twig') }}
+                    </td>
+                </tr>
+
+                {# {{dump(user)}} #}
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+    <div class="flex justify-center mt-4">
+        {{ knp_pagination_render(userStep) }}
+    </div>
+</main>
+{% endblock %}
