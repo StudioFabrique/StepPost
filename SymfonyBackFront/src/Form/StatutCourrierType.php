@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Statuscourier;
+use App\Entity\Statutcourrier;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,7 +20,7 @@ class StatutCourrierType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Statuscourier::class,
+            'data_class' => Statutcourrier::class,
         ]);
     }
 }

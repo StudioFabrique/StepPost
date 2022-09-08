@@ -15,20 +15,16 @@ class Destinataire
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $nom;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $email;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'destinataires')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $expediteur;
-
-    #[ORM\OneToMany(mappedBy: 'expediteur', targetEntity: self::class, orphanRemoval: true)]
-    private $destinataires;
-
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 4, nullable: true)]
     private $civilite;
 
     #[ORM\Column(type: 'string', length: 255)]
+    private $nom;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $prenom;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -37,75 +33,32 @@ class Destinataire
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $complement;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(name: 'codePostal', type: 'string', length: 255)]
     private $codePostal;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $ville;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $telephone;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $email;
-
-    public function __construct()
-    {
-        $this->destinataires = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(targetEntity: Expediteur::class, inversedBy: 'destinataires')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $expediteur;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getEmail(): ?string
     {
-        return $this->nom;
+        return $this->email;
     }
 
-    public function setName(string $nom): self
+    public function setEmail(?string $email): self
     {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getExpediteur(): ?self
-    {
-        return $this->expediteur;
-    }
-
-    public function setExpediteur(?self $expediteur): self
-    {
-        $this->expediteur = $expediteur;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getDestinataires(): Collection
-    {
-        return $this->destinataires;
-    }
-
-    public function addDestinataire(self $destinataire): self
-    {
-        if (!$this->destinataires->contains($destinataire)) {
-            $this->destinataires[] = $destinataire;
-            $destinataire->setExpediteur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDestinataire(self $destinataire): self
-    {
-        if ($this->destinataires->removeElement($destinataire)) {
-            // set the owning side to null (unless already changed)
-            if ($destinataire->getExpediteur() === $this) {
-                $destinataire->setExpediteur(null);
-            }
-        }
+        $this->email = $email;
 
         return $this;
     }
@@ -115,9 +68,21 @@ class Destinataire
         return $this->civilite;
     }
 
-    public function setCivilite(string $civilite): self
+    public function setCivilite(?string $civilite): self
     {
         $this->civilite = $civilite;
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
 
         return $this;
     }
@@ -127,7 +92,7 @@ class Destinataire
         return $this->prenom;
     }
 
-    public function setPrenom(string $prenom): self
+    public function setPrenom(?string $prenom): self
     {
         $this->prenom = $prenom;
 
@@ -170,6 +135,18 @@ class Destinataire
         return $this;
     }
 
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(string $ville): self
+    {
+        $this->ville = $ville;
+
+        return $this;
+    }
+
     public function getTelephone(): ?string
     {
         return $this->telephone;
@@ -182,14 +159,14 @@ class Destinataire
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getExpediteur(): ?Expediteur
     {
-        return $this->email;
+        return $this->expediteur;
     }
 
-    public function setEmail(string $email): self
+    public function setExpediteur(?Expediteur $expediteur): self
     {
-        $this->email = $email;
+        $this->expediteur = $expediteur;
 
         return $this;
     }

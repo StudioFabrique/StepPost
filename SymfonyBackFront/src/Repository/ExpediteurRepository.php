@@ -73,15 +73,4 @@ class ExpediteurRepository extends ServiceEntityRepository
         ;
     }
     */
-
-    // public function findSearch(string $query)
-    // {
-    //     $qb = $this->createQueryBuilder('e')
-    //         ->where('e.name LIKE :query')
-    //         ->setParameter('query', '%'.$query.'%')
-    //         ->orderBy('e.name', 'ASC');
-    //     return $qb
-    //         ->getQuery()
-    //         ->getResult();
-    // }
 }

@@ -3,28 +3,30 @@
 namespace App\Entity;
 
 use App\Repository\StatutcourrierRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: StatutCourrierRepository::class)]
-class StatutCourrier
+#[ORM\Entity(repositoryClass: StatutcourrierRepository::class)]
+class Statutcourrier
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private $idFacteur;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $date;
 
-    #[ORM\ManyToOne(targetEntity: Courrier::class, inversedBy: 'courriers')]
+    #[ORM\ManyToOne(targetEntity: Courrier::class, inversedBy: 'statutscourrier')]
     private $courrier;
 
-    #[ORM\ManyToOne(targetEntity: Statut::class, inversedBy: 'statutsCourrier')]
+    #[ORM\ManyToOne(targetEntity: Statut::class, inversedBy: 'statutscourrier')]
     private $statut;
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->idFacteur;
     }
 
     public function getDate(): ?\DateTimeInterface
@@ -32,7 +34,7 @@ class StatutCourrier
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(?\DateTimeInterface $date): self
     {
         $this->date = $date;
 
@@ -59,6 +61,7 @@ class StatutCourrier
     public function setStatut(?Statut $statut): self
     {
         $this->statut = $statut;
+
         return $this;
     }
 }

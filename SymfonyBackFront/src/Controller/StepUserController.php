@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\UserStep;
-use App\Form\UserStepType;
-use App\Repository\UserStepRepository;
+use App\Entity\User;
+use App\Form\UserType;
+use App\Repository\UserRepository;
+use DateTime;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,12 +15,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/step/user', name: 'app_')]
-#[IsGranted('ROLE_ADMIN')]
+//#[IsGranted('ROLE_ADMIN')]
 class StepUserController extends AbstractController
 {
     #[Route('/', name: 'step_user')]
     public function index(
-        UserStepRepository $userSteps,
+        UserRepository $userSteps,
         Request $request,
         PaginatorInterface $paginator
     ): Response {
@@ -41,10 +42,10 @@ class StepUserController extends AbstractController
     }
 
     #[Route('/ajouter', name: 'step_user_add')]
-    public function new(Request $request, UserStepRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher): Response
+    public function new(Request $request, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $userStep = new UserStep();
-        $form = $this->createForm(UserStepType::class, $userStep);
+        $userStep = new User();
+        $form = $this->createForm(UserType::class, $userStep);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -54,6 +55,8 @@ class StepUserController extends AbstractController
                 $pass
             );
             $userStep->setPassword($hashedPassword);
+            $userStep->setCreatedAt(new DateTime('now'));
+            $userStep->setUpdatedAt(new DateTime('now'));
             $userStepRepository->add($userStep);
             return $this->redirectToRoute('app_step_user', [], Response::HTTP_SEE_OTHER);
         }
@@ -65,7 +68,7 @@ class StepUserController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'step_edit')]
-    public function edit(Request $request, UserStep $userStep, UserStepRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher): Response
+    public function edit(Request $request, User $userStep, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
         $form = $this->createForm(UserStepType::class, $userStep);
         $form->handleRequest($request);
@@ -89,7 +92,7 @@ class StepUserController extends AbstractController
 
 
     #[Route('/delete/{id}', name: 'step_delete', methods: ['POST'])]
-    public function delete(Request $request, UserStep $userStep, UserStepRepository $userStepRepository): Response
+    public function delete(Request $request, User $userStep, UserRepository $userStepRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $userStep->getId(), $request->request->get('_token'))) {
             $userStepRepository->remove($userStep);

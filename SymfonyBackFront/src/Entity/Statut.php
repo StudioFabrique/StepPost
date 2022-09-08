@@ -18,14 +18,13 @@ class Statut
     #[ORM\Column(type: 'string', length: 50)]
     private $etat;
 
-    #[ORM\OneToMany(mappedBy: 'statut', targetEntity: StatutCourrier::class)]
-    private $statutsCourrier;
+    #[ORM\OneToMany(mappedBy: 'statut', targetEntity: Statutcourrier::class)]
+    private $statutscourrier;
 
     public function __construct()
     {
         $this->statutscourrier = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -44,41 +43,33 @@ class Statut
         return $this;
     }
 
-
-
     /**
-     * @return Collection<int, Statutscourrier>
+     * @return Collection<int, Statutcourrier>
      */
-    public function getStatutsCourrier(): Collection
+    public function getStatutscourrier(): Collection
     {
-        return $this->statutsCourrier;
+        return $this->statutscourrier;
     }
 
-    public function addStatutCourrier(StatutCourrier $statutCourrier): self
+    public function addStatutscourrier(Statutcourrier $statutscourrier): self
     {
-        if (!$this->statutscouriers->contains($statutCourrier)) {
-            $this->statutscouriers[] = $statutCourrier;
-            $statutCourrier->setStatut($this);
+        if (!$this->statutscourrier->contains($statutscourrier)) {
+            $this->statutscourrier[] = $statutscourrier;
+            $statutscourrier->setStatut($this);
         }
 
         return $this;
     }
 
-    public function removeStatutCourrier(StatutCourrier $statutCourrier): self
+    public function removeStatutscourrier(Statutcourrier $statutscourrier): self
     {
-        if ($this->statutsCourrier->removeElement($statutCourrier)) {
+        if ($this->statutscourrier->removeElement($statutscourrier)) {
             // set the owning side to null (unless already changed)
-            if ($statutCourrier->getStatut() === $this) {
-                $statutCourrier->setStatut(null);
+            if ($statutscourrier->getStatut() === $this) {
+                $statutscourrier->setStatut(null);
             }
         }
 
         return $this;
-    }
-
-    //to string
-    public function __toString()
-    {
-        return $this->etat;
     }
 }

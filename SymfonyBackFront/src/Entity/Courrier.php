@@ -15,14 +15,14 @@ class Courrier
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'integer',)]
     private $type;
 
-    #[ORM\Column(type: 'string', unique: true)]
+    #[ORM\Column(type: 'integer', unique: true)]
     private $bordereau;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private $nom;
 
     #[ORM\Column(type: 'string', length: 50)]
     private $civilite;
@@ -36,7 +36,7 @@ class Courrier
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $complement;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(name: 'codePostal', type: 'string', length: 255)]
     private $codePostal;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -45,12 +45,16 @@ class Courrier
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $telephone;
 
-    #[ORM\OneToMany(mappedBy: 'courrier', targetEntity: StatutCourrier::class)]
-    private $statutsCourrier;
+    #[ORM\ManyToOne(targetEntity: Expediteur::class, inversedBy: 'courriers')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $expediteur;
+
+    #[ORM\OneToMany(mappedBy: 'courrier', targetEntity: Statutcourrier::class)]
+    private $statutscourrier;
 
     public function __construct()
     {
-        $this->statutsCourrier = new ArrayCollection();
+        $this->statutscourrier = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,26 +74,26 @@ class Courrier
         return $this;
     }
 
-    public function getBordereau(): ?string
+    public function getBordereau(): ?int
     {
         return $this->bordereau;
     }
 
-    public function setBordereau(string $borderau): self
+    public function setBordereau(int $borderau): self
     {
         $this->borderau = $borderau;
 
         return $this;
     }
 
-    public function getName(): ?string
+    public function getNom(): ?string
     {
-        return $this->name;
+        return $this->nom;
     }
 
-    public function setName(string $name): self
+    public function setNom(string $nom): self
     {
-        $this->name = $name;
+        $this->nom = $nom;
 
         return $this;
     }
@@ -178,38 +182,50 @@ class Courrier
         return $this;
     }
 
-    /**
-     * @return Collection<int, StatutsCourrier>
-     */
-    public function getStatutsCourrier(): Collection
+    public function __toString()
     {
-        return $this->statutsCourrier;
+        return $this->id;
     }
 
-    public function addStatutCourrier(StatutCourrier $statutCourrier): self
+    public function getExpediteur(): ?Expediteur
     {
-        if (!$this->statutsCourrier->contains($statutCourrier)) {
-            $this->statutsCourrier[] = $statutCourrier;
-            $statutCourrier->setCourrier($this);
+        return $this->expediteur;
+    }
+
+    public function setExpediteur(?Expediteur $expediteur): self
+    {
+        $this->expediteur = $expediteur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Statutcourrier>
+     */
+    public function getStatutscourrier(): Collection
+    {
+        return $this->statutscourrier;
+    }
+
+    public function addStatutscourrier(Statutcourrier $statutscourrier): self
+    {
+        if (!$this->statutscourrier->contains($statutscourrier)) {
+            $this->statutscourrier[] = $statutscourrier;
+            $statutscourrier->setCourrier($this);
         }
 
         return $this;
     }
 
-    public function removeStatutcourrier(StatutCourrier $statutCourrier): self
+    public function removeStatutscourrier(Statutcourrier $statutscourrier): self
     {
-        if ($this->statutsCourrier->removeElement($statutCourrier)) {
+        if ($this->statutscourrier->removeElement($statutscourrier)) {
             // set the owning side to null (unless already changed)
-            if ($statutCourrier->getCourrier() === $this) {
-                $statutCourrier->setCourrier(null);
+            if ($statutscourrier->getCourrier() === $this) {
+                $statutscourrier->setCourrier(null);
             }
         }
 
         return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->id;
     }
 }

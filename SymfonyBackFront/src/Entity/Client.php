@@ -15,12 +15,11 @@ class Client
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Expediteur::class, orphanRemoval: true)]
-    private $expediteurs;
-
-    #[ORM\ManyToOne(targetEntity: RaisonSociale::class, inversedBy: 'clients')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $raisonSociale;
+
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Expediteur::class)]
+    private $expediteurs;
 
     public function __construct()
     {
@@ -30,6 +29,18 @@ class Client
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getRaisonSociale(): ?string
+    {
+        return $this->raisonSociale;
+    }
+
+    public function setRaisonSociale(string $raisonSociale): self
+    {
+        $this->raisonSociale = $raisonSociale;
+
+        return $this;
     }
 
     /**
@@ -58,23 +69,6 @@ class Client
                 $expediteur->setClient(null);
             }
         }
-
-        return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->id;
-    }
-
-    public function getRaisonSociale(): ?RaisonSociale
-    {
-        return $this->raisonSociale;
-    }
-
-    public function setRaisonSociale(?RaisonSociale $raisonSociale): self
-    {
-        $this->raisonSociale = $raisonSociale;
 
         return $this;
     }

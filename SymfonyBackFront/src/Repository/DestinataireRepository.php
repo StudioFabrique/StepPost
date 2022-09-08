@@ -9,16 +9,16 @@ use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Destinataires|null find($id, $lockMode = null, $lockVersion = null)
- * @method Destinataires|null findOneBy(array $criteria, array $orderBy = null)
- * @method Destinataires[]    findAll()
- * @method Destinataires[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Destinataire|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Destinataire|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Destinataire[]    findAll()
+ * @method Destinataire[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class DestinataireRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Destinataires::class);
+        parent::__construct($registry, Destinataire::class);
     }
 
     /**
@@ -46,7 +46,7 @@ class DestinataireRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return Destinataires[] Returns an array of Destinataires objects
+    //  * @return Destinataire[] Returns an array of Destinataire objects
     //  */
     /*
     public function findByExampleField($value)
@@ -63,7 +63,7 @@ class DestinataireRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Destinataires
+    public function findOneBySomeField($value): ?Destinataire
     {
         return $this->createQueryBuilder('d')
             ->andWhere('d.exampleField = :val')
