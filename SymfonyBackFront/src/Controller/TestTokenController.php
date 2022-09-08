@@ -23,7 +23,8 @@ class TestTokenController extends AbstractController
     public function showToken(JWTTokenManagerInterface $jwt): Response
     {
         $expediteur = new Expediteur();
+        $expediteur->setEmail('test@test.fr')->setNom('Toto')->setPassword('mot de passe non hashé');
         $jwt->create($expediteur);
-        return new JsonResponse(['token' => $jwt]);
+        return $this->json(['token' => $jwt]);
     }
 }
