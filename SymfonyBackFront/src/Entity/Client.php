@@ -15,7 +15,7 @@ class Client
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(name: 'raisonSociale', type: 'string', length: 255)]
     private $raisonSociale;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Expediteur::class)]

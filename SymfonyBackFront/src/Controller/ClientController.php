@@ -10,13 +10,14 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Firebase\JWT\JWT;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 #[Route('/utilisateur', name: 'app_')]
-#[IsGranted('ROLE_ADMIN')]
+//#[IsGranted('ROLE_ADMIN')]
 class ClientController extends AbstractController
 {
     #[Route('/', name: 'utilisateur', methods: ['GET'])]
@@ -45,31 +46,29 @@ class ClientController extends AbstractController
 
 
     #[Route('/ajouter', name: 'add')]
-    public function new(Request $request, ExpediteurRepository $expediteurRepository,): Response
+    public function new(Request $request): Response
     {
         $expediteur = new Expediteur();
         $form = $this->createForm(ExpediteurType::class, $expediteur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $expediteurRepository->add($expediteur);
-            $expediteur->setEmail('totoSeFaitDécoder@toto.fr');
 
             $token = (new JWT())->encode(
                 [
-                    'Payload' => 'coucou je suis le totoPayload',
-                    'exp' => strval(intval((new DateTime('tomorrow'))->format('U')) - intval((new DateTime('now'))->format('U'))),
-                    'email' => $expediteur
-                        ->getEmail()
+                    'email' => $form->get('email')->getData(),
+                    'nom' => $form->get('nom')->getData(),
+                    'exp' => time() + (3600 * 24)
                 ],
                 'jdd23mnj6n2mn42mtoto',
                 'HS256'
             );
+            return $this->redirectToRoute('app_token', ['token' => $token]);
         }
 
         return $this->renderForm('utilisateur/new.html.twig', [
             'expediteur' => $expediteur,
-            'form' => $form,
+            'form' => $form
         ]);
     }
 
@@ -100,5 +99,14 @@ class ClientController extends AbstractController
         }
 
         return $this->redirectToRoute('app_utilisateur', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/mailToken', name: 'token')]
+    public function RedirectTokenMailView(Request $request)
+    {
+        $token = $request->get('token');
+        return $this->render('client/tokenMailRedirect.html.twig', [
+            'token' => $token
+        ]);
     }
 }
