@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Firebase\JWT\JWT;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
@@ -74,8 +75,12 @@ class ClientController extends AbstractController
                 ->subject('email')
                 ->html($body);
 
-            $mailer->send($mail);
-            return $this->redirectToRoute('app_token', ['token' => $token]);
+            try {
+                $mailer->send($mail);
+            } catch (TransportExceptionInterface $e) {
+                $errorMessage = strval($e);
+            }
+            return $this->redirectToRoute('app_token', ['token' => $token, 'errorMessage' => $errorMessage]);
         }
 
         return $this->renderForm('utilisateur/new.html.twig', [
