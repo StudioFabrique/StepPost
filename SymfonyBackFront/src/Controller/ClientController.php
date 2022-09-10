@@ -65,9 +65,8 @@ class ClientController extends AbstractController
             $expInHtml = $nbHeureExp == 1 ? " heure </p>" : " heures </p>";
             $body = "
             <p> Bonjour " . $form->get('nom')->getData() . ", veuillez confirmer la création de votre compte client associé à l'email " . $form->get('email')->getData() . " avec le bouton se trouvant ci-dessous. </p>
-            " . $token . "
-            <p><a href='" . $token . "'> Confirmer la création de mon compte client </a></p>
-            <p> La confirmation expirera dans " . $nbHeureExp . $expInHtml;
+            <p><a href='/test/" . $token . "'> Confirmer la création de mon compte client </a></p>
+            <p> La confirmation va expirer dans " . $nbHeureExp . $expInHtml;
             $mail = (new Email())
                 ->from('')
                 ->to($form->get('email')->getData())
