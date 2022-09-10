@@ -57,18 +57,25 @@ class ClientController extends AbstractController
                 [
                     'email' => $form->get('email')->getData(),
                     'nom' => $form->get('nom')->getData(),
-                    'exp' => time() + (3600 * $nbHeureExp)
+                    'prenom' => $form->get('prenom')->getData(),
+                    'adresse' => $form->get('adresse')->getData(),
+                    'complement' => $form->get('complement')->getData(),
+                    'codePostal' => $form->get('codePostal')->getData(),
+                    'ville' => $form->get('ville')->getData(),
+                    'telephone' => $form->get('telephone')->getData()
                 ],
-                'jdd23mnj6n2mn42mtoto',
-                'HS256'
+                'PassPhrasetoReplace',
+                'HS256',
+                head: ['exp' => time() + (3600 * $nbHeureExp)]
             );
             $expInHtml = $nbHeureExp == 1 ? " heure </p>" : " heures </p>";
             $body = "
-            <p> Bonjour " . $form->get('nom')->getData() . ", veuillez confirmer la création de votre compte client associé à l'email " . $form->get('email')->getData() . " avec le bouton se trouvant ci-dessous. </p>
-            <p><a href='/test/" . $token . "'> Confirmer la création de mon compte client </a></p>
+            <p> Bonjour " . $form->get('prenom')->getData() . ", veuillez confirmer la création de votre compte client associé à l'email " . $form->get('email')->getData() . " avec le bouton se trouvant ci-dessous. </p>
+            <p><a href='LinkToReplace" . $token . "'> Confirmer la création de mon compte client </a></p>
             <p> La confirmation va expirer dans " . $nbHeureExp . $expInHtml;
+
             $mail = (new Email())
-                ->from('')
+                ->from('EmailToReplace')
                 ->to($form->get('email')->getData())
                 ->subject('Création de votre compte client')
                 ->html($body);
