@@ -12,7 +12,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Firebase\JWT\JWT;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
@@ -70,17 +69,16 @@ class ClientController extends AbstractController
             <p>La validation du compte client expira dans " . $nbHeureExp == 1 ? $nbHeureExp . " heure <p/>" : $nbHeureExp . " heures <p/>
             ";
             $mail = (new Email())
-                ->from('automaticmailservicetest@gmail.com')
-                ->to(/* $form->get('email')->getData() */'')
-                ->subject('email')
+                ->from('')
+                ->to($form->get('email')->getData())
+                ->subject('Création de votre compte client')
                 ->html($body);
 
-            try {
-                $mailer->send($mail);
-            } catch (TransportExceptionInterface $e) {
-                $errorMessage = strval($e);
-            }
-            return $this->redirectToRoute('app_token', ['token' => $token, 'errorMessage' => $errorMessage ?? 'email sent']);
+            $mailer->send($mail);
+
+            return $this->redirectToRoute('app_token', [
+                'token' => $token
+            ]);
         }
 
         return $this->renderForm('utilisateur/new.html.twig', [
