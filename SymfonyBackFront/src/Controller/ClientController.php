@@ -66,10 +66,11 @@ class ClientController extends AbstractController
             <p> Bonjour, veuillez confirmer la création de votre compte client associé à l'email " . $form->get('email')->getData() . " avec le bouton se trouvant ci-dessous. <p>
             " . $token . "
             <a href='" . $token . "'> Confirmer la création de mon compte client <a/>
+            <p>La validation du compte client expira dans " . $nbHeureExp == 1 ? $nbHeureExp . " heure <p/>" : $nbHeureExp . " heures <p/>
             ";
             $mail = (new Email())
                 ->from('automaticmailservicetest@gmail.com')
-                ->to(/* $form->get('email')->getData() */'martin.dhollande@outlook.fr')
+                ->to(/* $form->get('email')->getData() */'')
                 ->subject('email')
                 ->html($body);
 
