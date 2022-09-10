@@ -80,7 +80,7 @@ class ClientController extends AbstractController
             } catch (TransportExceptionInterface $e) {
                 $errorMessage = strval($e);
             }
-            return $this->redirectToRoute('app_token', ['token' => $token, 'errorMessage' => $errorMessage]);
+            return $this->redirectToRoute('app_token', ['token' => $token, 'errorMessage' => $errorMessage ?? 'email sent']);
         }
 
         return $this->renderForm('utilisateur/new.html.twig', [
@@ -122,8 +122,11 @@ class ClientController extends AbstractController
     public function RedirectTokenMailView(Request $request)
     {
         $token = $request->get('token');
+        $errorHandler = $request->get('errorMessage') ?? 'email envoyé';
+
         return $this->render('client/tokenMailRedirect.html.twig', [
-            'token' => $token
+            'token' => $token,
+            'errorHandler' => $errorHandler
         ]);
     }
 }
