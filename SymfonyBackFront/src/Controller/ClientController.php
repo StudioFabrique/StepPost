@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
-use DateTime;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,8 +12,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Firebase\JWT\JWT;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 #[Route('/utilisateur', name: 'app_')]
 //#[IsGranted('ROLE_ADMIN')]
@@ -46,23 +45,35 @@ class ClientController extends AbstractController
 
 
     #[Route('/ajouter', name: 'add')]
-    public function new(Request $request): Response
+    public function new(Request $request, MailerInterface $mailer): Response
     {
         $expediteur = new Expediteur();
         $form = $this->createForm(ExpediteurType::class, $expediteur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $nbHeureExp = 1;
             $token = (new JWT())->encode(
                 [
                     'email' => $form->get('email')->getData(),
                     'nom' => $form->get('nom')->getData(),
-                    'exp' => time() + (3600 * 24)
+                    'exp' => time() + (3600 * $nbHeureExp)
                 ],
                 'jdd23mnj6n2mn42mtoto',
                 'HS256'
             );
+            $body = "
+            <p> Bonjour, veuillez confirmer la création de votre compte client associé à l'email " . $form->get('email')->getData() . " avec le bouton se trouvant ci-dessous. <p>
+            " . $token . "
+            <a href='" . $token . "'> Confirmer la création de mon compte client <a/>
+            ";
+            $mail = (new Email())
+                ->from('automaticmailservicetest@gmail.com')
+                ->to(/* $form->get('email')->getData() */'martin.dhollande@outlook.fr')
+                ->subject('email')
+                ->html($body);
+
+            $mailer->send($mail);
             return $this->redirectToRoute('app_token', ['token' => $token]);
         }
 
