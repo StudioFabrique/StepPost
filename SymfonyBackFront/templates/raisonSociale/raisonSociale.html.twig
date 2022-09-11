@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Raisons Sociales{% endblock %}
+
+{% block body %}
+<main class="w-[90%] m-auto">
+    <div class="flex justify-between items-center">
+        <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Liste des raisons sociales</h1>
+        <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_addRaisonSociale') }}">Créer une raison
+            sociale</a>
+        <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
+        {% for raison in raisonsSociales %}
+        {{ raison.raisonSociale }}
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

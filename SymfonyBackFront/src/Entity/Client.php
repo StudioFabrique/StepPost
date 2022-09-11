@@ -18,14 +18,6 @@ class Client
     #[ORM\Column(name: 'raisonSociale', type: 'string', length: 255, unique: true)]
     private $raisonSociale;
 
-    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Expediteur::class)]
-    private $expediteurs;
-
-    public function __construct()
-    {
-        $this->expediteurs = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -39,36 +31,6 @@ class Client
     public function setRaisonSociale(string $raisonSociale): self
     {
         $this->raisonSociale = $raisonSociale;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Expediteur>
-     */
-    public function getExpediteurs(): Collection
-    {
-        return $this->expediteurs;
-    }
-
-    public function addExpediteur(Expediteur $expediteur): self
-    {
-        if (!$this->expediteurs->contains($expediteur)) {
-            $this->expediteurs[] = $expediteur;
-            $expediteur->setClient($this);
-        }
-
-        return $this;
-    }
-
-    public function removeExpediteur(Expediteur $expediteur): self
-    {
-        if ($this->expediteurs->removeElement($expediteur)) {
-            // set the owning side to null (unless already changed)
-            if ($expediteur->getClient() === $this) {
-                $expediteur->setClient(null);
-            }
-        }
 
         return $this;
     }

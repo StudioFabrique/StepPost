@@ -12,7 +12,7 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\Expediteur
+                class: App\Entity\User
                 property: email
         # used to reload user from session & other features (e.g. switch_user)
         # used to reload user from session & other features (e.g. switch_user)
@@ -51,6 +51,6 @@ when@test:
             # reduces the work factor to the lowest possible values.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
-                cost: 10 # Lowest possible value for bcrypt
-                time_cost: 10 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+                cost: 5 # Lowest possible value for bcrypt
+                time_cost: 5 # Lowest possible value for argon
+                memory_cost: 5 # Lowest possible value for argon
