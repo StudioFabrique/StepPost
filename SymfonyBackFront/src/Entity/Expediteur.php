@@ -49,14 +49,14 @@ class Expediteur implements UserInterface
     #[ORM\OneToMany(mappedBy: 'expediteur', targetEntity: Courrier::class)]
     private $courriers;
 
-    #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'expediteurs')]
-    private $client;
-
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $password;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $civilite = null;
+
+    #[ORM\ManyToOne(inversedBy: 'expediteurs')]
+    private ?Client $client = null;
 
     public function __construct()
     {
@@ -263,18 +263,6 @@ class Expediteur implements UserInterface
         return $this;
     }
 
-    public function getClient(): ?Client
-    {
-        return $this->client;
-    }
-
-    public function setClient(?Client $client): self
-    {
-        $this->client = $client;
-
-        return $this;
-    }
-
     public function getPassword(): ?string
     {
         return $this->password;
@@ -295,6 +283,18 @@ class Expediteur implements UserInterface
     public function setCivilite(?string $civilite): self
     {
         $this->civilite = $civilite;
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }
