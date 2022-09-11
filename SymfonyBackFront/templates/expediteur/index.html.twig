@@ -53,7 +53,7 @@
                 {% set role = user.roles == [ 'ROLE_ADMIN', 'ROLE_USER'] ? 'employé de Step' : 'expediteur' %}
                 <tr class="bg-white border-b ">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        {{ user.client ? user.client.raisonSociale.nom : 'Non défini' }}
+                        {{ user.client ? user.client.raisonSociale : 'Non défini' }}
                     </th>
                     <td class="px-6 py-4">
                         {{ user.email }}
@@ -70,7 +70,7 @@
                         </a>
                     </td>
                     <td class="px-6 py-4">
-                        {{ include('utilisateur/_delete_form.html.twig') }}
+                        {{ include('expediteur/_delete_form.html.twig') }}
                     </td>
                 </tr>
                 {% endfor %}

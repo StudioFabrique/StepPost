@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Client;
 use App\Entity\Expediteur;
+use App\Form\ClientType;
 use App\Form\ExpediteurType;
+use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +17,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Firebase\JWT\JWT;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 #[Route('/utilisateur', name: 'app_')]
 //#[IsGranted('ROLE_ADMIN')]
@@ -26,9 +30,9 @@ class ClientController extends AbstractController
         PaginatorInterface $paginator
     ): Response {
 
-        if (!$this->getUser()) {
-            return $this->redirectToRoute('app_login');
-        }
+        // if (!$this->getUser()) {
+        //     return $this->redirectToRoute('app_login');
+        // }
 
         $donner = $expediteurs->findAll([], ['id' => 'DESC']);
         $expediteur = $paginator->paginate(
@@ -37,7 +41,7 @@ class ClientController extends AbstractController
             8
         );
 
-        return $this->render('utilisateur/index.html.twig', [
+        return $this->render('expediteur/index.html.twig', [
             'utilisateur' => $expediteur,
         ]);
     }
@@ -58,6 +62,7 @@ class ClientController extends AbstractController
                     'email' => $form->get('email')->getData(),
                     'nom' => $form->get('nom')->getData(),
                     'prenom' => $form->get('prenom')->getData(),
+                    'civilite' => $form->get('civilite')->getData(),
                     'adresse' => $form->get('adresse')->getData(),
                     'complement' => $form->get('complement')->getData(),
                     'codePostal' => $form->get('codePostal')->getData(),
@@ -87,7 +92,7 @@ class ClientController extends AbstractController
             ]);
         }
 
-        return $this->renderForm('utilisateur/new.html.twig', [
+        return $this->renderForm('expediteur/new.html.twig', [
             'expediteur' => $expediteur,
             'form' => $form
         ]);
@@ -122,13 +127,51 @@ class ClientController extends AbstractController
         return $this->redirectToRoute('app_utilisateur', [], Response::HTTP_SEE_OTHER);
     }
 
+    #[Route('/RaisonsSociales', name: 'showRaisonsSociales')]
+    public function ShowRaisonsSociales(ClientRepository $clientRepository): Response
+    {
+        $raisonsSociales = $clientRepository->findAll();
+        return $this->render('expediteur/raisonsSociales', [
+            'raisonsSociales' => $raisonsSociales
+        ]);
+    }
+
+    #[Route('/ajouterRaisonSociale', name: 'addRaisonSociale')]
+    public function AddRaisonSociale(Request $request, ClientRepository $clientRepository): Response
+    {
+        // uniqueConstraint est une requête obtenue lorsque la raison sociale ajoutée existe déjà.
+        // L'opérateur ternaire (?:) utilisé permet de ne pas afficher l'erreur lors du premier rendu
+        // du formulaire. 
+        $uniqueConstraint = $request->get('uniqueConstraint') != null ? $request->get('uniqueConstraint') : 'no error';
+
+        $raisonSociale = new Client();
+        $form = ($this->createForm(ClientType::class, $raisonSociale))->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $raisonSociale->setRaisonSociale($form->get('raisonSociale')->getData());
+                $clientRepository->add($raisonSociale, true);
+                return $this->redirectToRoute('app_utilisateur', []);
+            } catch (UniqueConstraintViolationException $e) {
+                return $this->redirectToRoute('addRaisonSociale', [
+                    'uniqueConstraint' => 'La raison sociale existe déjà.'
+                ]);
+            }
+        }
+
+        return $this->renderForm('expediteur/newRaisonSociale.html.twig', [
+            'uniqueConstraint' => $uniqueConstraint,
+            'form' => $form
+        ]);
+    }
+
+
     #[Route('/mailToken', name: 'token')]
     public function RedirectTokenMailView(Request $request)
     {
         $token = $request->get('token');
         $errorHandler = $request->get('errorMessage') ?? 'email envoyé';
 
-        return $this->render('client/tokenMailRedirect.html.twig', [
+        return $this->render('expediteur/tokenMailRedirect.html.twig', [
             'token' => $token,
             'errorHandler' => $errorHandler
         ]);

@@ -55,6 +55,9 @@ class Expediteur implements UserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $password;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $civilite = null;
+
     public function __construct()
     {
         $this->destinataires = new ArrayCollection();
@@ -280,6 +283,18 @@ class Expediteur implements UserInterface
     public function setPassword(?string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getCivilite(): ?string
+    {
+        return $this->civilite;
+    }
+
+    public function setCivilite(?string $civilite): self
+    {
+        $this->civilite = $civilite;
 
         return $this;
     }
