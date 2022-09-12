@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Client;
 use App\Entity\Expediteur;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -15,14 +17,14 @@ class ExpediteurType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'Email',
+                'label' => 'Email *',
                 'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                 'attr' => [
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
                 ],
             ])
             ->add('nom', TextType::class, [
-                'label' => 'Nom',
+                'label' => 'Nom *',
                 'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                 'attr' => [
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
@@ -45,7 +47,7 @@ class ExpediteurType extends AbstractType
                 ],
             ])
             ->add('adresse', TextType::class, [
-                'label' => 'Adresse',
+                'label' => 'Adresse *',
                 'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                 'attr' => [
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
@@ -60,25 +62,31 @@ class ExpediteurType extends AbstractType
                 ],
             ])
             ->add('codePostal', TextType::class, [
-                'label' => 'Code Postal',
+                'label' => 'Code Postal *',
                 'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                 'attr' => [
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
                 ],
             ])
             ->add('ville', TextType::class, [
-                'label' => 'Ville',
+                'label' => 'Ville *',
                 'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                 'attr' => [
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
                 ],
             ])
             ->add('telephone', TextType::class, [
-                'label' => 'Telephone',
+                'label' => 'Telephone *',
                 'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                 'attr' => [
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
                 ],
+            ])
+            ->add('client', EntityType::class, [
+                'class' => Client::class,
+                'choice_label' => 'raisonSociale',
+                'label' => 'Raison sociale',
+                'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2']
             ]);
     }
 

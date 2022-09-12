@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Raisons Sociales{% endblock %}
+
+{% block body %}
+<main class="w-[90%] m-auto">
+    <div class="flex justify-between items-center">
+        <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Clients de {{ raison.raisonSociale }}</h1>
+        <a class="text-white bg-[#24A640] p-2 rounded"
+            href="{{ path('app_addClientRaisonSociale', {raisonId: raison.id}) }}">Ajouter un
+            client</a>
+        <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_raisonSociale') }}">Retour</a>
+    </div>
+    {% for expediteur in clients %}
+    <p class=" mb-4 text-x font-semibold">- {{ expediteur.nom }} / {{ expediteur.email }}
+        <a class="text-white bg-[#F24E1E] p-2 rounded"
+            href="{{ path('app_deleteClientRaisonSociale', { expediteurId: expediteur.id , raisonId: raison.id }) }}">Supprimer</a>
+    </p>
+    {% endfor %}
+</main>
+{% endblock %}

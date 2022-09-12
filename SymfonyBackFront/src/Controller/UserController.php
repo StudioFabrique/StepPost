@@ -70,16 +70,17 @@ class UserController extends AbstractController
     #[Route('/edit/{id}', name: 'step_edit')]
     public function edit(Request $request, User $userStep, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $form = $this->createForm(UserStepType::class, $userStep);
+        $form = $this->createForm(UserType::class, $userStep);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $pass = $form->getData()->getPassword();
+            $pass = $form->get('password')->getData();
             $hashedPassword = $passwordHasher->hashPassword(
                 $userStep,
                 $pass
             );
             $userStep->setPassword($hashedPassword);
+            $userStep->setRoles(['ROLE_ADMIN']);
             $userStepRepository->add($userStep);
             return $this->redirectToRoute('app_step_user', [], Response::HTTP_SEE_OTHER);
         }

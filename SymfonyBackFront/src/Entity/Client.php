@@ -12,11 +12,11 @@ class Client
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private $id;
+    #[ORM\Column]
+    private ?int $id = null;
 
-    #[ORM\Column(name: 'raisonSociale', type: 'string', length: 255, unique: true)]
-    private $raisonSociale;
+    #[ORM\Column(name: 'raisonSociale', length: 255)]
+    private ?string $raisonSociale = null;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Expediteur::class)]
     private Collection $expediteurs;

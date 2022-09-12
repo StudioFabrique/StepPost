@@ -2,11 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Client;
 use App\Entity\Expediteur;
-use App\Form\ClientType;
 use App\Form\ExpediteurType;
-use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,8 +14,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Firebase\JWT\JWT;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 #[Route('/client', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
@@ -57,7 +54,7 @@ class ClientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $nbHeureExp = 1;
+            $nbHeureExp = 24;
             $token = (new JWT())->encode(
                 [
                     'email' => $form->get('email')->getData(),
@@ -70,26 +67,30 @@ class ClientController extends AbstractController
                     'ville' => $form->get('ville')->getData(),
                     'telephone' => $form->get('telephone')->getData()
                 ],
-                'PassPhrasetoReplace',
-                'HS256',
+                'inserer pass phrase', // pass phrase
+                'HS256', // protocole d'encodage
                 head: ['exp' => time() + (3600 * $nbHeureExp)]
             );
             $expInHtml = $nbHeureExp == 1 ? " heure </p>" : " heures </p>";
             $body = "
-            <p> Bonjour " . $form->get('prenom')->getData() . ", veuillez confirmer la création de votre compte client associé à l'email " . $form->get('email')->getData() . " avec le bouton se trouvant ci-dessous. </p>
-            <p><a href='LinkToReplace" . $token . "'> Confirmer la création de mon compte client </a></p>
+            <p> Bonjour" . ($form->get('prenom')->getData() != null ? " " . $form->get('prenom')->getData() . ",</p>" : ",</p>") . "<p>veuillez confirmer la création de votre compte client associé à l'email " . $form->get('email')->getData() . " avec le bouton se trouvant ci-dessous. </p>
+            <p><a href='http://localhost:4200/profil/new-client?token=" . $token . "'> Confirmer la création de mon compte client </a></p>
             <p> La confirmation va expirer dans " . $nbHeureExp . $expInHtml;
 
-            $mail = (new Email())
-                ->from('EmailToReplace')
-                ->to($form->get('email')->getData())
-                ->subject('Création de votre compte client')
-                ->html($body);
+            try {
+                $mail = (new Email())
+                    ->from('inserer adresse mail') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
+                    ->to($form->get('email')->getData())
+                    ->subject('Création de votre compte client')
+                    ->html($body);
 
-            $mailer->send($mail);
+                $mailer->send($mail);
+            } catch (TransportExceptionInterface $e) {
+                $errorHandler = "une erreur s'est produite lors de l'envoi du mail";
+            }
 
             return $this->redirectToRoute('app_token', [
-                'token' => $token
+                'errorMessage' => $errorHandler ?? null
             ]);
         }
 
@@ -108,10 +109,10 @@ class ClientController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $expediteurRepository->add($expediteur);
-            return $this->redirectToRoute('app_utilisateur', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_client', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('utilisateur/edit.html.twig', [
+        return $this->renderForm('expediteur/edit.html.twig', [
             'expediteur' => $expediteur,
             'form' => $form,
         ]);
@@ -125,18 +126,16 @@ class ClientController extends AbstractController
             $expediteurRepository->remove($expediteur);
         }
 
-        return $this->redirectToRoute('app_utilisateur', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_client', [], Response::HTTP_SEE_OTHER);
     }
 
 
     #[Route('/mailToken', name: 'token')]
     public function RedirectTokenMailView(Request $request)
     {
-        $token = $request->get('token');
-        $errorHandler = $request->get('errorMessage') ?? 'email envoyé';
+        $errorHandler = $request->get('errorMessage') ?? "L'email a bien été envoyé";
 
         return $this->render('expediteur/tokenMailRedirect.html.twig', [
-            'token' => $token,
             'errorHandler' => $errorHandler
         ]);
     }

@@ -9,9 +9,50 @@
         <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_addRaisonSociale') }}">Créer une raison
             sociale</a>
         <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
-        {% for raison in raisonsSociales %}
-        {{ raison.raisonSociale }}
-        {% endfor %}
     </div>
+    <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left text-gray-500 table-fixed">
+            <thead class="text-xs text-white uppercase bg-[#140A82]">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Nom
+                    </th>
+                    <th>
+                        Voir les clients associés
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Modifier
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Supprimer
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for raison in raisonsSociales %}
+                <tr class="bg-white border-b ">
+                    <td class="px-6 py-4">
+                        {{ raison.raisonSociale }}
+                    </td>
+                    <td>
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                            href="{{ path('app_clientsRaisonSociale',{raisonId : raison.id}) }}">Voir les clients
+                            associés</a>
+                    </td>
+                    <td class="px-6 py-4">
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                            href="{{ path('app_editRaisonSociale',{raisonId : raison.id}) }}">
+                            Modifier
+                        </a>
+                    </td>
+                    <td class="px-6 py-4">
+                        <a class="text-white bg-[#F24E1E] p-2 rounded"
+                            href="{{ path('app_deleteRaisonSociale',{raisonId : raison.id}) }}">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
 </main>
 {% endblock %}
