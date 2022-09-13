@@ -4,6 +4,7 @@
 
 {% block body %}
 <main class="w-[90%] m-auto">
+    <h1 style="font-size: 20pt;padding-bottom: 2%;"><b>Administrateurs</b></h1>
     <section class="flex justify-between items-center">
         <form class="flex ">
             <div class="mb-3 xl:w-50">
@@ -69,7 +70,9 @@
                         </a>
                     </td>
                     <td class="px-6 py-4">
-                        {{ include('step_user/_delete_form.html.twig') }}
+                        {% if app.user.id != user.id %}
+                            {{ include('step_user/_delete_form.html.twig') }}
+                        {% endif %}
                     </td>
                 </tr>
 

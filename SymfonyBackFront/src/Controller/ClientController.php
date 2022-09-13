@@ -67,7 +67,7 @@ class ClientController extends AbstractController
                     'ville' => $form->get('ville')->getData(),
                     'telephone' => $form->get('telephone')->getData()
                 ],
-                'passphrase', // pass phrase
+                'test', // pass phrase
                 'HS256', // protocole d'encodage
                 head: ['exp' => time() + (3600 * $nbHeureExp)]
             );
@@ -79,7 +79,7 @@ class ClientController extends AbstractController
 
             try {
                 $mail = (new Email())
-                    ->from('email expediteur') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
+                    ->from('insérer mail') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
                     ->to($form->get('email')->getData())
                     ->subject('Création de votre compte client')
                     ->html($body);

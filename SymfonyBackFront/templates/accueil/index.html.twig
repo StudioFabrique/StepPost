@@ -4,7 +4,9 @@
 
 {% block body %}
 
+
 <main class="w-[90%] m-auto">
+    <h1 style="font-size: 20pt;padding-bottom: 2%;"><b>Liste et gestion des courriers</b></h1>
     <section class="flex justify-between items-center">
         <form class="flex " action="" method="get">
             <div class="mb-3 xl:w-50">
@@ -20,7 +22,7 @@
         </form>
         <div>
             <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_client') }}">Voir les
-                clients</a>
+                expéditeurs</a>
             <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_raisonSociale') }}">Gérer les raisons
                 sociales</a>
             <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_statistique') }}">Voir les
@@ -106,10 +108,11 @@
                         {{courrier.telephone ? courrier.telephone : "Non defini"}}
                     </td>
                     <td class="px-6 py-4">
-                        Statut : {{ courrier.statut }}
-                        <a class="text-[#140A82] bg-blue-100 p-2 rounded"
+                        {{ courrier.statut }}
+                        <hr style="border-width: 2px;">
+                        <a style="color: blue;"
                             href="{{ path('app_suiviId', {id: courrier.courrier}) }}">
-                            Voir les détails
+                            détails
                         </a>
                     </td>
                 </tr>

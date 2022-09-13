@@ -91,7 +91,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 'c.id AS courrier,
                 MAX(s.date) AS date,
                 MAX(d.id) AS etat,
-                MAX(d.etat) AS test,
+                MAX(d.etat) AS statut,
                 c.nom,
                 c.prenom,
                 c.adresse,
