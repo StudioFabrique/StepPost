@@ -35,9 +35,9 @@
                     <th scope="col" class="px-6 py-3">
                         Email
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    {# <th scope="col" class="px-6 py-3">
                         Roles
-                    </th>
+                    </th> #}
                     <th scope="col" class="px-6 py-3">
                         Nom
                     </th>
@@ -51,7 +51,7 @@
             </thead>
             <tbody>
                 {% for user in utilisateur %}
-                {% set role = user.roles == [ 'ROLE_ADMIN', 'ROLE_USER'] ? 'employé de Step' : 'expediteur' %}
+                {# {% set role = user.roles == [ "ROLE_ADMIN", "ROLE_USER"] ? 'employé de Step' : 'expediteur' %} #}
                 <tr class="bg-white border-b ">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         {{ user.client ? user.client.raisonSociale : 'Non défini' }}
@@ -59,9 +59,9 @@
                     <td class="px-6 py-4">
                         {{ user.email }}
                     </td>
-                    <td class="px-6 py-4">
-                        {{ role }}
-                    </td>
+                    {# <td class="px-6 py-4">
+                        {{ user.roles }}
+                    </td> #}
                     <td class="px-6 py-4">
                         {{ user.nom }}
                     </td>

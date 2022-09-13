@@ -83,7 +83,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
         //     MAX(DATE) AS DATE,
         //     MAX(status_id) AS etat
         // FROM
-        //     statutscourier
+        //     statutscourrier
         // GROUP BY
         //     courrier_id
         $qb = $this->createQueryBuilder('s')

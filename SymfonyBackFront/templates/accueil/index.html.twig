@@ -6,15 +6,15 @@
 
 <main class="w-[90%] m-auto">
     <section class="flex justify-between items-center">
-        <form class="flex ">
-            <div class="mb-3 xl:w-5">
+        <form class="flex " action="" method="get">
+            <div class="mb-3 xl:w-50">
                 <div class=" input-group relative flex flex-wrap items-stretch w-full mb-4 ">
-                    <label for=" Recherche" class="text-black opacity-50 italic"> Recherche</label>
-                    <input type="search" class="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 
+                    <label for="Recherche" class="text-black opacity-50 italic"> Recherche par nom ou bordereau</label>
+                    <input name="toId" type="search" class="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 
                         text-base font-normal text-gray-700 bg-white bg-clip-padding border 
                         border-solid border-gray-300 rounded transition ease-in-out m-0 
                         focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                        placeholder="Rechercher" aria-label="Rechercher" aria-describedby="button-addon2">
+                        placeholder="nom ou numéro bordereau" aria-label="nom ou numéro bordereau" aria-describedby="button-addon2">
                 </div>
             </div>
         </form>
@@ -31,6 +31,9 @@
         <table class="w-full text-sm text-left text-gray-500 table-fixed">
             <thead class="text-xs text-white uppercase bg-[#140A82]">
                 <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Date
+                    </th>
                     <th scope="col" class="px-6 py-3">
                         Type
                     </th>
@@ -62,53 +65,51 @@
                         Téléphone
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Date
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        détails
+                        Statut
                     </th>
                 </tr>
             </thead>
             <tbody>
-                {% for statut in statutsCourrier %}
+                {% for courrier in courriers %}
                 <tr class="bg-white border-b00">
+                    <td class="px-6 py-4">
+                        {{courrier.date | date('d-m-Y H:i') }}
+                    </td>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900itespace-nowrap">
-                        {{statut.type == "1" ? "Lettre" }} {{statut.type == "2" ? "Colis" }}
+                        {{courrier.type == "1" ? "Lettre" }} {{courrier.type == "2" ? "Colis" }}
                     </th>
                     <td class="px-6 py-4">
-                        {{statut.bordereau}}
+                        {{courrier.bordereau}}
                     </td>
                     <td class="px-6 py-4">
-                        {{statut.civilite }}
+                        {{courrier.civilite }}
                     </td>
                     <td class="px-6 py-4">
-                        {{statut.nom}}
+                        {{courrier.nom}}
                     </td>
                     <td class="px-6 py-4">
-                        {{statut.prenom ? statut.prenom : "Non defini"}}
+                        {{courrier.prenom ? courrier.prenom : "Non defini"}}
                     </td>
                     <td class="px-6 py-4">
-                        {{statut.adresse}}
+                        {{courrier.adresse}}
                     </td>
                     <td class="px-6 py-4">
-                        {{statut.complement ? statut.complement : "Non defini"}}
+                        {{courrier.complement ? courrier.complement : "Non defini"}}
                     </td>
                     <td class="px-6 py-4">
-                        {{statut.codePostal}}
+                        {{courrier.codePostal}}
                     </td>
                     <td class="px-6 py-4">
-                        {{statut.ville}}
+                        {{courrier.ville}}
                     </td>
                     <td class="px-6 py-4">
-                        {{statut.telephone ? statut.telephone : "Non defini"}}
+                        {{courrier.telephone ? courrier.telephone : "Non defini"}}
                     </td>
                     <td class="px-6 py-4">
-                        {{statut.date | date('d-m-Y H:i') }}
-                    </td>
-                    <td class="px-6 py-4">
+                        Statut : {{ courrier.statut }}
                         <a class="text-[#140A82] bg-blue-100 p-2 rounded"
-                            href="{{ path('app_suiviId', {id: statut.courrier}) }}">
-                            Voir
+                            href="{{ path('app_suiviId', {id: courrier.courrier}) }}">
+                            Voir les détails
                         </a>
                     </td>
                 </tr>
