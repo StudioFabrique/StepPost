@@ -16,6 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ExpediteurRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Expediteur::class);
@@ -73,4 +74,13 @@ class ExpediteurRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findAllWithoutClient()
+    {
+        return $this->_em->createQuery('
+        SELECT expediteur
+        FROM App\Entity\Expediteur expediteur
+        WHERE expediteur.client IS NULL
+        ')->getResult();
+    }
 }

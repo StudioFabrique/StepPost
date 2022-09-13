@@ -114,16 +114,12 @@ class RaisonSocialeController extends AbstractController
     }
 
     #[Route('/ajouterClient', name: 'addClientRaisonSociale')]
-    public function AddClientFrom(Request $request, EntityManagerInterface $em): Response
+    public function AddClientFrom(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
         $raisonId = $request->get('raisonId');
-        $clients = $em->createQuery('
-            SELECT expediteur
-            FROM App\Entity\Expediteur expediteur
-            WHERE expediteur.client IS NULL
-        ');
+        $clients = $expediteurRepository->findAllWithoutClient();
         return $this->render('raisonSociale/addClientsRaisonSociale.html.twig', [
-            'clients' => $clients->getResult(),
+            'clients' => $clients,
             'raisonId' => $raisonId
         ]);
     }
