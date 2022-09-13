@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\StatutcourrierRepository;
+use App\Repository\StatutCourrierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: StatutcourrierRepository::class)]
-class Statutcourrier
+#[ORM\Entity(repositoryClass: StatutCourrierRepository::class)]
+class StatutCourrier
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

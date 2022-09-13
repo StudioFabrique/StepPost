@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Statutcourrier;
 use App\Form\StatutCourrierType;
-use App\Repository\StatutcourrierRepository;
+use App\Repository\StatutCourrierRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
