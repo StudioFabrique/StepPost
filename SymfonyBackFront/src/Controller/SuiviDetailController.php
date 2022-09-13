@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Statutcourrier;
+use App\Entity\StatutCourrier;
 use App\Form\StatutCourrierType;
 use App\Repository\StatutCourrierRepository;
 use Symfony\Component\HttpFoundation\Request;

@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/step/user', name: 'app_')]
-#[IsGranted('ROLE_ADMIN')]
+//#[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
 {
     #[Route('/', name: 'step_user')]
@@ -25,9 +25,9 @@ class UserController extends AbstractController
         PaginatorInterface $paginator
     ): Response {
 
-        if (!$this->getUser()) {
-            return $this->redirectToRoute('app_login');
-        }
+        // if (!$this->getUser()) {
+        //     return $this->redirectToRoute('app_login');
+        // }
 
         $donner = $userSteps->findAll([], ['id' => 'DESC']);
         $userStep = $paginator->paginate(
@@ -57,6 +57,7 @@ class UserController extends AbstractController
             $userStep->setPassword($hashedPassword);
             $userStep->setCreatedAt(new DateTime('now'));
             $userStep->setUpdatedAt(new DateTime('now'));
+            $userStep->setRoles(['ROLE_ADMIN']);
             $userStepRepository->add($userStep);
             return $this->redirectToRoute('app_step_user', [], Response::HTTP_SEE_OTHER);
         }

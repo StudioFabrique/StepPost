@@ -45,7 +45,7 @@ class Courrier
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $telephone;
 
-    #[ORM\OneToMany(mappedBy: 'courrier', targetEntity: Statutcourrier::class)]
+    #[ORM\OneToMany(mappedBy: 'courrier', targetEntity: StatutCourrier::class)]
     private $statutscourrier;
 
     #[ORM\ManyToOne(targetEntity: Expediteur::class, inversedBy: 'courriers')]
@@ -187,14 +187,14 @@ class Courrier
     }
 
     /**
-     * @return Collection<int, Statutcourrier>
+     * @return Collection<int, StatutCourrier>
      */
     public function getStatutscourrier(): Collection
     {
         return $this->statutscourrier;
     }
 
-    public function addStatutscourrier(Statutcourrier $statutscourrier): self
+    public function addStatutscourrier(StatutCourrier $statutscourrier): self
     {
         if (!$this->statutscourrier->contains($statutscourrier)) {
             $this->statutscourrier[] = $statutscourrier;
@@ -204,7 +204,7 @@ class Courrier
         return $this;
     }
 
-    public function removeStatutscourrier(Statutcourrier $statutscourrier): self
+    public function removeStatutscourrier(StatutCourrier $statutscourrier): self
     {
         if ($this->statutscourrier->removeElement($statutscourrier)) {
             // set the owning side to null (unless already changed)

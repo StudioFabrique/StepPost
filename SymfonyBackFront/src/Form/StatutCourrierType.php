@@ -20,7 +20,7 @@ class StatutCourrierType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Statutcourrier::class,
+            'data_class' => StatutCourrier::class,
         ]);
     }
 }

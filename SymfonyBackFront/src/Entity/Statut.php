@@ -18,12 +18,12 @@ class Statut
     #[ORM\Column(type: 'string', length: 50)]
     private $etat;
 
-    #[ORM\OneToMany(mappedBy: 'statut', targetEntity: Statutcourrier::class)]
-    private $statutscourrier;
+    #[ORM\OneToMany(mappedBy: 'statut', targetEntity: StatutCourrier::class)]
+    private $statutsCourrier;
 
     public function __construct()
     {
-        $this->statutscourrier = new ArrayCollection();
+        $this->statutsCourrier = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -44,29 +44,29 @@ class Statut
     }
 
     /**
-     * @return Collection<int, Statutcourrier>
+     * @return Collection<int, StatutCourrier>
      */
-    public function getStatutscourrier(): Collection
+    public function getStatutsCourrier(): Collection
     {
         return $this->statutscourrier;
     }
 
-    public function addStatutscourrier(Statutcourrier $statutscourrier): self
+    public function addStatutsCourrier(StatutCourrier $statutsCourrier): self
     {
-        if (!$this->statutscourrier->contains($statutscourrier)) {
-            $this->statutscourrier[] = $statutscourrier;
-            $statutscourrier->setStatut($this);
+        if (!$this->statutscourrier->contains($statutsCourrier)) {
+            $this->statutscourrier[] = $statutsCourrier;
+            $statutsCourrier->setStatut($this);
         }
 
         return $this;
     }
 
-    public function removeStatutscourrier(Statutcourrier $statutscourrier): self
+    public function removeStatutsCourrier(StatutCourrier $statutsCourrier): self
     {
-        if ($this->statutscourrier->removeElement($statutscourrier)) {
+        if ($this->statutscourrier->removeElement($statutsCourrier)) {
             // set the owning side to null (unless already changed)
-            if ($statutscourrier->getStatut() === $this) {
-                $statutscourrier->setStatut(null);
+            if ($statutsCourrier->getStatut() === $this) {
+                $statutsCourrier->setStatut(null);
             }
         }
 
