@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Courrier;
-use App\Repository\StatutcourrierRepository;
+use App\Repository\StatutCourrierRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
