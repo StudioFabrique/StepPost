@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Courrier;
-use App\Repository\CourrierRepository;
 use App\Repository\StatutCourrierRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -26,11 +25,9 @@ class AccueilController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        if ($request->isMethod('POST')) {
-            $this->redirectToRoute('app_accueil');
-        }
+        $order = $request->get('order') ?? "DESC";
 
-        $donner = $statutCourrierRepo->findStatusOneAll();
+        $donner = $statutCourrierRepo->findStatusOneAll($order);
         $courriers = $paginator->paginate(
             $donner,
             $request->query->getInt('page', 1),
@@ -38,8 +35,8 @@ class AccueilController extends AbstractController
         );
 
         return $this->render('accueil/index.html.twig', [
-            'courriers' => $courriers
-
+            'courriers' => $courriers,
+            'order' => $order == "DESC" ? "ASC" : "DESC"
         ]);
     }
 

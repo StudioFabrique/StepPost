@@ -74,7 +74,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
     }
     */
 
-    public function findStatusOneAll()
+    public function findStatusOneAll($order)
     {
 
 
@@ -106,7 +106,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->leftJoin('s.courrier', 'c')
             ->leftJoin('s.statut', 'd')
             ->groupBy('c.id')
-            ->orderBy('c.id', 'DESC')
+            ->orderBy('c.id', $order)
             ->getQuery();
         return $qb->getResult();
     }

@@ -4,7 +4,6 @@
 
 {% block body %}
 
-
 <main class="w-[90%] m-auto">
     <h1 style="font-size: 20pt;padding-bottom: 2%;"><b>Liste et gestion des courriers</b></h1>
     <section class="flex justify-between items-center">
@@ -34,7 +33,7 @@
             <thead class="text-xs text-white uppercase bg-[#140A82]">
                 <tr>
                     <th scope="col" class="px-6 py-3">
-                        Date
+                        Date <a href="{{ path('app_accueil', {order: order} ) }}">{{ order == "ASC" ? 'décroissant' : 'croissant'}}</a>
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Type
