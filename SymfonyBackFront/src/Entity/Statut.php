@@ -48,13 +48,13 @@ class Statut
      */
     public function getStatutsCourrier(): Collection
     {
-        return $this->statutscourrier;
+        return $this->statutsCourrier;
     }
 
     public function addStatutsCourrier(StatutCourrier $statutsCourrier): self
     {
-        if (!$this->statutscourrier->contains($statutsCourrier)) {
-            $this->statutscourrier[] = $statutsCourrier;
+        if (!$this->statutsCourrier->contains($statutsCourrier)) {
+            $this->statutsCourrier[] = $statutsCourrier;
             $statutsCourrier->setStatut($this);
         }
 
@@ -63,7 +63,7 @@ class Statut
 
     public function removeStatutsCourrier(StatutCourrier $statutsCourrier): self
     {
-        if ($this->statutscourrier->removeElement($statutsCourrier)) {
+        if ($this->statutsCourrier->removeElement($statutsCourrier)) {
             // set the owning side to null (unless already changed)
             if ($statutsCourrier->getStatut() === $this) {
                 $statutsCourrier->setStatut(null);

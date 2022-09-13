@@ -18,10 +18,10 @@ class StatutCourrier
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $date;
 
-    #[ORM\ManyToOne(targetEntity: Courrier::class, inversedBy: 'statutscourrier')]
+    #[ORM\ManyToOne(targetEntity: Courrier::class, inversedBy: 'statutsCourrier')]
     private $courrier;
 
-    #[ORM\ManyToOne(targetEntity: Statut::class, inversedBy: 'statutscourrier')]
+    #[ORM\ManyToOne(targetEntity: Statut::class, inversedBy: 'statutsCourrier')]
     private $statut;
 
     public function getId(): ?int
