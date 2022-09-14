@@ -19,8 +19,8 @@
             </div>
         </form>
         <div>
-            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_client') }}">Retour</a>
-            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_step_user_add') }}">Ajouter</a>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_admin_add') }}">Ajouter</a>
         </div>
     </section>
     <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -65,13 +65,13 @@
                     </td>
                     <td class="px-6 py-4">
                         <a class="text-blue-800 bg-blue-100 p-2 rounded"
-                            href="{{ path('app_step_edit', ({id: user.id})) }}">
+                            href="{{ path('app_admin_edit', {id: user.id}) }}">
                             Modifier
                         </a>
                     </td>
                     <td class="px-6 py-4">
                         {% if app.user.id != user.id %}
-                            {{ include('step_user/_delete_form.html.twig') }}
+                            {{ include('admin/_delete_form.html.twig') }}
                         {% endif %}
                     </td>
                 </tr>

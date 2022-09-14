@@ -22,8 +22,6 @@
         <div>
             <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
             <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_add') }}">Ajouter</a>
-            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_step_user') }}">Afficher les
-                administrateurs</a>
         </div>
     </section>
     <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -36,11 +34,11 @@
                     <th scope="col" class="px-6 py-3">
                         Email
                     </th>
-                    {# <th scope="col" class="px-6 py-3">
-                        Roles
-                    </th> #}
                     <th scope="col" class="px-6 py-3">
-                        Nom
+                        Nom / Entreprise
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Prenom / Service
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Modifier
@@ -60,11 +58,11 @@
                     <td class="px-6 py-4">
                         {{ user.email }}
                     </td>
-                    {# <td class="px-6 py-4">
-                        {{ user.roles }}
-                    </td> #}
                     <td class="px-6 py-4">
                         {{ user.nom }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ user.prenom }}
                     </td>
                     <td class="px-6 py-4">
                         <a class="text-blue-800 bg-blue-100 p-2 rounded" href="{{ path('app_edit', {id: user.id}) }}">

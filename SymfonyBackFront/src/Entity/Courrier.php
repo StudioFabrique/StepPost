@@ -45,15 +45,15 @@ class Courrier
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $telephone;
 
-    #[ORM\OneToMany(mappedBy: 'courrier', targetEntity: StatutCourrier::class)]
-    private $statutsCourrier;
-
     #[ORM\ManyToOne(targetEntity: Expediteur::class, inversedBy: 'courriers')]
     private $expediteur;
 
+    #[ORM\OneToMany(mappedBy: 'courrier', targetEntity: StatutCourrier::class)]
+    private Collection $statutsCourrier;
+
     public function __construct()
     {
-        $this->statutscourrier = new ArrayCollection();
+        $this->statutsCourrier = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -186,6 +186,18 @@ class Courrier
         return $this->id;
     }
 
+    public function getExpediteur(): ?Expediteur
+    {
+        return $this->expediteur;
+    }
+
+    public function setExpediteur(?Expediteur $expediteur): self
+    {
+        $this->expediteur = $expediteur;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, StatutCourrier>
      */
@@ -197,7 +209,7 @@ class Courrier
     public function addStatutsCourrier(StatutCourrier $statutsCourrier): self
     {
         if (!$this->statutsCourrier->contains($statutsCourrier)) {
-            $this->statutsCourrier[] = $statutsCourrier;
+            $this->statutsCourrier->add($statutsCourrier);
             $statutsCourrier->setCourrier($this);
         }
 
@@ -206,24 +218,12 @@ class Courrier
 
     public function removeStatutsCourrier(StatutCourrier $statutsCourrier): self
     {
-        if ($this->statutscourrier->removeElement($statutsCourrier)) {
+        if ($this->statutsCourrier->removeElement($statutsCourrier)) {
             // set the owning side to null (unless already changed)
             if ($statutsCourrier->getCourrier() === $this) {
                 $statutsCourrier->setCourrier(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getExpediteur(): ?Expediteur
-    {
-        return $this->expediteur;
-    }
-
-    public function setExpediteur(?Expediteur $expediteur): self
-    {
-        $this->expediteur = $expediteur;
 
         return $this;
     }

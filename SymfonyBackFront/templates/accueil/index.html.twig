@@ -20,12 +20,12 @@
             </div>
         </form>
         <div>
-            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_client') }}">Voir les
-                expéditeurs</a>
-            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_raisonSociale') }}">Gérer les raisons
+            <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_raisonSociale') }}">Gérer les raisons
                 sociales</a>
-            <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_statistique') }}">Voir les
-                statistiques</a>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_client') }}">Gérer les
+                expéditeurs</a>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_admin') }}">Gérer les
+                administrateurs</a>
         </div>
     </section>
     <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -77,7 +77,7 @@
                         {{courrier.date | date('d-m-Y H:i') }}
                     </td>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900itespace-nowrap">
-                        {{courrier.type == "1" ? "Lettre" }} {{courrier.type == "2" ? "Colis" }}
+                        {{courrier.type == "0" ? "Lettre avec suivi" }} {{courrier.type == "1" ? "Lettre avec accusé de reception" }} {{courrier.type == "2" ? "Colis" }}
                     </th>
                     <td class="px-6 py-4">
                         {{courrier.bordereau}}
@@ -119,5 +119,8 @@
             </tbody>
         </table>
     </section>
+    <div class="flex justify-center mt-4">
+        {{ knp_pagination_render(courriers) }}
+    </div>
 </main>
 {% endblock %}

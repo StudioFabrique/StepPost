@@ -4,11 +4,11 @@ namespace App\Repository;
 
 use App\Entity\StatutCourrier;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * @extends ServiceEntityRepository<StatutCourrier>
+ *
  * @method StatutCourrier|null find($id, $lockMode = null, $lockVersion = null)
  * @method StatutCourrier|null findOneBy(array $criteria, array $orderBy = null)
  * @method StatutCourrier[]    findAll()
@@ -21,58 +21,48 @@ class StatutCourrierRepository extends ServiceEntityRepository
         parent::__construct($registry, StatutCourrier::class);
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function add(StatutCourrier $entity, bool $flush = true): void
+    public function add(StatutCourrier $entity, bool $flush = false): void
     {
-        $this->_em->persist($entity);
+        $this->getEntityManager()->persist($entity);
+
         if ($flush) {
-            $this->_em->flush();
+            $this->getEntityManager()->flush();
         }
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function remove(StatutCourrier $entity, bool $flush = true): void
+    public function remove(StatutCourrier $entity, bool $flush = false): void
     {
-        $this->_em->remove($entity);
+        $this->getEntityManager()->remove($entity);
+
         if ($flush) {
-            $this->_em->flush();
+            $this->getEntityManager()->flush();
         }
     }
 
-    // /**
-    //  * @return StatutCourrier[] Returns an array of StatutCourrier objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+    //    /**
+    //     * @return StatutCourrier[] Returns an array of StatutCourrier objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('s')
+    //            ->andWhere('s.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('s.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
-    /*
-    public function findOneBySomeField($value): ?StatutCourrier
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+    //    public function findOneBySomeField($value): ?StatutCourrier
+    //    {
+    //        return $this->createQueryBuilder('s')
+    //            ->andWhere('s.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 
     public function findStatusOneAll($order)
     {
@@ -83,7 +73,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
         //     MAX(DATE) AS DATE,
         //     MAX(status_id) AS etat
         // FROM
-        //     statutscourrier
+        //     statutCourrier
         // GROUP BY
         //     courrier_id
         $qb = $this->createQueryBuilder('s')
@@ -106,7 +96,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->leftJoin('s.courrier', 'c')
             ->leftJoin('s.statut', 'd')
             ->groupBy('c.id')
-            ->orderBy('c.id', $order)
+            ->orderBy('s.date', $order)
             ->getQuery();
         return $qb->getResult();
     }

@@ -3,30 +3,33 @@
 namespace App\Entity;
 
 use App\Repository\StatutCourrierRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StatutCourrierRepository::class)]
+#[ORM\Table(name: 'statutcourrier')]
 class StatutCourrier
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private $idFacteur;
+    #[ORM\Column]
+    private ?int $id = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private $date;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
 
-    #[ORM\ManyToOne(targetEntity: Courrier::class, inversedBy: 'statutsCourrier')]
-    private $courrier;
+    #[ORM\ManyToOne(inversedBy: 'statutsCourrier')]
+    private ?Statut $statut = null;
 
-    #[ORM\ManyToOne(targetEntity: Statut::class, inversedBy: 'statutsCourrier')]
-    private $statut;
+    #[ORM\ManyToOne(inversedBy: 'statutsCourrier')]
+    private ?Courrier $courrier = null;
+
+    #[ORM\ManyToOne(inversedBy: 'statutsCourrier')]
+    private ?Facteur $facteur = null;
 
     public function getId(): ?int
     {
-        return $this->idFacteur;
+        return $this->id;
     }
 
     public function getDate(): ?\DateTimeInterface
@@ -34,9 +37,21 @@ class StatutCourrier
         return $this->date;
     }
 
-    public function setDate(?\DateTimeInterface $date): self
+    public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getStatut(): ?Statut
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(?Statut $statut): self
+    {
+        $this->statut = $statut;
 
         return $this;
     }
@@ -53,14 +68,14 @@ class StatutCourrier
         return $this;
     }
 
-    public function getStatut(): ?Statut
+    public function getFacteur(): ?Facteur
     {
-        return $this->statut;
+        return $this->facteur;
     }
 
-    public function setStatut(?Statut $statut): self
+    public function setFacteur(?Facteur $facteur): self
     {
-        $this->statut = $statut;
+        $this->facteur = $facteur;
 
         return $this;
     }

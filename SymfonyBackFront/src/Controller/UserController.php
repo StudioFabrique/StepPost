@@ -14,11 +14,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-#[Route('/step/user', name: 'app_')]
+#[Route('/admin', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
 {
-    #[Route('/', name: 'step_user')]
+    #[Route('/', name: 'admin')]
     public function index(
         UserRepository $userSteps,
         Request $request,
@@ -36,12 +36,12 @@ class UserController extends AbstractController
             3
         );
 
-        return $this->render('step_user/index.html.twig', [
+        return $this->render('admin/index.html.twig', [
             'userStep' => $userStep
         ]);
     }
 
-    #[Route('/ajouter', name: 'step_user_add')]
+    #[Route('/ajouter', name: 'admin_add')]
     public function new(Request $request, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
         $userStep = new User();
@@ -59,18 +59,19 @@ class UserController extends AbstractController
             $userStep->setUpdatedAt(new DateTime('now'));
             $userStep->setRoles(['ROLE_ADMIN']);
             $userStepRepository->add($userStep);
-            return $this->redirectToRoute('app_step_user', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('step_user/new.html.twig', [
+        return $this->renderForm('admin/new.html.twig', [
             'user_step' => $userStep,
             'form' => $form,
         ]);
     }
 
-    #[Route('/edit/{id}', name: 'step_edit')]
+    #[Route('/edit/{id}', name: 'admin_edit')]
     public function edit(Request $request, User $userStep, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
+        $userid = $request->get('userid');
         $form = $this->createForm(UserType::class, $userStep);
         $form->handleRequest($request);
 
@@ -82,24 +83,25 @@ class UserController extends AbstractController
             );
             $userStep->setPassword($hashedPassword);
             $userStep->setRoles(['ROLE_ADMIN']);
+            $userStep->setUpdatedAt(new DateTime('now'));
             $userStepRepository->add($userStep);
-            return $this->redirectToRoute('app_step_user', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_logout', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('step_user/edit.html.twig', [
+        return $this->renderForm('admin/edit.html.twig', [
             'user_step' => $userStep,
-            'form' => $form,
+            'form' => $form
         ]);
     }
 
 
-    #[Route('/delete/{id}', name: 'step_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'admin_delete', methods: ['POST'])]
     public function delete(Request $request, User $userStep, UserRepository $userStepRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $userStep->getId(), $request->request->get('_token'))) {
             $userStepRepository->remove($userStep);
         }
 
-        return $this->redirectToRoute('app_step_user', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_logout', [], Response::HTTP_SEE_OTHER);
     }
 }

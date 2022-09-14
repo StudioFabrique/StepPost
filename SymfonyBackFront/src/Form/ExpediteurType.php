@@ -24,7 +24,7 @@ class ExpediteurType extends AbstractType
                 ],
             ])
             ->add('nom', TextType::class, [
-                'label' => 'Nom *',
+                'label' => "Nom ou nom de l'entreprise *",
                 'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                 'attr' => [
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
@@ -32,15 +32,7 @@ class ExpediteurType extends AbstractType
             ])
             ->add('prenom', TextType::class, [
                 'required'   => false,
-                'label' => 'Prenom',
-                'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
-                'attr' => [
-                    'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
-                ],
-            ])
-            ->add('civilite', TextType::class, [
-                'required'   => false,
-                'label' => 'Civilité',
+                'label' => 'Prénom ou nom du service',
                 'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                 'attr' => [
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',

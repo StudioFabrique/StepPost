@@ -19,7 +19,7 @@ class Statut
     private $etat;
 
     #[ORM\OneToMany(mappedBy: 'statut', targetEntity: StatutCourrier::class)]
-    private $statutsCourrier;
+    private Collection $statutsCourrier;
 
     public function __construct()
     {
@@ -43,6 +43,11 @@ class Statut
         return $this;
     }
 
+    public function __toString()
+    {
+        return $this->etat;
+    }
+
     /**
      * @return Collection<int, StatutCourrier>
      */
@@ -51,30 +56,25 @@ class Statut
         return $this->statutsCourrier;
     }
 
-    public function addStatutsCourrier(StatutCourrier $statutsCourrier): self
+    public function addStatutCourrier(StatutCourrier $statutCourrier): self
     {
-        if (!$this->statutsCourrier->contains($statutsCourrier)) {
-            $this->statutsCourrier[] = $statutsCourrier;
-            $statutsCourrier->setStatut($this);
+        if (!$this->statutsCourrier->contains($statutCourrier)) {
+            $this->statutsCourrier->add($statutCourrier);
+            $statutCourrier->setStatut($this);
         }
 
         return $this;
     }
 
-    public function removeStatutsCourrier(StatutCourrier $statutsCourrier): self
+    public function removeStatutCourrier(StatutCourrier $statutCourrier): self
     {
-        if ($this->statutsCourrier->removeElement($statutsCourrier)) {
+        if ($this->statutsCourrier->removeElement($statutCourrier)) {
             // set the owning side to null (unless already changed)
-            if ($statutsCourrier->getStatut() === $this) {
-                $statutsCourrier->setStatut(null);
+            if ($statutCourrier->getStatut() === $this) {
+                $statutCourrier->setStatut(null);
             }
         }
 
         return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->etat;
     }
 }
