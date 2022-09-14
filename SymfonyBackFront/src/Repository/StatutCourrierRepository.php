@@ -101,7 +101,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function findCourriersByNom($valeur)
+    public function findCourriersByNomPrenom($valeur)
     {
 
 
@@ -130,7 +130,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.civilite,
                 c.type'
             )
-            ->andWhere("c.nom = :valeur")
+            ->andWhere("c.nom = :valeur OR c.prenom = :valeur")
             ->leftJoin('s.courrier', 'c')
             ->leftJoin('s.statut', 'd')
             ->groupBy('c.id')

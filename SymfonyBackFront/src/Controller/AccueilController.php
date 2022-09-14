@@ -47,7 +47,7 @@ class AccueilController extends AbstractController
             $donner = $statutCourrierRepo->findCourriers($order);
         } else {
             is_numeric($rechercheCourrier) ? $donner = $statutCourrierRepo->findCourriersByBordereau($rechercheCourrier)
-                : (is_string($rechercheCourrier) ? $donner = $statutCourrierRepo->findCourriersByNom($rechercheCourrier)
+                : (is_string($rechercheCourrier) ? $donner = $statutCourrierRepo->findCourriersByNomPrenom($rechercheCourrier)
                     : $donner = $statutCourrierRepo->findCourriers($order));
         }
 

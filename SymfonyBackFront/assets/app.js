@@ -10,6 +10,8 @@ import './styles/app.css';
 
 import './img/logo.svg';
 
+import './img/arrow.svg';
+
 
 // start the Stimulus application
 import './bootstrap';

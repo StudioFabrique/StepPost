@@ -83,4 +83,13 @@ class ExpediteurRepository extends ServiceEntityRepository
         WHERE expediteur.client IS NULL
         ')->getResult();
     }
+
+    public function findLike($nom)
+    {
+        return $this->_em->createQuery('
+        SELECT expediteur
+        FROM App\Entity\Expediteur expediteur
+        WHERE expediteur.nom LIKE :nom
+        ')->setParameter('nom', '%' . $nom . '%');
+    }
 }

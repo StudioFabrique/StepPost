@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,11 +22,11 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 Cette classe permet 
 */
 
-#[Route('/client', name: 'app_')]
+#[Route('/expediteur', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
-class ClientController extends AbstractController
+class ExpediteurController extends AbstractController
 {
-    #[Route('/', name: 'client', methods: ['GET'])]
+    #[Route('/', name: 'expediteur', methods: ['GET'])]
     public function index(
         ExpediteurRepository $expediteurs,
         Request $request,
@@ -36,7 +37,16 @@ class ClientController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $donner = $expediteurs->findAll([], ['id' => 'DESC']);
+        $rechercheExpediteur = $request->get('recherche');
+        $isCheckBoxExact = $request->get('checkBoxExact');
+
+        if ($rechercheExpediteur != null && strval($rechercheExpediteur)) {
+            $isCheckBoxExact ? $donner = $expediteurs->findBy(['nom' => $rechercheExpediteur])
+                : $donner = $expediteurs->findLike($rechercheExpediteur);
+        } else {
+            $donner = $expediteurs->findAll([], ['id' => 'DESC']);
+        }
+
         $expediteur = $paginator->paginate(
             $donner,
             $request->query->getInt('page', 1),
@@ -44,14 +54,14 @@ class ClientController extends AbstractController
         );
 
         return $this->render('expediteur/index.html.twig', [
-            'utilisateur' => $expediteur,
+            'expediteurs' => $expediteur,
         ]);
     }
 
 
 
-    #[Route('/ajouter', name: 'add')]
-    public function new(Request $request, MailerInterface $mailer): Response
+    #[Route('/ajouter', name: 'addExpediteur')]
+    public function new(Request $request, MailerInterface $mailer, ExpediteurRepository $expediteurRepo): Response
     {
         $expediteur = new Expediteur();
         $form = $this->createForm(ExpediteurType::class, $expediteur);
@@ -64,7 +74,6 @@ class ClientController extends AbstractController
                     'email' => $form->get('email')->getData(),
                     'nom' => $form->get('nom')->getData(),
                     'prenom' => $form->get('prenom')->getData() != null ? $form->get('prenom')->getData() : null,
-                    'civilite' => $form->get('civilite')->getData() != null ? $form->get('civilite')->getData() : null,
                     'adresse' => $form->get('adresse')->getData(),
                     'complement' => $form->get('complement')->getData() != null ? $form->get('complement')->getData() : null,
                     'codePostal' => $form->get('codePostal')->getData(),
@@ -81,13 +90,22 @@ class ClientController extends AbstractController
             <p><a href='http://localhost:4200/profil/new-client?token=" . $token . "'> Confirmer la création de mon compte client </a></p>
             <p> La confirmation va expirer dans " . $nbHeureExp . $expInHtml;
 
+
             try {
+                $expediteurRepo->add($expediteur);
+            } catch (UniqueConstraintViolationException $errorHandler) {
+                return $this->redirectToRoute('app_token', [
+                    'errorMessage' => $errorHandler ?? null
+                ]);
+            }
+
+            try {
+
                 $mail = (new Email())
                     ->from('insérer email') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
                     ->to($form->get('email')->getData())
                     ->subject('Création de votre compte client')
                     ->html($body);
-
                 $mailer->send($mail);
             } catch (TransportExceptionInterface $e) {
                 $errorHandler = "une erreur s'est produite lors de l'envoi du mail";
@@ -104,7 +122,7 @@ class ClientController extends AbstractController
         ]);
     }
 
-    #[Route('/edit/{id}', name: 'edit')]
+    #[Route('/edit/{id}', name: 'editExpediteur')]
     public function edit(Request $request, Expediteur $expediteur, ExpediteurRepository $expediteurRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
         $form = $this->createForm(ExpediteurType::class, $expediteur);
@@ -113,7 +131,7 @@ class ClientController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $expediteurRepository->add($expediteur);
-            return $this->redirectToRoute('app_client', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_expediteur', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('expediteur/edit.html.twig', [
@@ -123,14 +141,14 @@ class ClientController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'deleteExpediteur', methods: ['POST'])]
     public function delete(Request $request, Expediteur $expediteur, ExpediteurRepository $expediteurRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $expediteur->getId(), $request->request->get('_token'))) {
             $expediteurRepository->remove($expediteur);
         }
 
-        return $this->redirectToRoute('app_client', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_expediteur', [], Response::HTTP_SEE_OTHER);
     }
 
 

@@ -5,19 +5,7 @@
 {% block body %}
 <main class="w-[90%] m-auto">
     <h1 style="font-size: 20pt;padding-bottom: 2%;"><b>Administrateurs</b></h1>
-    <section class="flex justify-between items-center">
-        <form class="flex ">
-            <div class="mb-3 xl:w-50">
-                <div class="input-group relative flex flex-wrap items-stretch w-full mb-4 ">
-                    <label for="Recherche" class="text-black opacity-50 italic"> Recherche</label>
-                    <input type="search" class="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 
-                        text-base font-normal text-gray-700 bg-white bg-clip-padding border 
-                        border-solid border-gray-300 rounded transition ease-in-out m-0 
-                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                        placeholder="administrateur" aria-label="administrateur" aria-describedby="button-addon2">
-                </div>
-            </div>
-        </form>
+    <section class="flex justify-between items-center" style="padding-bottom:2%;">
         <div>
             <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
             <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_admin_add') }}">Ajouter</a>

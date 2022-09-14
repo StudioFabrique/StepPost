@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <rect id="Plan-de-travail1" serif:id="Plan de travail1" x="0" y="0" width="64" height="64" style="fill:none;"/>
+    <g id="Plan-de-travail11" serif:id="Plan de travail1">
+        <g transform="matrix(4.23535,0,0,3.90374,-100.53,-66.8698)">
+            <path d="M37.918,31.607C38.06,31.913 38.045,32.276 37.879,32.567C37.714,32.859 37.421,33.036 37.106,33.036C34.314,33.036 28.285,33.036 25.486,33.036C25.17,33.036 24.876,32.857 24.711,32.565C24.545,32.272 24.532,31.907 24.676,31.601C26.029,28.724 29.07,22.257 30.533,19.147C30.689,18.816 31.003,18.607 31.345,18.609C31.688,18.61 32.001,18.82 32.155,19.152C33.596,22.267 36.589,28.734 37.918,31.607Z"/>
+        </g>
+    </g>
+</svg>
