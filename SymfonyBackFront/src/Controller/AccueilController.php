@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Courrier;
+use App\Repository\CourrierRepository;
 use App\Repository\StatutCourrierRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -11,23 +12,45 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/*
+Cette classe est le point d'entrée de l'application après que 
+l'utilisateur (Administrateur) se soit connecté à l'application.
+Le route parent est /acceuil ayant comme alias/nom app_.
+Par l'intermédiaire de cette classe, l'administrateur va pouvoir gérer les différents
+courriers présents dans la base données.
+*/
+
 #[Route('/accueil', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
 class AccueilController extends AbstractController
 {
+    /*
+    La fonction index est le point d'entrée de la classe.
+    Cette fonction affiche tous les courriers avec une pagination.
+    */
     #[Route('/', name: 'accueil')]
     public function index(
-        StatutCourrierRepository $statutCourrierRepo,
+        StatutCourrierRepository $statutCourrierRepo, // Le répertoire contenant un tableau de tous les courriers
         Request $request,
-        PaginatorInterface $paginator
+        PaginatorInterface $paginator // Interface de pagination
     ): Response {
+
+        // vérification que l'admin soit bien connecté sinon redirection vers la page de connexion
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
 
         $order = $request->get('order') ?? "DESC";
+        $rechercheCourrier = $request->get('recherche') ?? null;
 
-        $donner = $statutCourrierRepo->findStatusOneAll($order);
+        if ($rechercheCourrier == null) {
+            $donner = $statutCourrierRepo->findCourriers($order);
+        } else {
+            is_numeric($rechercheCourrier) ? $donner = $statutCourrierRepo->findCourriersByBordereau($rechercheCourrier)
+                : (is_string($rechercheCourrier) ? $donner = $statutCourrierRepo->findCourriersByNom($rechercheCourrier)
+                    : $donner = $statutCourrierRepo->findCourriers($order));
+        }
+
         $courriers = $paginator->paginate(
             $donner,
             $request->query->getInt('page', 1),
@@ -36,12 +59,14 @@ class AccueilController extends AbstractController
 
         return $this->render('accueil/index.html.twig', [
             'courriers' => $courriers,
-            'order' => $order == "DESC" ? "ASC" : "DESC"
+            'order' => $order == "DESC" ? "ASC" : "DESC",
+            'isSearching' => is_integer($rechercheCourrier) ? true : (is_string($rechercheCourrier) ? true : false)
         ]);
     }
 
-    // Fonction de redirection lorsque l'input du formulaire de la page accueil (gestion des courriers)
-    // est envoyé.
+    /*
+    La fonction indexbyid affiche les différents statuts d'un courrier dans un template.
+    */
 
     #[Route('/suivi/{id}', name: 'suiviId')]
     public function indexbyid(

@@ -64,7 +64,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    public function findStatusOneAll($order)
+    public function findCourriers($order)
     {
 
 
@@ -97,6 +97,82 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->leftJoin('s.statut', 'd')
             ->groupBy('c.id')
             ->orderBy('s.date', $order)
+            ->getQuery();
+        return $qb->getResult();
+    }
+
+    public function findCourriersByNom($valeur)
+    {
+
+
+        // SELECT
+        //     courrier_id,
+        //     MAX(DATE) AS DATE,
+        //     MAX(status_id) AS etat
+        // FROM
+        //     statutCourrier
+        // GROUP BY
+        //     courrier_id
+        $qb = $this->createQueryBuilder('s')
+            ->select(
+                'c.id AS courrier,
+                MAX(s.date) AS date,
+                MAX(d.id) AS etat,
+                MAX(d.etat) AS statut,
+                c.nom,
+                c.prenom,
+                c.adresse,
+                c.complement,
+                c.ville,
+                c.codePostal,
+                c.telephone,
+                c.bordereau,
+                c.civilite,
+                c.type'
+            )
+            ->andWhere("c.nom = :valeur")
+            ->leftJoin('s.courrier', 'c')
+            ->leftJoin('s.statut', 'd')
+            ->groupBy('c.id')
+            ->setParameter('valeur', $valeur)
+            ->getQuery();
+        return $qb->getResult();
+    }
+
+    public function findCourriersByBordereau($valeur)
+    {
+
+
+        // SELECT
+        //     courrier_id,
+        //     MAX(DATE) AS DATE,
+        //     MAX(status_id) AS etat
+        // FROM
+        //     statutCourrier
+        // GROUP BY
+        //     courrier_id
+        $qb = $this->createQueryBuilder('s')
+            ->select(
+                'c.id AS courrier,
+                MAX(s.date) AS date,
+                MAX(d.id) AS etat,
+                MAX(d.etat) AS statut,
+                c.nom,
+                c.prenom,
+                c.adresse,
+                c.complement,
+                c.ville,
+                c.codePostal,
+                c.telephone,
+                c.bordereau,
+                c.civilite,
+                c.type'
+            )
+            ->andWhere("c.bordereau LIKE :valeur")
+            ->leftJoin('s.courrier', 'c')
+            ->leftJoin('s.statut', 'd')
+            ->groupBy('c.id')
+            ->setParameter('valeur', '%' . $valeur . '%')
             ->getQuery();
         return $qb->getResult();
     }

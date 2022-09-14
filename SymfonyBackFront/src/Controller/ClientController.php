@@ -17,6 +17,10 @@ use Symfony\Component\Mime\Email;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
+/*
+Cette classe permet 
+*/
+
 #[Route('/client', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
 class ClientController extends AbstractController
@@ -79,7 +83,7 @@ class ClientController extends AbstractController
 
             try {
                 $mail = (new Email())
-                    ->from('insérer mail') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
+                    ->from('insérer email') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
                     ->to($form->get('email')->getData())
                     ->subject('Création de votre compte client')
                     ->html($body);
