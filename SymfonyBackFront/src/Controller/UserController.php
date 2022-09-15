@@ -15,29 +15,29 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/admin', name: 'app_')]
-#[IsGranted('ROLE_ADMIN')]
+//#[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
 {
     #[Route('/', name: 'admin')]
     public function index(
-        UserRepository $userSteps,
+        UserRepository $admins,
         Request $request,
         PaginatorInterface $paginator
     ): Response {
 
-        if (!$this->getUser()) {
-            return $this->redirectToRoute('app_login');
-        }
+        // if (!$this->getUser()) {
+        //     return $this->redirectToRoute('app_login');
+        // }
 
-        $donner = $userSteps->findAll([], ['id' => 'DESC']);
-        $userStep = $paginator->paginate(
+        $donner = $admins->findAll([], ['id' => 'DESC']);
+        $admins = $paginator->paginate(
             $donner,
             $request->query->getInt('page', 1),
             3
         );
 
         return $this->render('admin/index.html.twig', [
-            'userStep' => $userStep
+            'admins' => $admins
         ]);
     }
 

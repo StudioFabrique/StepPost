@@ -3,9 +3,99 @@
 {% block title %}Liste des expéditeurs{% endblock %}
 
 {% block body %}
+
+{% set inactiveCount = 0 %}
+{% for expediteur in expediteurs %}
+    {% if 'ROLE_INACTIF' in expediteur.roles %}
+        {% set inactiveCount = inactiveCount + 1 %}
+    {% endif %}
+{% endfor %}
+
 <main class="w-[90%] m-auto">
     <h1 style="font-size: 20pt;padding-bottom: 2%;"><b>Liste et gestion des expéditeurs</b></h1>
-    <section class="flex justify-between items-center">
+    {% if inactiveCount > 0 %}
+    {% if isSearch != null ? false : true %}
+    <div class="">
+        <p>Des utilisateurs sont enregistrés mais ne sont pas encore actifs</p>
+        <details class="">
+            <summary>Voir les utilisateurs inactifs</summary>
+            <section id="inactifSection" class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table class="w-full text-sm text-left text-gray-500 table-fixed">
+                    <thead class="text-xs text-white uppercase bg-[#140A82]">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Raison client
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Email
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Nom / Entreprise
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Prenom / Service
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                role
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Modifier
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Supprimer
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Activer
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set count = 0 %}
+                        {% for expediteur in expediteurs %}
+                        {% set role = 'ROLE_INACTIF' in expediteur.roles ? 'utilisateur inactif' : 'expéditeur' %}
+                        {% if role == 'utilisateur inactif' %}
+                        {% set count = count + 1 %}
+                        <tr class="bg-white border-b ">
+                            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ expediteur.email }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ expediteur.nom }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ expediteur.prenom }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ role }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <a class="text-blue-800 bg-blue-100 p-2 rounded" href="{{ path('app_editExpediteur', {id: expediteur.id}) }}">
+                                    Modifier
+                                </a>
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ include('expediteur/_delete_form.html.twig') }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <a href="{{ path('app_activateExpediteur', {expediteurId: expediteur.id}) }}" class="text-blue-800 bg-blue-100 p-2 rounded">Activer</a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </details>
+    </div>
+    {% endif %}
+    {% endif %}
+    {% if isSearch != null ? true : false %}
+            <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
+    {% endif %}
+    <section id="inactif-box" class="flex justify-between items-center">
         <form class="flex ">
             <div class="mb-3 xl:w-50">
                 <div class="input-group relative flex flex-wrap items-stretch w-full mb-4 ">
@@ -43,6 +133,9 @@
                         Prenom / Service
                     </th>
                     <th scope="col" class="px-6 py-3">
+                        role
+                    </th>
+                    <th scope="col" class="px-6 py-3">
                         Modifier
                     </th>
                     <th scope="col" class="px-6 py-3">
@@ -51,20 +144,26 @@
                 </tr>
             </thead>
             <tbody>
+                {% set count = 0 %}
                 {% for expediteur in expediteurs %}
-                {# {% set role = user.roles == [ "ROLE_ADMIN", "ROLE_USER"] ? 'employé de Step' : 'expediteur' %} #}
+                {% set role = 'ROLE_INACTIF' in expediteur.roles ? 'utilisateur inactif' : 'expéditeur' %}
+                {% if role == 'expéditeur' %}
+                {% set count = count + 1 %}
                 <tr class="bg-white border-b ">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ expediteur.email }}
+                        <a href="">{{ expediteur.email }}</a>
                     </td>
                     <td class="px-6 py-4">
                         {{ expediteur.nom }}
                     </td>
                     <td class="px-6 py-4">
                         {{ expediteur.prenom }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ role }}
                     </td>
                     <td class="px-6 py-4">
                         <a class="text-blue-800 bg-blue-100 p-2 rounded" href="{{ path('app_editExpediteur', {id: expediteur.id}) }}">
@@ -75,12 +174,13 @@
                         {{ include('expediteur/_delete_form.html.twig') }}
                     </td>
                 </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>
     </section>
     <div class="flex justify-center mt-4">
-        {{ knp_pagination_render(expediteurs) }}
+        {{ count >= 8 ? knp_pagination_render(expediteurs) }}
     </div>
 </main>
 {% endblock %}

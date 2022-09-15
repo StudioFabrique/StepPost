@@ -6,6 +6,7 @@ use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,17 +17,19 @@ use Firebase\JWT\JWT;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 /*
 Cette classe permet 
 */
 
-#[Route('/expediteur', name: 'app_')]
+#[Route('/', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
 class ExpediteurController extends AbstractController
 {
-    #[Route('/', name: 'expediteur', methods: ['GET'])]
+    #[Route('/expediteurs', name: 'expediteur')]
     public function index(
         ExpediteurRepository $expediteurs,
         Request $request,
@@ -55,6 +58,7 @@ class ExpediteurController extends AbstractController
 
         return $this->render('expediteur/index.html.twig', [
             'expediteurs' => $expediteur,
+            'isSearch' => $rechercheExpediteur
         ]);
     }
 
@@ -78,7 +82,8 @@ class ExpediteurController extends AbstractController
                     'complement' => $form->get('complement')->getData() != null ? $form->get('complement')->getData() : null,
                     'codePostal' => $form->get('codePostal')->getData(),
                     'ville' => $form->get('ville')->getData(),
-                    'telephone' => $form->get('telephone')->getData()
+                    'telephone' => $form->get('telephone')->getData(),
+                    'roles' => ['ROLE_INACTIF']
                 ],
                 'test', // pass phrase
                 'HS256', // protocole d'encodage
@@ -92,6 +97,7 @@ class ExpediteurController extends AbstractController
 
 
             try {
+                $expediteur->setRoles(['ROLE_INACTIF']);
                 $expediteurRepo->add($expediteur);
             } catch (UniqueConstraintViolationException $errorHandler) {
                 return $this->redirectToRoute('app_token', [
@@ -141,8 +147,8 @@ class ExpediteurController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'deleteExpediteur', methods: ['POST'])]
-    public function delete(Request $request, Expediteur $expediteur, ExpediteurRepository $expediteurRepository): Response
+    #[Route('/delete/{id}', name: 'deleteExpediteur', methods: ['POST'])]
+    public function Delete(Request $request, Expediteur $expediteur, ExpediteurRepository $expediteurRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $expediteur->getId(), $request->request->get('_token'))) {
             $expediteurRepository->remove($expediteur);
@@ -151,6 +157,15 @@ class ExpediteurController extends AbstractController
         return $this->redirectToRoute('app_expediteur', [], Response::HTTP_SEE_OTHER);
     }
 
+    #[Route('/activate', name: 'activateExpediteur')]
+    public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em): RedirectResponse
+    {
+        $expediteurId = $request->get('expediteurId');
+        $expediteur = ($expediteurRepository->find($expediteurId))->setRoles(['ROLE_CLIENT']);
+        $em->persist($expediteur);
+        $em->flush();
+        return $this->redirectToRoute('app_expediteur');
+    }
 
     #[Route('/mailToken', name: 'token')]
     public function RedirectTokenMailView(Request $request)

@@ -28,10 +28,10 @@ class Facteur
     #[ORM\Column]
     private array $roles = [];
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(name: 'createdAt', type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $CreatedAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(name: 'updatedAt', type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $UpdatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'facteur', targetEntity: StatutCourrier::class)]

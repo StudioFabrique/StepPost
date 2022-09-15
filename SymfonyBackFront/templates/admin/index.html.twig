@@ -22,9 +22,6 @@
                         Email
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Roles
-                    </th>
-                    <th scope="col" class="px-6 py-3">
                         Nom
                     </th>
                     <th scope="col" class="px-6 py-3">
@@ -36,17 +33,13 @@
                 </tr>
             </thead>
             <tbody>
-                {% for user in userStep %}
-                {% set role = user.roles == [ 'ROLE_ADMIN', 'ROLE_USER'] ? 'employé de Step' : 'expediteur' %}
+                {% for user in admins %}
                 <tr class="bg-white border-b ">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         {{ user.fonction }}
                     </th>
                     <td class="px-6 py-4">
                         {{ user.email }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ role }}
                     </td>
                     <td class="px-6 py-4">
                         {{ user.nom }}
@@ -58,9 +51,9 @@
                         </a>
                     </td>
                     <td class="px-6 py-4">
-                        {% if app.user.id != user.id %}
+                        {# {% if app.user.id != user.id %} #}
                             {{ include('admin/_delete_form.html.twig') }}
-                        {% endif %}
+                        {# {% endif %} #}
                     </td>
                 </tr>
 
@@ -70,7 +63,7 @@
         </table>
     </section>
     <div class="flex justify-center mt-4">
-        {{ knp_pagination_render(userStep) }}
+        {{ knp_pagination_render(admins) }}
     </div>
 </main>
 {% endblock %}
