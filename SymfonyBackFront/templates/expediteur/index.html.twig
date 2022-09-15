@@ -60,7 +60,7 @@
                                 {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ expediteur.email }}
+                                <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id}) }}">{{ expediteur.email }}</a>
                             </td>
                             <td class="px-6 py-4">
                                 {{ expediteur.nom }}
@@ -96,7 +96,7 @@
             <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
     {% endif %}
     <section id="inactif-box" class="flex justify-between items-center">
-        <form class="flex ">
+        <form class="flex">
             <div class="mb-3 xl:w-50">
                 <div class="input-group relative flex flex-wrap items-stretch w-full mb-4 ">
                     <label for="Recherche" class="text-black opacity-50 italic"> Recherche par nom/entreprise</label>
@@ -154,7 +154,7 @@
                         {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
                     </th>
                     <td class="px-6 py-4">
-                        <a href="">{{ expediteur.email }}</a>
+                        <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id}) }}">{{ expediteur.email }}</a>
                     </td>
                     <td class="px-6 py-4">
                         {{ expediteur.nom }}

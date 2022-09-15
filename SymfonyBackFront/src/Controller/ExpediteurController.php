@@ -157,7 +157,17 @@ class ExpediteurController extends AbstractController
         return $this->redirectToRoute('app_expediteur', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/activate', name: 'activateExpediteur')]
+    #[Route('/detailsExpediteur', name: 'detailsExpediteur')]
+    public function Details(Request $request, ExpediteurRepository $expediteurRepository): Response
+    {
+        $expediteurId = $request->get('expediteurId');
+        $expediteur = $expediteurRepository->find($expediteurId);
+        return $this->render('expediteur/details.html.twig', [
+            'expediteur' => $expediteur
+        ]);
+    }
+
+    #[Route('/activer', name: 'activateExpediteur')]
     public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em): RedirectResponse
     {
         $expediteurId = $request->get('expediteurId');

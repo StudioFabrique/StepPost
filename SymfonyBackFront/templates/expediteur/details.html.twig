@@ -1,2 +1,23 @@
 {% extends 'base.html.twig' %}
 
+{% block body %}
+
+<a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_expediteur') }}">Retour</a>
+<div class="">
+    <h1>Détails de l'expéditeur :</h1>
+    <p class="flex">Nom / Nom de l'entreprise : {{expediteur.nom}}</p>
+    <p class="flex">Prénom / Service : {{expediteur.prenom ?? 'non défini'}} </p>
+    <p class="flex">Adresse : {{ expediteur.adresse }}</p>
+    <p class="flex">Complément d'adresse : {{ expediteur.complement }}</p>
+    <p class="">Code Postal : {{ expediteur.codePostal }}</p>
+    <p class="">Ville : {{ expediteur.ville }}</p>
+    <p class="">Téléphone : {{ expediteur.telephone }}</p>
+    <div class="">
+        <h2>Destinataires :</h2>
+        {% for destinataire in expediteur.destinataires %}
+            test
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
