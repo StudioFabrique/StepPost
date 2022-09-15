@@ -108,7 +108,7 @@ class ExpediteurController extends AbstractController
             try {
 
                 $mail = (new Email())
-                    ->from('insérer email') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
+                    ->from('insérer mail') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
                     ->to($form->get('email')->getData())
                     ->subject('Création de votre compte client')
                     ->html($body);

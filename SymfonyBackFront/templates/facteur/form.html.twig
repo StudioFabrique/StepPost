@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% set title = setTitle == 'ajout' ? "Ajout d'un facteur" : "Modifier le facteur" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+<main class="w-[90%] m-auto">
+    <div class="flex justify-between items-center">
+        <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Créer un facteur</h1>
+        <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
+    </div>
+    <p> Les champs obligatoires sont marqués par un * </p>
+    {{ form(form) }}
+</main>
+{% endblock %}

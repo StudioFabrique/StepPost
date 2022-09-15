@@ -19,6 +19,7 @@
             </div>
         </form>
             <div>
+                <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_newFacteur') }}">Créer un facteur</a>
                 <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
             </div>
     </section>
@@ -38,6 +39,12 @@
                     <th scope="col" class="px-6 py-3">
                         Date mise à jour du facteur
                     </th>
+                    <th>
+                        Modifier
+                    </th>
+                    <th>
+                        Supprimer
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -54,6 +61,16 @@
                     </td>
                     <td class="px-6 py-4">
                         {{facteur.updatedAt | date('d-m-Y H:i') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded" href="{{ path('app_editFacteur', {id: facteur.id}) }}">
+                            Modifier
+                        </a>
+                    </td>
+                    <td class="px-6 py-4">
+                        <a class="text-red-600 bg-blue-100 p-2 rounded" href="{{ path('app_deleteFacteur', {id: facteur.id}) }}">
+                            Supprimer
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
