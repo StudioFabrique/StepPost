@@ -47,7 +47,8 @@ class FacteurController extends AbstractController
                         ->setEmail($form->get('email')->getData())
                         ->setNom($form->get('nom')->getData())
                         ->setCreatedAt(new DateTime('now'))
-                        ->setUpdatedAt(new DateTime('now'))
+                        ->setUpdatedAt(new DateTime('now')),
+                    true
                 );
             } catch (UniqueConstraintViolationException $e) {
                 return $this->redirectToRoute('app_facteur');
@@ -57,6 +58,7 @@ class FacteurController extends AbstractController
 
         return $this->renderForm('facteur/form.html.twig', [
             'form' => $form,
+            'title' => 'Créer un facteur'
         ]);
     }
 
@@ -84,6 +86,7 @@ class FacteurController extends AbstractController
 
         return $this->renderForm('facteur/form.html.twig', [
             'form' => $form,
+            'title' => 'Modifier le facteur'
         ]);
     }
 

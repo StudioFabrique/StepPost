@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/admin', name: 'app_')]
-//#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
 {
     #[Route('/', name: 'admin')]
@@ -25,9 +25,9 @@ class UserController extends AbstractController
         PaginatorInterface $paginator
     ): Response {
 
-        // if (!$this->getUser()) {
-        //     return $this->redirectToRoute('app_login');
-        // }
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $donner = $admins->findAll([], ['id' => 'DESC']);
         $admins = $paginator->paginate(

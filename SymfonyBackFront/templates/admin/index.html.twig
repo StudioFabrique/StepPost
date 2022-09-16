@@ -51,9 +51,9 @@
                         </a>
                     </td>
                     <td class="px-6 py-4">
-                        {# {% if app.user.id != user.id %} #}
+                        {% if app.user.id != user.id %}
                             {{ include('admin/_delete_form.html.twig') }}
-                        {# {% endif %} #}
+                        {% endif %}
                     </td>
                 </tr>
 

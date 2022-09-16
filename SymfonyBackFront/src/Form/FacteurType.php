@@ -27,7 +27,7 @@ class FacteurType extends AbstractType
                 ],
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Créer le facteur',
+                'label' => 'Sauvegarder',
                 'attr' => [
                     'class' => 'text-white bg-[#24A640] p-2 rounded',
                 ],
