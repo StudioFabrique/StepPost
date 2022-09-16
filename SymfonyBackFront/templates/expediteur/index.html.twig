@@ -15,10 +15,10 @@
     <h1 style="font-size: 20pt;padding-bottom: 2%;"><b>Liste et gestion des expéditeurs</b></h1>
     {% if inactiveCount > 0 %}
     {% if isSearch != null ? false : true %}
-    <div class="">
-        <p>Des utilisateurs sont enregistrés mais ne sont pas encore actifs</p>
+    <div class="bg-blue-900 rounded-xl">
+        <p class="m-5 text-white">Des utilisateurs sont enregistrés mais ne sont pas encore actifs</p>
         <details class="">
-            <summary>Voir les utilisateurs inactifs</summary>
+            <summary class="m-3 text-white list-none hover:cursor-pointer">Voir les utilisateurs inactifs</summary>
             <section id="inactifSection" class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="w-full text-sm text-left text-gray-500 table-fixed">
                     <thead class="text-xs text-white uppercase bg-[#140A82]">
