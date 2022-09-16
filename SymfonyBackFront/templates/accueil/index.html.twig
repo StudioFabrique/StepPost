@@ -38,16 +38,16 @@
                         {% if isSearching %} Date {% else %} <a href="{{ path('app_accueil', {order: order} ) }}">Date {{ order == "ASC" ? '&uarr;' : '&darr;'}} {% endif %} </a>
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Statut
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Type
+                        Expediteur
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Bordereau
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Civilité
+                        Statut
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Type
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Nom
@@ -59,16 +59,10 @@
                         Adresse
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Complément
-                    </th>
-                    <th scope="col" class="px-6 py-3">
                         CP
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Ville
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Téléphone
                     </th>
                 </tr>
             </thead>
@@ -77,6 +71,12 @@
                 <tr class="bg-white border-b00">
                     <td class="px-6 py-4">
                         {{courrier.date | date('d-m-Y H:i') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        expediteur
+                    </td>
+                    <td class="px-6 py-4">
+                        {{courrier.bordereau}}
                     </td>
                     <td class="px-6 py-4">
                         {{ courrier.statut }}
@@ -90,12 +90,6 @@
                         {{courrier.type == "0" ? "Lettre avec suivi" }} {{courrier.type == "1" ? "Lettre avec accusé de reception" }} {{courrier.type == "2" ? "Colis" }}
                     </td>
                     <td class="px-6 py-4">
-                        {{courrier.bordereau}}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{courrier.civilite }}
-                    </td>
-                    <td class="px-6 py-4">
                         {{courrier.nom}}
                     </td>
                     <td class="px-6 py-4">
@@ -105,16 +99,10 @@
                         {{courrier.adresse}}
                     </td>
                     <td class="px-6 py-4">
-                        {{courrier.complement ? courrier.complement : "Non defini"}}
-                    </td>
-                    <td class="px-6 py-4">
                         {{courrier.codePostal}}
                     </td>
                     <td class="px-6 py-4">
                         {{courrier.ville}}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{courrier.telephone ? courrier.telephone : "Non defini"}}
                     </td>
                 </tr>
                 {% endfor %}
