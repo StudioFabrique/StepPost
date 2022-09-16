@@ -16,9 +16,9 @@
     {% if inactiveCount > 0 %}
     {% if isSearch != null ? false : true %}
     <div class="bg-blue-900 rounded-xl">
-        <p class="m-5 text-white">Des utilisateurs sont enregistrés mais ne sont pas encore actifs</p>
+        <p class="p-2 text-white">Des utilisateurs sont enregistrés mais ne sont pas encore actifs</p>
         <details>
-            <summary class="m-3 text-white list-none hover:cursor-pointer">Voir les utilisateurs inactifs</summary>
+            <summary class="mx-20 my-2 p-1 text-white list-none hover:cursor-pointer rounded max-w-fit border-red-700 border-2 text-center">Voir les utilisateurs inactifs</summary>
             <section id="inactifSection" class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="w-full text-sm text-left text-gray-500 table-fixed">
                     <thead class="text-xs text-white uppercase bg-[#140A82]">
@@ -95,7 +95,7 @@
     {% if isSearch != null ? true : false %}
             <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
     {% endif %}
-    <section id="inactif-box" class="flex justify-between items-center">
+    <section id="inactif-box" class="flex justify-between items-center m-2">
         <form class="flex">
             <div class="mb-3 xl:w-50">
                 <div class="input-group relative flex flex-wrap items-stretch w-full mb-4 ">
