@@ -22,7 +22,7 @@ class Facteur
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $password = null;
 
     #[ORM\Column]

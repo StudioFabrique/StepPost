@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\ClassesOutils\FormatageObjet;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
@@ -19,6 +20,9 @@ use Symfony\Component\Mime\Email;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 /*
 Cette classe permet 
@@ -66,24 +70,21 @@ class ExpediteurController extends AbstractController
     #[Route('/ajouter', name: 'addExpediteur')]
     public function new(Request $request, MailerInterface $mailer, ExpediteurRepository $expediteurRepo): Response
     {
-        $expediteur = new Expediteur();
-        $form = $this->createForm(ExpediteurType::class, $expediteur);
+        $serializer = new Serializer([new ObjectNormalizer()]);
+        $form = $this->createForm(ExpediteurType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $expediteurArray = (new FormatageObjet)->stringToLowerObject(
+                $form->getData(),
+                Expediteur::class,
+                array('client'),
+                true
+            );
             $nbHeureExp = 24;
             $token = (new JWT())->encode(
-                [
-                    'email' => $form->get('email')->getData(),
-                    'nom' => $form->get('nom')->getData(),
-                    'prenom' => $form->get('prenom')->getData() != null ? $form->get('prenom')->getData() : null,
-                    'adresse' => $form->get('adresse')->getData(),
-                    'complement' => $form->get('complement')->getData() != null ? $form->get('complement')->getData() : null,
-                    'codePostal' => $form->get('codePostal')->getData(),
-                    'ville' => $form->get('ville')->getData(),
-                    'telephone' => $form->get('telephone')->getData(),
-                    'roles' => ['ROLE_INACTIF']
-                ],
+                $expediteurArray,
                 'test', // pass phrase
                 'HS256', // protocole d'encodage
                 head: ['exp' => time() + (3600 * $nbHeureExp)]
@@ -96,6 +97,7 @@ class ExpediteurController extends AbstractController
 
 
             try {
+                $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
                 $expediteur->setRoles(['ROLE_INACTIF']);
                 $expediteurRepo->add($expediteur);
             } catch (UniqueConstraintViolationException $errorHandler) {
@@ -107,7 +109,7 @@ class ExpediteurController extends AbstractController
             try {
 
                 $mail = (new Email())
-                    ->from('insérer mail') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
+                    ->from('step.automaticmailservice@gmail.com') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
                     ->to($form->get('email')->getData())
                     ->subject('Création de votre compte client')
                     ->html($body);
@@ -122,7 +124,6 @@ class ExpediteurController extends AbstractController
         }
 
         return $this->renderForm('expediteur/new.html.twig', [
-            'expediteur' => $expediteur,
             'form' => $form
         ]);
     }

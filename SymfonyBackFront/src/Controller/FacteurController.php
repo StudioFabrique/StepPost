@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\ClassesOutils\FormatageObjet;
 use App\Entity\Facteur;
 use App\Form\FacteurType;
 use App\Repository\FacteurRepository;
@@ -37,15 +38,20 @@ class FacteurController extends AbstractController
     #[Route('/nouveauFacteur', 'newFacteur')]
     public function newFacteur(FacteurRepository $facteurRepo, Request $request): Response
     {
-        $facteur = new Facteur();
-        $form = $this->createForm(FacteurType::class, $facteur)->handleRequest($request);
+        $form = $this->createForm(FacteurType::class)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             try {
+                $facteur = (new FormatageObjet)
+                    ->stringToLowerObject(
+                        $form->getData(),
+                        Facteur::class,
+                        array('createdAt, updatedAt')
+                    );
+
                 $facteurRepo->add(
                     $facteur->setRoles(['ROLE_FACTEUR'])
-                        ->setEmail($form->get('email')->getData())
-                        ->setNom($form->get('nom')->getData())
                         ->setCreatedAt(new DateTime('now'))
                         ->setUpdatedAt(new DateTime('now')),
                     true
@@ -65,22 +71,24 @@ class FacteurController extends AbstractController
     #[Route('/modifierFacteur', 'editFacteur')]
     public function editFacteur(FacteurRepository $facteurRepo, Request $request, EntityManagerInterface $em): Response
     {
-        $facteurId = $request->get('id');
-        $facteur = $facteurRepo->find($facteurId);
-        $form = $this->createForm(FacteurType::class, $facteur)->handleRequest($request);
+        $ancienFacteur = $facteurRepo->find($request->get('id'));
+        $form = $this->createForm(FacteurType::class, $ancienFacteur)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $facteur->setRoles(['ROLE_FACTEUR'])
-                    ->setEmail($form->get('email')->getData())
-                    ->setNom($form->get('nom')->getData())
-                    ->setCreatedAt(new DateTime('now'))
-                    ->setUpdatedAt(new DateTime('now'));
-                $em->persist($facteur);
-                $em->flush();
-            } catch (UniqueConstraintViolationException $e) {
-                return $this->redirectToRoute('app_facteur');
-            }
+
+            $facteur = (new FormatageObjet)->stringToLowerObject(
+                $form->getData(),
+                Facteur::class,
+                array('createdAt, updatedAt')
+            );
+
+            $facteur->setRoles(['ROLE_FACTEUR'])
+                ->setCreatedAt($ancienFacteur->getCreatedAt())
+                ->setUpdatedAt(new DateTime('now'))
+                ->setPassword($ancienFacteur->getPassword());
+            $em->persist($facteur);
+            $em->flush();
+
             return $this->redirectToRoute('app_facteur');
         }
 
