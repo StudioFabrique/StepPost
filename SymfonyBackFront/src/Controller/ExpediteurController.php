@@ -19,7 +19,6 @@ use Symfony\Component\Mime\Email;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\VarDumper\Cloner\Data;
 
 /*
 Cette classe permet 
