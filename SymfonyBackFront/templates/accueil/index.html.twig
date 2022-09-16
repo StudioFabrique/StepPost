@@ -35,7 +35,7 @@
             <thead class="text-xs text-white uppercase bg-[#140A82]">
                 <tr>
                     <th scope="col" class="px-6 py-3">
-                        {% if isSearching %} Date {% else %} Date <a href="{{ path('app_accueil', {order: order} ) }}">{{ order == "ASC" ? 'décroissant' : 'croissant'}} {% endif %} </a>
+                        {% if isSearching %} Date {% else %} <a href="{{ path('app_accueil', {order: order} ) }}">Date {{ order == "ASC" ? '&uarr;' : '&darr;'}} {% endif %} </a>
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Statut
