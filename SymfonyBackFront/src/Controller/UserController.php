@@ -64,14 +64,15 @@ class UserController extends AbstractController
 
         return $this->renderForm('admin/new.html.twig', [
             'user_step' => $userStep,
-            'form' => $form,
+            'form' => $form
         ]);
     }
 
     #[Route('/edit/{id}', name: 'admin_edit')]
-    public function edit(Request $request, User $userStep, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher): Response
+    public function edit(Request $request, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $userid = $request->get('userid');
+        $adminId = $request->get('id');
+        $userStep = $userStepRepository->find($adminId);
         $form = $this->createForm(UserType::class, $userStep);
         $form->handleRequest($request);
 
@@ -85,7 +86,7 @@ class UserController extends AbstractController
             $userStep->setRoles(['ROLE_ADMIN']);
             $userStep->setUpdatedAt(new DateTime('now'));
             $userStepRepository->add($userStep);
-            return $this->redirectToRoute('app_logout', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('admin/edit.html.twig', [
@@ -102,6 +103,6 @@ class UserController extends AbstractController
             $userStepRepository->remove($userStep);
         }
 
-        return $this->redirectToRoute('app_logout', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_admin', [], Response::HTTP_SEE_OTHER);
     }
 }

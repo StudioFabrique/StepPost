@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class SuiviDetailController extends AbstractController
 {
 
-    #[Route('/edit/{id}', name: 'status_edit')]
+    #[Route('/edit/{id}', name: 'statuts_edit')]
     public function edit(Request $request, StatutCourrier $statutCourrier, StatutCourrierRepository $statutsCourrier): Response
     {
         $form = $this->createForm(StatutCourrierType::class, $statutCourrier);

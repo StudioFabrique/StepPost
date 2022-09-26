@@ -3,12 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Client;
-use App\Entity\Expediteur;
 use App\Form\ClientType;
 use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,9 +51,10 @@ class RaisonSocialeController extends AbstractController
 
         $raisonSociale = new Client();
         $form = ($this->createForm(ClientType::class, $raisonSociale))->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $raisonSociale->setRaisonSociale($form->get('raisonSociale')->getData());
+                $raisonSociale->setRaisonSociale(strip_tags(strtolower($form->get('raisonSociale')->getData())));
                 $clientRepository->add($raisonSociale, true);
                 return $this->redirectToRoute('app_raisonSociale', []);
             } catch (UniqueConstraintViolationException $e) {
@@ -81,6 +80,7 @@ class RaisonSocialeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $raison = $form->getData();
+            $raison->SetRaisonSociale((strip_tags(strtolower($form->get('raisonSociale')->getData()))));
             $em->persist($raison);
             $em->flush();
             return $this->redirectToRoute('app_raisonSociale');
