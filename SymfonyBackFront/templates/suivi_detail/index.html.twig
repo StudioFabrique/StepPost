@@ -21,8 +21,10 @@
                     a été {{ statut.statut ? statut.statut.etat }}
                     {{ statut.statut ? statut.statut.etat == "Remise" ? "au facteur" }}
                 </p>
-                <a href="{{ path('app_status_edit', ({ id: statut.id })) }}"
+                <a href="{{ path('app_statut_edit', ({ id: statut.id })) }}"
                     class="text-blue-800 bg-blue-100 p-2 rounded">Modifier</a>
+                <a href="{{ path('app_statut_remove', ({ id: statut.id })) }}"
+                    class="text-blue-800 bg-blue-100 p-2 rounded">Supprimer</a>
             </div>
         </div>
         {% endfor %}

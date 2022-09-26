@@ -58,8 +58,11 @@ class ExpediteurController extends AbstractController
             8
         );
 
+        $expediteursInactifs = $expediteurs->findBy(array('roles' => array('ROLE_INACTIF'))); // faire une requête perso SQL pour selectionner tous les expediteurs inactifs
+
         return $this->render('expediteur/index.html.twig', [
             'expediteurs' => $expediteur,
+            'expediteursInactifs' => $expediteursInactifs,
             'isSearch' => $rechercheExpediteur
         ]);
     }
@@ -98,7 +101,7 @@ class ExpediteurController extends AbstractController
 
             try {
                 $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
-                $expediteur->setRoles(['ROLE_INACTIF'])->setPassword(' ');
+                $expediteur->setRoles(['ROLE_INACTIF'])->setPassword(' ')->SetCreatedAt(date('now'))->SetUpdatedAt(date('now'));
                 $expediteurRepo->add($expediteur);
             } catch (UniqueConstraintViolationException $errorHandler) {
                 return $this->redirectToRoute('app_token', [

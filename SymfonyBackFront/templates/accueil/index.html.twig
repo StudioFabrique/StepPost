@@ -31,6 +31,7 @@
                 admins</a>
         </div>
     </section>
+    {% if courriers|length > 0 %}
     <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left text-gray-500 table-fixed">
             <thead class="text-xs text-white uppercase bg-[#140A82]">
@@ -43,10 +44,10 @@
                         Expediteur
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Bordereau
+                        Statut
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Statut
+                        Bordereau
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Type
@@ -75,10 +76,11 @@
                         {{courrier.date | date('d-m-Y H:i') }}
                     </td>
                     <td class="px-6 py-4">
-                        expediteur
-                    </td>
-                    <td class="px-6 py-4">
-                        {{courrier.bordereau}}
+                        {{ courrier.nomExpediteur }}
+                        <hr style="border-width: 2px;">
+                        <a style="color: blue;" href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur}) }}">
+                            détails
+                        </a>
                     </td>
                     <td class="px-6 py-4">
                         {{ courrier.statut }}
@@ -86,6 +88,9 @@
                         <a style="color: blue;" href="{{ path('app_suiviId', {id: courrier.courrier}) }}">
                             détails
                         </a>
+                    </td>
+                    <td class="px-6 py-4">
+                        {{courrier.bordereau}}
                     </td>
                     <td scope="row" class="px-6 py-4 font-medium text-gray-900itespace-nowrap">
                         {{courrier.type == "0" ? "Lettre avec suivi" }} {{courrier.type == "1" ? "Lettre avec accusé de
@@ -114,5 +119,8 @@
     <div class="flex justify-center mt-4">
         {{ knp_pagination_render(courriers) }}
     </div>
+    {% else %}
+        <p>Aucun courriers</p>
+    {% endif %}
 </main>
 {% endblock %}

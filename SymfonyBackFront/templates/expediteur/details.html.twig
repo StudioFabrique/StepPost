@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<a class="text-white bg-[#F24E1E] p-2 rounded space-y-1" href="{{ path('app_expediteur') }}">Retour</a>
+<a class="text-white bg-[#F24E1E] p-2 rounded space-y-1" href="{{ path('app_accueil') }}">Retour</a>
 <div class="">
     <h1>Détails de l'expéditeur :</h1>
     <p class="flex">Nom / Nom de l'entreprise : {{expediteur.nom}}</p>
@@ -15,7 +15,7 @@
     <div class="">
         <h2>Destinataires :</h2>
         {% for destinataire in expediteur.destinataires %}
-            test
+            <p>- {{ destinataire.nom }} {{ destinataire.prenom }}</p>
         {% endfor %}
     </div>
 </div>

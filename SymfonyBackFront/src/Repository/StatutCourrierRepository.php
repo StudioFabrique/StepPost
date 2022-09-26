@@ -91,10 +91,13 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.telephone,
                 c.bordereau,
                 c.civilite,
-                c.type'
+                c.type,
+                e.id AS expediteur,
+                e.nom AS nomExpediteur'
             )
             ->leftJoin('s.courrier', 'c')
             ->leftJoin('s.statut', 'd')
+            ->leftJoin('c.expediteur', 'e')
             ->groupBy('c.id')
             ->orderBy('s.date', $order)
             ->getQuery();
@@ -128,11 +131,14 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.telephone,
                 c.bordereau,
                 c.civilite,
-                c.type'
+                c.type,
+                e.id AS expediteur,
+                e.nom AS nomExpediteur'
             )
             ->andWhere("c.nom = :valeur OR c.prenom = :valeur")
             ->leftJoin('s.courrier', 'c')
             ->leftJoin('s.statut', 'd')
+            ->leftJoin('c.expediteur', 'e')
             ->groupBy('c.id')
             ->setParameter('valeur', $valeur)
             ->getQuery();
@@ -166,11 +172,14 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.telephone,
                 c.bordereau,
                 c.civilite,
-                c.type'
+                c.type,
+                e.id AS expediteur,
+                e.nom AS nomExpediteur'
             )
             ->andWhere("c.bordereau LIKE :valeur")
             ->leftJoin('s.courrier', 'c')
             ->leftJoin('s.statut', 'd')
+            ->leftJoin('c.expediteur', 'e')
             ->groupBy('c.id')
             ->setParameter('valeur', '%' . $valeur . '%')
             ->getQuery();

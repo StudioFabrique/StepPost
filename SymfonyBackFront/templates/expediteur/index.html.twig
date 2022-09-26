@@ -4,17 +4,13 @@
 
 {% block body %}
 
-{% set inactiveCount = 0 %}
-{% for expediteur in expediteurs %}
-    {% if 'ROLE_INACTIF' in expediteur.roles %}
-        {% set inactiveCount = inactiveCount + 1 %}
-    {% endif %}
-{% endfor %}
+
 
 <main class="w-[90%] m-auto">
     <h1 style="font-size: 20pt;padding-bottom: 2%;"><b>Liste et gestion des expéditeurs</b></h1>
-    {% if inactiveCount > 0 %}
     {% if isSearch != null ? false : true %}
+    {% if expediteursInactifs|length > 0 %}
+    
     <div class="bg-blue-900 rounded-xl">
         <p class="p-2 text-white">Des utilisateurs sont enregistrés mais ne sont pas encore actifs</p>
         <details>
@@ -50,11 +46,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% set count = 0 %}
-                        {% for expediteur in expediteurs %}
+                        {% for expediteur in expediteursInactifs %}
                         {% set role = 'ROLE_INACTIF' in expediteur.roles ? 'utilisateur inactif' : 'expéditeur' %}
-                        {% if role == 'utilisateur inactif' %}
-                        {% set count = count + 1 %}
                         <tr class="bg-white border-b ">
                             <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                 {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
@@ -83,7 +76,6 @@
                                 <a href="{{ path('app_activateExpediteur', {expediteurId: expediteur.id}) }}" class="text-blue-800 bg-blue-100 p-2 rounded">Activer</a>
                             </td>
                         </tr>
-                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -111,7 +103,6 @@
                     <input type="checkbox" name="checkBoxExact" id="checkbox">
             </div>
         </form>
-        {{ inactiveCount >= 8 ? knp_pagination_render(expediteurs) }}
         <div>
             <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
             <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_addExpediteur') }}">Ajouter</a>
@@ -145,11 +136,9 @@
                 </tr>
             </thead>
             <tbody>
-                {% set count = 0 %}
                 {% for expediteur in expediteurs %}
                 {% set role = 'ROLE_INACTIF' in expediteur.roles ? 'utilisateur inactif' : 'expéditeur' %}
                 {% if role == 'expéditeur' %}
-                {% set count = count + 1 %}
                 <tr class="bg-white border-b ">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
@@ -181,7 +170,7 @@
         </table>
     </section>
     <div class="flex justify-center mt-4">
-        {{ count >= 8 ? knp_pagination_render(expediteurs) }}
+        {{ knp_pagination_render(expediteurs) }}
     </div>
 </main>
 {% endblock %}

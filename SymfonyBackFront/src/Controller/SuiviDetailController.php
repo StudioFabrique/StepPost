@@ -10,14 +10,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 #[Route('/suivi/detail', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
 class SuiviDetailController extends AbstractController
 {
 
-    #[Route('/edit/{id}', name: 'statuts_edit')]
-    public function edit(Request $request, StatutCourrier $statutCourrier, StatutCourrierRepository $statutsCourrier): Response
+    #[Route('/modifier/{id}', name: 'statut_edit')]
+    public function Edit(Request $request, StatutCourrier $statutCourrier, StatutCourrierRepository $statutsCourrier): Response
     {
         $form = $this->createForm(StatutCourrierType::class, $statutCourrier);
         $form->handleRequest($request);
@@ -31,5 +32,15 @@ class SuiviDetailController extends AbstractController
             'statutsCourrier' => $statutsCourrier,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/supprimerSuivi', 'statut_remove')]
+    public function Delete(Request $request, StatutCourrierRepository $statutsCourrier): RedirectResponse
+    {
+        $statutCourrier = $statutsCourrier->find($request->get('statutCourrierId'));
+
+        $statutsCourrier->remove($statutCourrier, true);
+
+        return $this->redirectToRoute('app_accueil');
     }
 }
