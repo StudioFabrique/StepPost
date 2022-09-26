@@ -88,6 +88,7 @@
                     </tbody>
                 </table>
             </section>
+            
         </details>
     </div>
     {% endif %}
@@ -110,7 +111,7 @@
                     <input type="checkbox" name="checkBoxExact" id="checkbox">
             </div>
         </form>
-
+        {{ inactiveCount >= 8 ? knp_pagination_render(expediteurs) }}
         <div>
             <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
             <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_addExpediteur') }}">Ajouter</a>

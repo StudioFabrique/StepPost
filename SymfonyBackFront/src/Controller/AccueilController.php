@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Courrier;
-use App\Repository\CourrierRepository;
 use App\Repository\StatutCourrierRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;

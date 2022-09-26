@@ -20,7 +20,6 @@ use Symfony\Component\Mime\Email;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -76,12 +75,13 @@ class ExpediteurController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $expediteurArray = (new FormatageObjet)->stringToLowerObject(
-                $form->getData(),
-                Expediteur::class,
-                array('client'),
-                true
-            );
+            $expediteurArray = (new FormatageObjet)
+                ->stringToLowerObject(
+                    $form->getData(),
+                    Expediteur::class,
+                    array('client'),
+                    true
+                );
             $nbHeureExp = 24;
             $token = (new JWT())->encode(
                 $expediteurArray,
@@ -98,7 +98,7 @@ class ExpediteurController extends AbstractController
 
             try {
                 $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
-                $expediteur->setRoles(['ROLE_INACTIF']);
+                $expediteur->setRoles(['ROLE_INACTIF'])->setPassword(' ');
                 $expediteurRepo->add($expediteur);
             } catch (UniqueConstraintViolationException $errorHandler) {
                 return $this->redirectToRoute('app_token', [
@@ -129,19 +129,23 @@ class ExpediteurController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'editExpediteur')]
-    public function edit(Request $request, Expediteur $expediteur, ExpediteurRepository $expediteurRepository, UserPasswordHasherInterface $passwordHasher): Response
+    public function edit(Request $request, Expediteur $ancienExpediteur, ExpediteurRepository $expediteurRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $form = $this->createForm(ExpediteurType::class, $expediteur);
+        $form = $this->createForm(ExpediteurType::class, $ancienExpediteur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $expediteur = (new FormatageObjet)->stringToLowerObject(
+                $form->getData(),
+                Expediteur::class,
+                array('client')
+            );
             $expediteurRepository->add($expediteur);
             return $this->redirectToRoute('app_expediteur', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('expediteur/edit.html.twig', [
-            'expediteur' => $expediteur,
+            'expediteur' => $ancienExpediteur,
             'form' => $form,
         ]);
     }
@@ -168,13 +172,24 @@ class ExpediteurController extends AbstractController
     }
 
     #[Route('/activer', name: 'activateExpediteur')]
-    public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em): RedirectResponse
+    public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em, MailerInterface $mailer): RedirectResponse
     {
         $expediteurId = $request->get('expediteurId');
         $expediteur = ($expediteurRepository->find($expediteurId))->setRoles(['ROLE_CLIENT']);
-        $em->persist($expediteur);
-        $em->flush();
-        return $this->redirectToRoute('app_expediteur');
+        $email = (new Email())
+            ->from('step.automaticmailservice@gmail.com')
+            ->subject('Activation de votre compte Step Post')
+            ->to($expediteur->getEmail())
+            ->text("Votre compte associé à l'adresse mail " . $expediteur->getEmail() . " a été activé. Vous pouvez donc vous connecter.");
+
+        try {
+            $em->persist($expediteur);
+            $em->flush();
+            $mailer->send($email);
+            return $this->redirectToRoute('app_expediteur');
+        } catch (UniqueConstraintViolationException $e) {
+            return $this->redirectToRoute('app_expediteur');
+        }
     }
 
     #[Route('/mailToken', name: 'token')]

@@ -96,8 +96,8 @@ class RaisonSocialeController extends AbstractController
     {
         $raisonId = $request->get('raisonId');
         $raison = $clientRepository->find($raisonId);
-        $clientRepository->remove($raison);
-        return $this->redirectToRoute('app_raisonSociale');
+        $clientRepository->remove($raison, true);
+        return $this->redirectToRoute('app_raisonSociale'); // ajouter la suppression des raisons sociales de chaques expediteurs avec confirmation.
     }
 
     #[Route('/detacherClient', name: 'deleteClientRaisonSociale')]

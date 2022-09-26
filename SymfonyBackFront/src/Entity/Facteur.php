@@ -29,10 +29,10 @@ class Facteur
     private array $roles = [];
 
     #[ORM\Column(name: 'createdAt', type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $CreatedAt = null;
+    private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(name: 'updatedAt', type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $UpdatedAt = null;
+    private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'facteur', targetEntity: StatutCourrier::class)]
     private Collection $statutsCourrier;
@@ -97,24 +97,24 @@ class Facteur
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->CreatedAt;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $CreatedAt): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
-        $this->CreatedAt = $CreatedAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->UpdatedAt;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $UpdatedAt): self
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
-        $this->UpdatedAt = $UpdatedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

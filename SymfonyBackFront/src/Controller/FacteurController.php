@@ -15,6 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 #[Route('/', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
@@ -38,7 +40,7 @@ class FacteurController extends AbstractController
     #[Route('/nouveauFacteur', 'newFacteur')]
     public function newFacteur(FacteurRepository $facteurRepo, Request $request): Response
     {
-        $form = $this->createForm(FacteurType::class)->handleRequest($request);
+        $form = ($this->createForm(FacteurType::class))->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -47,7 +49,7 @@ class FacteurController extends AbstractController
                     ->stringToLowerObject(
                         $form->getData(),
                         Facteur::class,
-                        array('createdAt, updatedAt')
+                        array('createdAt', 'updatedAt')
                     );
 
                 $facteurRepo->add(
@@ -75,16 +77,19 @@ class FacteurController extends AbstractController
         $form = $this->createForm(FacteurType::class, $ancienFacteur)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
 
             $facteur = (new FormatageObjet)->stringToLowerObject(
-                $form->getData(),
+                $formData,
                 Facteur::class,
-                array('createdAt, updatedAt')
+                array('createdAt, updatedAt'),
+                false
             );
 
-            $facteur->setRoles(['ROLE_FACTEUR'])
+            $facteur
+                ->setRoles(['ROLE_FACTEUR'])
                 ->setCreatedAt($ancienFacteur->getCreatedAt())
-                ->setUpdatedAt(new DateTime('now'))
+                ->setUpdatedAt(new DateTime())
                 ->setPassword($ancienFacteur->getPassword());
             $em->persist($facteur);
             $em->flush();
