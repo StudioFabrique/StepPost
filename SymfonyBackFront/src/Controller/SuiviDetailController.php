@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\StatutCourrier;
 use App\Form\StatutCourrierType;
+use App\Repository\CourrierRepository;
 use App\Repository\StatutCourrierRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +19,11 @@ class SuiviDetailController extends AbstractController
 {
 
     #[Route('/modifier/{id}', name: 'statut_edit')]
-    public function Edit(Request $request, StatutCourrier $statutCourrier, StatutCourrierRepository $statutsCourrier): Response
+    public function Edit(Request $request, StatutCourrier $statutCourrier, StatutCourrierRepository $statutsCourrier, CourrierRepository $courriers): Response
     {
         $form = $this->createForm(StatutCourrierType::class, $statutCourrier);
         $form->handleRequest($request);
+        $courrierId = $statutCourrier->getCourrier()->getId();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $statutsCourrier->add($statutCourrier);
@@ -31,6 +33,7 @@ class SuiviDetailController extends AbstractController
         return $this->renderForm('suivi_detail/edit.html.twig', [
             'statutsCourrier' => $statutsCourrier,
             'form' => $form,
+            'id' => $courrierId
         ]);
     }
 

@@ -16,6 +16,9 @@
             <thead class="text-xs text-white uppercase bg-[#140A82]">
                 <tr>
                     <th scope="col" class="px-6 py-3">
+                        Type admin
+                    </th>
+                    <th scope="col" class="px-6 py-3">
                         Fonction
                     </th>
                     <th scope="col" class="px-6 py-3">
@@ -34,8 +37,12 @@
             </thead>
             <tbody>
                 {% for user in admins %}
+                {% set role = 'ROLE_SUPERADMIN' in user.roles ? 'admin standard' : 'chef des admins' %}
                 <tr class="bg-white border-b ">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        {{ role }}
+                    </th>
+                    <th scope="row" class="px-6 py-4">
                         {{ user.fonction }}
                     </th>
                     <td class="px-6 py-4">
@@ -57,7 +64,7 @@
                     </td>
                 </tr>
 
-                {# {{dump(user)}} #}
+                {# {{dump(admin)}} #}
                 {% endfor %}
             </tbody>
         </table>

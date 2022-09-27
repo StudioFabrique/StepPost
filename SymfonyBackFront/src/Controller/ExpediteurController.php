@@ -89,14 +89,14 @@ class ExpediteurController extends AbstractController
             $nbHeureExp = 24;
             $token = (new JWT())->encode(
                 $expediteurArray,
-                'test', // pass phrase
+                '8733c931dfe34198e060c1e7dae3a7f20887b00937859bba724a68b7de44f512', // pass phrase
                 'HS256', // protocole d'encodage
                 head: ['exp' => time() + (3600 * $nbHeureExp)]
             );
             $expInHtml = $nbHeureExp == 1 ? " heure </p>" : " heures </p>";
             $body = "
             <p> Bonjour" . ($form->get('prenom')->getData() != null ? " " . $form->get('prenom')->getData() . ",</p>" : ",</p>") . "<p>veuillez confirmer la création de votre compte client associé à l'email " . $form->get('email')->getData() . " avec le bouton se trouvant ci-dessous. </p>
-            <p><a href='http://localhost:4200/profil/new-client?token=" . $token . "'> Confirmer la création de mon compte client </a></p>
+            <p><a href='http://localhost:4200/profil/validation-nouveau-compte?token=" . $token . "'> Confirmer la création de mon compte client </a></p>
             <p> La confirmation va expirer dans " . $nbHeureExp . $expInHtml;
 
 

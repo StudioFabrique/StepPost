@@ -8,11 +8,40 @@
         <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Ajouter un client</h1>
         <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_clientsRaisonSociale', {raisonId: raisonId}) }}">Retour</a>
     </div>
-    {% for expediteur in clients %}
-    <p class=" mb-4 text-x font-semibold">- {{ expediteur.nom }} / {{ expediteur.email }}
-        <a class="text-white bg-[#24A640] p-2 rounded"
-            href="{{ path('app_addTheClientRaisonSociale', { expediteurId: expediteur.id , raisonId: raisonId }) }}">Ajouter ce client</a>
-    </p>
-    {% endfor %}
+    <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left text-gray-500 table-fixed">
+            <thead class="text-xs text-white uppercase bg-[#140A82]">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Nom
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Ajouter
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expediteur in clients %}
+                <tr class="bg-white border-b ">
+                    <td class="px-6 py-4">
+                        {{ expediteur.nom }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ expediteur.email }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                            href="{{ path('app_addTheClientRaisonSociale',{expediteurId : expediteur.id}) }}">
+                            Ajouter cet expéditeur
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
 </main>
 {% endblock %}
