@@ -10,11 +10,13 @@
     <h1 style="font-size: 20pt;padding-bottom: 2%;"><b>Liste et gestion des expéditeurs</b></h1>
     {% if isSearch != null ? false : true %}
     {% if expediteursInactifs|length > 0 %}
-    
+
     <div class="bg-blue-900 rounded-xl">
         <p class="p-2 text-white">Des utilisateurs sont enregistrés mais ne sont pas encore actifs</p>
         <details>
-            <summary class="mx-20 my-2 p-1 text-white list-none hover:cursor-pointer rounded max-w-fit border-red-700 border-2 text-center">Voir les utilisateurs inactifs</summary>
+            <summary
+                class="mx-20 my-2 p-1 text-white list-none hover:cursor-pointer rounded max-w-fit border-red-700 border-2 text-center">
+                Voir les utilisateurs inactifs</summary>
             <section id="inactifSection" class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="w-full text-sm text-left text-gray-500 table-fixed">
                     <thead class="text-xs text-white uppercase bg-[#140A82]">
@@ -50,10 +52,11 @@
                         {% set role = 'ROLE_INACTIF' in expediteur.roles ? 'utilisateur inactif' : 'expéditeur' %}
                         <tr class="bg-white border-b ">
                             <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
+                                {{ expediteur.raisonSociale ? expediteur.raisonSociale : 'Non défini' }}
                             </td>
                             <td class="px-6 py-4">
-                                <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id}) }}">{{ expediteur.email }}</a>
+                                <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id}) }}">{{
+                                    expediteur.email }}</a>
                             </td>
                             <td class="px-6 py-4">
                                 {{ expediteur.nom }}
@@ -65,7 +68,8 @@
                                 {{ role }}
                             </td>
                             <td class="px-6 py-4">
-                                <a class="text-blue-800 bg-blue-100 p-2 rounded" href="{{ path('app_editExpediteur', {id: expediteur.id}) }}">
+                                <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                                    href="{{ path('app_editExpediteur', {id: expediteur.id}) }}">
                                     Modifier
                                 </a>
                             </td>
@@ -73,20 +77,21 @@
                                 {{ include('expediteur/_delete_form.html.twig') }}
                             </td>
                             <td class="px-6 py-4">
-                                <a href="{{ path('app_activateExpediteur', {expediteurId: expediteur.id}) }}" class="text-blue-800 bg-blue-100 p-2 rounded">Activer</a>
+                                <a href="{{ path('app_activateExpediteur', {expediteurId: expediteur.id}) }}"
+                                    class="text-blue-800 bg-blue-100 p-2 rounded">Activer</a>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </section>
-            
+
         </details>
     </div>
     {% endif %}
     {% endif %}
     {% if isSearch != null ? true : false %}
-            <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
+    <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
     {% endif %}
     <section id="inactif-box" class="flex justify-between items-center m-2">
         <form class="flex">
@@ -96,11 +101,11 @@
                     <input name="recherche" type="search" class="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 
                         text-base font-normal text-gray-700 bg-white bg-clip-padding border 
                         border-solid border-gray-300 rounded transition ease-in-out m-0 
-                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                        placeholder="" aria-label="" aria-describedby="button-addon2">
+                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder=""
+                        aria-label="" aria-describedby="button-addon2">
                 </div>
                 <label style="padding-right: 2%;" for="checkbox">recherche exacte</label>
-                    <input type="checkbox" name="checkBoxExact" id="checkbox">
+                <input type="checkbox" name="checkBoxExact" id="checkbox">
             </div>
         </form>
         <div>
@@ -144,7 +149,8 @@
                         {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
                     </th>
                     <td class="px-6 py-4">
-                        <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id}) }}">{{ expediteur.email }}</a>
+                        <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id}) }}">{{ expediteur.email
+                            }}</a>
                     </td>
                     <td class="px-6 py-4">
                         {{ expediteur.nom }}
@@ -156,7 +162,8 @@
                         {{ role }}
                     </td>
                     <td class="px-6 py-4">
-                        <a class="text-blue-800 bg-blue-100 p-2 rounded" href="{{ path('app_editExpediteur', {id: expediteur.id}) }}">
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                            href="{{ path('app_editExpediteur', {id: expediteur.id}) }}">
                             Modifier
                         </a>
                     </td>

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ExpediteurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -54,6 +55,12 @@ class Expediteur implements UserInterface
 
     #[ORM\ManyToOne(inversedBy: 'expediteurs')]
     private ?Client $client = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, name: 'updatedAt')]
+    private ?\DateTimeInterface $updatedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, name: 'createdAt')]
+    private ?\DateTimeInterface $createdAt = null;
 
     public function __construct()
     {
@@ -280,6 +287,30 @@ class Expediteur implements UserInterface
     public function setClient(?Client $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

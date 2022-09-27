@@ -8,6 +8,8 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\expr;
+
 /**
  * @method Expediteur|null find($id, $lockMode = null, $lockVersion = null)
  * @method Expediteur|null findOneBy(array $criteria, array $orderBy = null)
@@ -91,5 +93,25 @@ class ExpediteurRepository extends ServiceEntityRepository
         FROM App\Entity\Expediteur expediteur
         WHERE expediteur.nom LIKE :nom
         ')->setParameter('nom', '%' . $nom . '%');
+    }
+
+    public function findAllInactive($role = 'ROLE_INACTIF')
+    {
+        $qb = $this->_em->createQueryBuilder('e')
+            ->select('
+            e.id,
+            e.email,
+            e.nom,
+            e.prenom,
+            e.roles,
+            client.raisonSociale AS raisonSociale
+            ')
+            ->from('App\Entity\Expediteur', 'e')
+            ->where('e.roles LIKE :role')
+            ->leftJoin('e.client', 'client')
+            ->setParameter('role', '%' . $role . '%')
+            ->getQuery();
+
+        return $qb->getResult();
     }
 }

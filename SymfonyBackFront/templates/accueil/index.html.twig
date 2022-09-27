@@ -27,8 +27,10 @@
                 facteurs</a>
             <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_raisonSociale') }}">Gestion raisons
                 sociales</a>
+            {% if 'ROLE_SUPERADMIN' in app.user.roles  %}
             <a class="text-white bg-[#298b7a] p-2 rounded" href="{{ path('app_admin') }}">Gestion
                 admins</a>
+            {% endif %}
         </div>
     </section>
     {% if courriers|length > 0 %}

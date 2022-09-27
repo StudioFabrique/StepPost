@@ -18,6 +18,7 @@ class FormatageObjet
         $newArray = array();
 
         foreach ($objectToTransform as $data => $value) {
+            var_dump(in_array($data, $exclude));
             !is_array($value) ? (in_array($data, $exclude) ? NULL
                 : $newArray[$data] = strtolower(strip_tags($value)))
                 : NULL;

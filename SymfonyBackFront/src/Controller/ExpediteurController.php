@@ -6,6 +6,7 @@ use App\ClassesOutils\FormatageObjet;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
+use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -58,7 +59,7 @@ class ExpediteurController extends AbstractController
             8
         );
 
-        $expediteursInactifs = $expediteurs->findBy(array('roles' => array('ROLE_INACTIF'))); // faire une requête perso SQL pour selectionner tous les expediteurs inactifs
+        $expediteursInactifs = $expediteurs->findAllInactive(); // faire une requête perso SQL pour selectionner tous les expediteurs inactifs
 
         return $this->render('expediteur/index.html.twig', [
             'expediteurs' => $expediteur,
@@ -82,7 +83,7 @@ class ExpediteurController extends AbstractController
                 ->stringToLowerObject(
                     $form->getData(),
                     Expediteur::class,
-                    array('client'),
+                    array('client', 'createdAt', 'updatedAt'),
                     true
                 );
             $nbHeureExp = 24;
@@ -100,8 +101,9 @@ class ExpediteurController extends AbstractController
 
 
             try {
+                var_dump($expediteurArray);
                 $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
-                $expediteur->setRoles(['ROLE_INACTIF'])->setPassword(' ')->SetCreatedAt(date('now'))->SetUpdatedAt(date('now'));
+                $expediteur->setCreatedAt(new DateTime('now'))->setUpdatedAt(new DateTime('now'))->setClient(null)->setRoles(['ROLE_INACTIF'])->setPassword(' ');
                 $expediteurRepo->add($expediteur);
             } catch (UniqueConstraintViolationException $errorHandler) {
                 return $this->redirectToRoute('app_token', [
