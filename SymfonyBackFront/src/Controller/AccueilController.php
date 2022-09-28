@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Courrier;
+use App\Repository\ExpediteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\StatutRepository;
 use Knp\Component\Pager\PaginatorInterface;
@@ -33,7 +34,8 @@ class AccueilController extends AbstractController
         StatutCourrierRepository $statutCourrierRepo, // Le répertoire contenant un tableau de tous les courriers
         Request $request,
         PaginatorInterface $paginator, // Interface de pagination
-        StatutRepository $statuts
+        StatutRepository $statuts,
+        ExpediteurRepository $expediteurRepository
     ): Response {
 
         // vérification que l'admin soit bien connecté sinon redirection vers la page de connexion
@@ -43,6 +45,7 @@ class AccueilController extends AbstractController
 
         $order = $request->get('order') ?? "DESC";
         $rechercheCourrier = $request->get('recherche') ?? null;
+        $expediteurs = $expediteurRepository->findAllWithoutClient();
 
         if ($rechercheCourrier == null) {
             $donner = $statutCourrierRepo->findCourriers($order);
@@ -62,7 +65,8 @@ class AccueilController extends AbstractController
             'courriers' => $courriers,
             'statuts' => $statuts->findAll(),
             'order' => $order == "DESC" ? "ASC" : "DESC",
-            'isSearching' => is_integer($rechercheCourrier) ? true : (is_string($rechercheCourrier) ? true : false)
+            'isSearching' => is_integer($rechercheCourrier) ? true : (is_string($rechercheCourrier) ? true : false),
+            'expediteurs' => $expediteurs
         ]);
     }
 

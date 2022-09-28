@@ -12,11 +12,11 @@
     {% if expediteursInactifs|length > 0 %}
 
     <div class="bg-blue-900 rounded-xl">
-        <p class="p-2 text-white">Des utilisateurs sont enregistrés mais ne sont pas encore actifs</p>
+        <p class="p-2 text-white">Des expéditeurs sont enregistrés mais ne sont pas encore actifs</p>
         <details {% if openDetails %} open="" {% endif %} onclick="(openDetails) => {openDetails = true ? false : true}">
             <summary
                 class="mx-20 my-2 p-1 text-white list-none hover:cursor-pointer rounded max-w-fit border-red-700 border-2 text-center">
-                Voir les utilisateurs inactifs</summary>
+                Voir les expéditeurs inactifs</summary>
             <section id="inactifSection" class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="w-full text-sm text-left text-gray-500 table-fixed">
                     <thead class="text-xs text-white uppercase bg-[#140A82]">
@@ -109,8 +109,8 @@
             </div>
         </form>
         <div>
-            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
             <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_addExpediteur') }}">Ajouter</a>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
         </div>
     </section>
     <section class="relative overflow-x-auto shadow-md sm:rounded-lg">

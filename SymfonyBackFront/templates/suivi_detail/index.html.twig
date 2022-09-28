@@ -3,8 +3,8 @@
 {% block title %}N°{{ courrierId.bordereau }}{% endblock %}
 
 {% block body %}
-<div class="my-5 mx-1">
-    <a class="text-white bg-[#25BA00] p-2 rounded" href="{{ path('app_statut_add', ({ id: courrierId })) }}">Ajouter un statut</a>
+<div class="absolute right-0 mx-10">
+    <a class="text-white bg-[#25BA00] p-2 rounded" href="{{ path('app_statut_add', ({ id: courrierId })) }}">Mettre à jour le statut</a>
     <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
 </div>
 
@@ -24,12 +24,6 @@
                     a été {{ statut.statut ? statut.statut.etat }}
                     {{ statut.statut ? statut.statut.etat == "Remise" ? "au facteur" }}
                 </p>
-                <div>
-                    <a href="{{ path('app_statut_edit', ({ id: statut.id })) }}"
-                        class="text-blue-800 bg-blue-100 p-2 rounded">Modifier</a>
-                    <a href="{{ path('app_statut_remove', ({ id: statut.id })) }}"
-                        class="text-blue-800 bg-blue-100 p-2 rounded">Supprimer</a>
-                </div>
             </div>
         </div>
         {% endfor %}
