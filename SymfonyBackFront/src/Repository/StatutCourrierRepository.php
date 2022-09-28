@@ -80,8 +80,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->select(
                 'c.id AS courrier,
                 MAX(s.date) AS date,
-                MAX(d.id) AS etat,
-                MAX(d.etat) AS statut,
+                MAX(d.id) AS statut,
                 c.nom,
                 c.prenom,
                 c.adresse,
@@ -120,8 +119,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->select(
                 'c.id AS courrier,
                 MAX(s.date) AS date,
-                MAX(d.id) AS etat,
-                MAX(d.etat) AS statut,
+                MAX(d.id) AS statut,
                 c.nom,
                 c.prenom,
                 c.adresse,
@@ -161,8 +159,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->select(
                 'c.id AS courrier,
                 MAX(s.date) AS date,
-                MAX(d.id) AS etat,
-                MAX(d.etat) AS statut,
+                MAX(d.id) AS statut,
                 c.nom,
                 c.prenom,
                 c.adresse,

@@ -85,7 +85,9 @@
                         </a>
                     </td>
                     <td class="px-6 py-4">
-                        {{ courrier.statut }}
+                        {% for statut in statuts %}
+                            {{ courrier.statut == statut.id ? statut.etat : NULL }}
+                        {% endfor %}
                         <hr style="border-width: 2px;">
                         <a style="color: blue;" href="{{ path('app_suiviId', {id: courrier.courrier}) }}">
                             détails

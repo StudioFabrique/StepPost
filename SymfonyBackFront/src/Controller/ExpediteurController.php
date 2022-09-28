@@ -45,6 +45,7 @@ class ExpediteurController extends AbstractController
 
         $rechercheExpediteur = $request->get('recherche');
         $isCheckBoxExact = $request->get('checkBoxExact');
+        $openDetails = $request->get('openDetails') ?? false;
 
         if ($rechercheExpediteur != null && strval($rechercheExpediteur)) {
             $isCheckBoxExact ? $donner = $expediteurs->findBy(['nom' => $rechercheExpediteur])
@@ -64,7 +65,8 @@ class ExpediteurController extends AbstractController
         return $this->render('expediteur/index.html.twig', [
             'expediteurs' => $expediteur,
             'expediteursInactifs' => $expediteursInactifs,
-            'isSearch' => $rechercheExpediteur
+            'isSearch' => $rechercheExpediteur,
+            'openDetails' => $openDetails
         ]);
     }
 

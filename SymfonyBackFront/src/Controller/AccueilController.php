@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Courrier;
 use App\Repository\StatutCourrierRepository;
+use App\Repository\StatutRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +32,8 @@ class AccueilController extends AbstractController
     public function index(
         StatutCourrierRepository $statutCourrierRepo, // Le répertoire contenant un tableau de tous les courriers
         Request $request,
-        PaginatorInterface $paginator // Interface de pagination
+        PaginatorInterface $paginator, // Interface de pagination
+        StatutRepository $statuts
     ): Response {
 
         // vérification que l'admin soit bien connecté sinon redirection vers la page de connexion
@@ -58,6 +60,7 @@ class AccueilController extends AbstractController
 
         return $this->render('accueil/index.html.twig', [
             'courriers' => $courriers,
+            'statuts' => $statuts->findAll(),
             'order' => $order == "DESC" ? "ASC" : "DESC",
             'isSearching' => is_integer($rechercheCourrier) ? true : (is_string($rechercheCourrier) ? true : false)
         ]);
@@ -76,7 +79,7 @@ class AccueilController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $statutsCourrier = $statutsCourrierRepo->findBy(["courrier" => $id], ["courrier" => "DESC"]);
+        $statutsCourrier = $statutsCourrierRepo->findBy(["courrier" => $id], ["date" => "DESC"]);
 
         return $this->render('suivi_detail/index.html.twig', [
             'courrierId' => $id,

@@ -13,7 +13,7 @@
 
     <div class="bg-blue-900 rounded-xl">
         <p class="p-2 text-white">Des utilisateurs sont enregistrés mais ne sont pas encore actifs</p>
-        <details>
+        <details {% if openDetails %} open="" {% endif %} onclick="(openDetails) => {openDetails = true ? false : true}">
             <summary
                 class="mx-20 my-2 p-1 text-white list-none hover:cursor-pointer rounded max-w-fit border-red-700 border-2 text-center">
                 Voir les utilisateurs inactifs</summary>
