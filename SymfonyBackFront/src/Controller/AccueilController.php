@@ -45,7 +45,7 @@ class AccueilController extends AbstractController
 
         $order = $request->get('order') ?? "DESC";
         $rechercheCourrier = $request->get('recherche') ?? null;
-        $expediteurs = $expediteurRepository->findAllWithoutClient();
+        $expediteurs = $expediteurRepository->findAllInactive();
 
         if ($rechercheCourrier == null) {
             $donner = $statutCourrierRepo->findCourriers($order);

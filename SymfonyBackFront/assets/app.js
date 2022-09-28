@@ -12,6 +12,7 @@ import './img/logo.svg';
 
 import './img/arrow.svg';
 
+import './img/person.svg'
 
 // start the Stimulus application
 import './bootstrap';
