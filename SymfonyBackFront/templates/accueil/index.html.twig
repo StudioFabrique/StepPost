@@ -125,7 +125,14 @@
         </table>
     </section>
     <div class="flex justify-center mt-4">
-        {{ knp_pagination_render(courriers) }}
+        {% set maxPages = maxPages / 10 + 1 %}
+        {% if maxPages|round == currentPage %}
+            <p class="pt-3 text-green-900">1</p>
+        {% endif %}
+            <p>{{ knp_pagination_render(courriers) }} </p>
+        {% if maxPages|round != currentPage %}
+            <p class="pt-3 text-red-700">{{ maxPages|round }} </p>
+        {% endif %}
     </div>
     {% else %}
         <p>Aucun courriers</p>
