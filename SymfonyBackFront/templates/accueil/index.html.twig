@@ -84,7 +84,7 @@
                     <td class="px-6 py-4">
                         {{ courrier.nomExpediteur }}
                         <hr class="border-y-2 my-2 border-blue-300">
-                        <a class="bg-blue-900 py-1 px-2 rounded-md text-white" href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur}) }}">
+                        <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white" href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur}) }}">
                             détails
                         </a>
                     </td>
@@ -93,7 +93,7 @@
                             {{ courrier.statut == statut.id ? statut.etat : NULL }}
                         {% endfor %}
                         <hr class="border-y-2 my-2 border-blue-300">
-                        <a class="bg-blue-900 py-1 px-2 rounded-md text-white" href="{{ path('app_suiviId', {id: courrier.courrier}) }}">
+                        <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white" href="{{ path('app_suiviId', {id: courrier.courrier}) }}">
                             détails
                         </a>
                     </td>

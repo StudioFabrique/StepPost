@@ -48,14 +48,14 @@ class ExpediteurController extends AbstractController
         $openDetails = $request->get('openDetails') ?? false;
 
         if ($rechercheExpediteur != null && strval($rechercheExpediteur)) {
-            $isCheckBoxExact ? $donner = $expediteurs->findBy(['nom' => $rechercheExpediteur])
-                : $donner = $expediteurs->findLike($rechercheExpediteur);
+            $isCheckBoxExact ? $data = $expediteurs->findBy(['nom' => $rechercheExpediteur])
+                : $data = $expediteurs->findLike($rechercheExpediteur);
         } else {
-            $donner = $expediteurs->findAll([], ['id' => 'DESC']);
+            $data = $expediteurs->findAll([], ['id' => 'DESC']);
         }
 
         $expediteur = $paginator->paginate(
-            $donner,
+            $data,
             $request->query->getInt('page', 1),
             8
         );

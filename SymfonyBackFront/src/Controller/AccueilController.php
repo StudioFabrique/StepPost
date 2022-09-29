@@ -48,15 +48,15 @@ class AccueilController extends AbstractController
 
 
         if ($rechercheCourrier == null) {
-            $donner = $statutCourrierRepo->findCourriers($order);
+            $data = $statutCourrierRepo->findCourriers($order);
         } else {
-            is_numeric($rechercheCourrier) ? $donner = $statutCourrierRepo->findCourriersByBordereau($rechercheCourrier)
-                : (is_string($rechercheCourrier) ? $donner = $statutCourrierRepo->findCourriersByNomPrenom($rechercheCourrier)
-                    : $donner = $statutCourrierRepo->findCourriers($order));
+            is_numeric($rechercheCourrier) ? $data = $statutCourrierRepo->findCourriersByBordereau($rechercheCourrier)
+                : (is_string($rechercheCourrier) ? $data = $statutCourrierRepo->findCourriersByNomPrenom($rechercheCourrier)
+                    : $data = $statutCourrierRepo->findCourriers($order));
         }
 
         $courriers = $paginator->paginate(
-            $donner,
+            $data,
             $request->query->getInt('page', 1),
         );
 
