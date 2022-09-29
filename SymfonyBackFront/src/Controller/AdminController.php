@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\ExpediteurRepository;
 use App\Repository\UserRepository;
 use DateTime;
 use Knp\Component\Pager\PaginatorInterface;
@@ -22,7 +23,8 @@ class AdminController extends AbstractController
     public function index(
         UserRepository $admins,
         Request $request,
-        PaginatorInterface $paginator
+        PaginatorInterface $paginator,
+        ExpediteurRepository $expediteurRepository
     ): Response {
 
         if (!$this->getUser()) {
@@ -37,12 +39,13 @@ class AdminController extends AbstractController
         );
 
         return $this->render('admin/index.html.twig', [
-            'admins' => $admins
+            'admins' => $admins,
+            'expediteursInactifs' => $expediteurRepository->findAllInactive()
         ]);
     }
 
     #[Route('/ajouter', name: 'admin_add')]
-    public function new(Request $request, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher): Response
+    public function new(Request $request, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
     {
         $userStep = new User();
         $form = $this->createForm(UserType::class, $userStep);
@@ -64,15 +67,17 @@ class AdminController extends AbstractController
 
         return $this->renderForm('admin/new.html.twig', [
             'user_step' => $userStep,
-            'form' => $form
+            'form' => $form,
+            'expediteursInactifs' => $expediteurRepository->findAllInactive()
         ]);
     }
 
     #[Route('/edit/{id}', name: 'admin_edit')]
-    public function edit(Request $request, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher): Response
+    public function edit(Request $request, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
     {
         $adminId = $request->get('id');
         $userStep = $userStepRepository->find($adminId);
+        $isSuperAdmin = in_array('ROLE_SUPERADMIN', $userStep->getRoles()) ? true : false;
         $form = $this->createForm(UserType::class, $userStep);
         $form->handleRequest($request);
 
@@ -83,7 +88,8 @@ class AdminController extends AbstractController
                 $pass
             );
             $userStep->setPassword($hashedPassword);
-            $userStep->setRoles(['ROLE_ADMIN']);
+            $userStep->setRoles($isSuperAdmin ? ['ROLE_ADMIN', 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN']);
+
             $userStep->setUpdatedAt(new DateTime('now'));
             $userStepRepository->add($userStep);
             return $this->redirectToRoute('app_admin', [], Response::HTTP_SEE_OTHER);
@@ -91,7 +97,8 @@ class AdminController extends AbstractController
 
         return $this->renderForm('admin/edit.html.twig', [
             'user_step' => $userStep,
-            'form' => $form
+            'form' => $form,
+            'expediteursInactifs' => $expediteurRepository->findAllInactive()
         ]);
     }
 

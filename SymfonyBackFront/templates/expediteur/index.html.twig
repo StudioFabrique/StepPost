@@ -15,6 +15,7 @@
         <p class="p-2 text-white">Des expéditeurs sont enregistrés mais ne sont pas encore actifs</p>
         <details {% if openDetails %} open="" {% endif %} onclick="(openDetails) => {openDetails = true ? false : true}">
             <summary
+                onclick="verifyAndRemoveBanner()"
                 class="mx-20 my-2 p-1 text-white list-none hover:cursor-pointer rounded max-w-fit border-red-700 border-2 text-center">
                 Voir les expéditeurs inactifs</summary>
             <section id="inactifSection" class="relative overflow-x-auto shadow-md sm:rounded-lg">

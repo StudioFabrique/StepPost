@@ -131,12 +131,13 @@ class ExpediteurController extends AbstractController
         }
 
         return $this->renderForm('expediteur/new.html.twig', [
-            'form' => $form
+            'form' => $form,
+            'expediteursInactifs' => $expediteurRepo->findAllInactive()
         ]);
     }
 
     #[Route('/edit/{id}', name: 'editExpediteur')]
-    public function edit(Request $request, Expediteur $ancienExpediteur, ExpediteurRepository $expediteurRepository, UserPasswordHasherInterface $passwordHasher): Response
+    public function edit(Request $request, Expediteur $ancienExpediteur, ExpediteurRepository $expediteurRepository): Response
     {
         $form = $this->createForm(ExpediteurType::class, $ancienExpediteur);
         $form->handleRequest($request);
@@ -154,6 +155,7 @@ class ExpediteurController extends AbstractController
         return $this->renderForm('expediteur/edit.html.twig', [
             'expediteur' => $ancienExpediteur,
             'form' => $form,
+            'expediteursInactifs' => $expediteurRepository->findAllInactive()
         ]);
     }
 
@@ -174,7 +176,8 @@ class ExpediteurController extends AbstractController
         $expediteurId = $request->get('expediteurId');
         $expediteur = $expediteurRepository->find($expediteurId);
         return $this->render('expediteur/details.html.twig', [
-            'expediteur' => $expediteur
+            'expediteur' => $expediteur,
+            'expediteursInactifs' => $expediteurRepository->findAllInactive()
         ]);
     }
 
@@ -199,6 +202,7 @@ class ExpediteurController extends AbstractController
         }
     }
 
+    // A mettre sous forme de toaster
     #[Route('/mailToken', name: 'token')]
     public function RedirectTokenMailView(Request $request)
     {

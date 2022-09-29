@@ -45,7 +45,7 @@ class AccueilController extends AbstractController
 
         $order = $request->get('order') ?? "DESC";
         $rechercheCourrier = $request->get('recherche') ?? null;
-        $expediteurs = $expediteurRepository->findAllInactive();
+
 
         if ($rechercheCourrier == null) {
             $donner = $statutCourrierRepo->findCourriers($order);
@@ -58,7 +58,6 @@ class AccueilController extends AbstractController
         $courriers = $paginator->paginate(
             $donner,
             $request->query->getInt('page', 1),
-            8
         );
 
         return $this->render('accueil/index.html.twig', [
@@ -66,7 +65,7 @@ class AccueilController extends AbstractController
             'statuts' => $statuts->findAll(),
             'order' => $order == "DESC" ? "ASC" : "DESC",
             'isSearching' => is_integer($rechercheCourrier) ? true : (is_string($rechercheCourrier) ? true : false),
-            'expediteurs' => $expediteurs
+            'expediteursInactifs' => $expediteurRepository->findAllInactive()
         ]);
     }
 
@@ -77,7 +76,8 @@ class AccueilController extends AbstractController
     #[Route('/suivi/{id}', name: 'suiviId')]
     public function indexbyid(
         Courrier $id,
-        StatutCourrierRepository $statutsCourrierRepo
+        StatutCourrierRepository $statutsCourrierRepo,
+        ExpediteurRepository $expediteurRepository
     ): Response {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -87,7 +87,8 @@ class AccueilController extends AbstractController
 
         return $this->render('suivi_detail/index.html.twig', [
             'courrierId' => $id,
-            'statutsCourrier' => $statutsCourrier
+            'statutsCourrier' => $statutsCourrier,
+            'expediteursInactifs' => $expediteurRepository->findAllInactive()
         ]);
     }
 }

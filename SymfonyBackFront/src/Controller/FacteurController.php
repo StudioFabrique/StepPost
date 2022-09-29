@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\ClassesOutils\FormatageObjet;
 use App\Entity\Facteur;
 use App\Form\FacteurType;
+use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -21,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class FacteurController extends AbstractController
 {
     #[Route('/facteurs', name: 'facteur')]
-    public function showFacteurs(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, Request $request): Response
+    public function showFacteurs(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, Request $request, ExpediteurRepository $expediteurRepository): Response
     {
 
         $facteurs = $paginatorInterface->paginate(
@@ -31,12 +32,13 @@ class FacteurController extends AbstractController
         );
 
         return $this->render('facteur/index.html.twig', [
-            'facteurs' => $facteurs
+            'facteurs' => $facteurs,
+            'expediteursInactifs' => $expediteurRepository->findAllInactive()
         ]);
     }
 
     #[Route('/nouveauFacteur', 'newFacteur')]
-    public function newFacteur(FacteurRepository $facteurRepo, Request $request): Response
+    public function newFacteur(FacteurRepository $facteurRepo, Request $request, ExpediteurRepository $expediteurRepository): Response
     {
         $form = ($this->createForm(FacteurType::class))->handleRequest($request);
 
@@ -64,12 +66,13 @@ class FacteurController extends AbstractController
 
         return $this->renderForm('facteur/form.html.twig', [
             'form' => $form,
-            'title' => 'Créer un facteur'
+            'title' => 'Créer un facteur',
+            'expediteursInactifs' => $expediteurRepository->findAllInactive()
         ]);
     }
 
     #[Route('/modifierFacteur', 'editFacteur')]
-    public function editFacteur(FacteurRepository $facteurRepo, Request $request, EntityManagerInterface $em): Response
+    public function editFacteur(FacteurRepository $facteurRepo, Request $request, EntityManagerInterface $em, ExpediteurRepository $expediteurRepository): Response
     {
         $ancienFacteur = $facteurRepo->find($request->get('id'));
         $form = $this->createForm(FacteurType::class, $ancienFacteur)->handleRequest($request);
@@ -97,7 +100,8 @@ class FacteurController extends AbstractController
 
         return $this->renderForm('facteur/form.html.twig', [
             'form' => $form,
-            'title' => 'Modifier le facteur'
+            'title' => 'Modifier le facteur',
+            'expediteursInactifs' => $expediteurRepository->findAllInactive()
         ]);
     }
 
