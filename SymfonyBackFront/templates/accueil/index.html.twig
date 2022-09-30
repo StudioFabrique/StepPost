@@ -9,7 +9,7 @@
 {% block body %}
 
 <main class="w-[95%] m-auto">
-    <h1 style="font-size: 20pt;padding-bottom: 2%;"><b>Liste et gestion des courriers</b></h1>
+    <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Liste et gestion des courriers</h1>
     <section class="flex justify-between items-center">
         <form class="flex " action="" method="get">
             <div class="mb-3 xl:w-50">
@@ -124,14 +124,14 @@
             </tbody>
         </table>
     </section>
-    <div class="flex justify-center mt-4">
-        {% set maxPages = maxPages / 10 + 1 %}
-        {% if maxPages|round == currentPage %}
-            <p class="pt-3 text-green-900">1</p>
+    <div class="flex justify-center m-4">
+        {% set maxPages = maxPages % 10 == 0 ? maxPages / 10 : maxPages / 10 + 1 %}
+        {% if currentPage > 3 %}
+            <a href="http://localhost:8000/accueil/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
         {% endif %}
             <p>{{ knp_pagination_render(courriers) }} </p>
         {% if maxPages|round != currentPage %}
-            <p class="pt-3 text-red-700">{{ maxPages|round }} </p>
+            <a href={{"http://localhost:8000/accueil/?page=" ~ (maxPages|round)|trans }} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{ maxPages|round }} </a>
         {% endif %}
     </div>
     {% else %}

@@ -7,7 +7,8 @@
 
 
 <main class="w-[90%] m-auto">
-    <h1 style="font-size: 20pt;padding-bottom: 2%;"><b>Liste et gestion des expéditeurs</b></h1>
+    <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Liste et gestion des expéditeurs</h1>
+    <h1 style="font-size: 20pt;padding-bottom: 2%;"><b></b></h1>
     {% if isSearch != null ? false : true %}
     {% if expediteursInactifs|length > 0 %}
 
@@ -174,11 +175,13 @@
                 </tr>
                 {% endif %}
                 {% endfor %}
+                
             </tbody>
         </table>
     </section>
     <div class="flex justify-center mt-4">
         {{ knp_pagination_render(expediteurs) }}
     </div>
+    <p>{{ expediteurs|length == 0 ? 'Aucun expéditeurs'}}</p>
 </main>
 {% endblock %}

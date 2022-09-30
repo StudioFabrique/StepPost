@@ -9,12 +9,12 @@ use App\Repository\ExpediteurRepository;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Firebase\JWT\JWT;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -66,7 +66,9 @@ class ExpediteurController extends AbstractController
             'expediteurs' => $expediteur,
             'expediteursInactifs' => $expediteursInactifs,
             'isSearch' => $rechercheExpediteur,
-            'openDetails' => $openDetails
+            'openDetails' => $openDetails,
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -107,32 +109,38 @@ class ExpediteurController extends AbstractController
                 $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
                 $expediteur->setCreatedAt(new DateTime('now'))->setUpdatedAt(new DateTime('now'))->setClient(null)->setRoles(['ROLE_INACTIF'])->setPassword(' ');
                 $expediteurRepo->add($expediteur);
-            } catch (UniqueConstraintViolationException $errorHandler) {
-                return $this->redirectToRoute('app_token', [
-                    'errorMessage' => $errorHandler ?? null
+            } catch (UniqueConstraintViolationException) {
+                return $this->redirectToRoute('app_addExpediteur', [
+                    'errorMessage' => "L'adresse mail saisie est déjà associé à un compte expéditeur",
+                    'isError' => true
                 ]);
             }
 
             try {
-
                 $mail = (new Email())
                     ->from('step.automaticmailservice@gmail.com') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
                     ->to($form->get('email')->getData())
                     ->subject('Création de votre compte client')
                     ->html($body);
                 $mailer->send($mail);
+                return $this->redirectToRoute('app_expediteur', [
+                    'errorMessage' => "L'expediteur a été créé"
+                ]);
             } catch (TransportExceptionInterface $e) {
-                $errorHandler = "une erreur s'est produite lors de l'envoi du mail";
+                $errorHandler = "Une erreur s'est produite lors de l'envoi du mail";
+                // supprimer le compte expéditeur créé pendant l'envoi raté de l'email
+                return $this->redirectToRoute('app_addExpediteur', [
+                    'errorMessage' => $errorHandler ?? null,
+                    'isError' => true
+                ]);
             }
-
-            return $this->redirectToRoute('app_token', [
-                'errorMessage' => $errorHandler ?? null
-            ]);
         }
 
         return $this->renderForm('expediteur/new.html.twig', [
             'form' => $form,
-            'expediteursInactifs' => $expediteurRepo->findAllInactive()
+            'expediteursInactifs' => $expediteurRepo->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -148,26 +156,33 @@ class ExpediteurController extends AbstractController
                 Expediteur::class,
                 array('client')
             );
-            $expediteurRepository->add($expediteur);
-            return $this->redirectToRoute('app_expediteur', [], Response::HTTP_SEE_OTHER);
+            try {
+                $expediteurRepository->add($expediteur);
+                return $this->redirectToRoute('app_expediteur', [], Response::HTTP_SEE_OTHER);
+            } catch (Exception $e) {
+                return $this->redirectToRoute('app_editExpediteur', ['errorMessage' => "La modification de l'adresse mail est impossible car elle est déjà attribuée à un autre expéditeur", 'isError' => true], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->renderForm('expediteur/edit.html.twig', [
             'expediteur' => $ancienExpediteur,
             'form' => $form,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
 
     #[Route('/delete/{id}', name: 'deleteExpediteur', methods: ['POST'])]
-    public function Delete(Request $request, Expediteur $expediteur, ExpediteurRepository $expediteurRepository): Response
+    public function Delete(Expediteur $expediteur, ExpediteurRepository $expediteurRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $expediteur->getId(), $request->request->get('_token'))) {
+        try {
             $expediteurRepository->remove($expediteur);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur a bien été supprimé", Response::HTTP_SEE_OTHER]);
+        } catch (Exception) {
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur n'a pas pu être supprimé.", 'isError' => true], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->redirectToRoute('app_expediteur', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/detailsExpediteur', name: 'detailsExpediteur')]
@@ -177,7 +192,9 @@ class ExpediteurController extends AbstractController
         $expediteur = $expediteurRepository->find($expediteurId);
         return $this->render('expediteur/details.html.twig', [
             'expediteur' => $expediteur,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -196,20 +213,9 @@ class ExpediteurController extends AbstractController
             $em->persist($expediteur);
             $em->flush();
             $mailer->send($email);
-            return $this->redirectToRoute('app_expediteur');
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur a bien été activé"]);
         } catch (UniqueConstraintViolationException $e) {
-            return $this->redirectToRoute('app_expediteur');
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'activation de l'expéditeur n'a pas pu être effectué", 'isError' => true]);
         }
-    }
-
-    // A mettre sous forme de toaster
-    #[Route('/mailToken', name: 'token')]
-    public function RedirectTokenMailView(Request $request)
-    {
-        $errorHandler = $request->get('errorMessage') ?? "L'email a bien été envoyé";
-
-        return $this->render('expediteur/tokenMailRedirect.html.twig', [
-            'errorHandler' => $errorHandler
-        ]);
     }
 }

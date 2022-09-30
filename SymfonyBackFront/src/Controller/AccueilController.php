@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /*
 Cette classe est le point d'entrée de l'application après que 
 l'utilisateur (Administrateur) se soit connecté à l'application.
-Le route parent est /acceuil ayant comme alias/nom app_.
+Le route parent est /accueil ayant comme alias/nom app_.
 Par l'intermédiaire de cette classe, l'administrateur va pouvoir gérer les différents
 courriers présents dans la base données.
 */
@@ -67,7 +67,8 @@ class AccueilController extends AbstractController
             'isSearching' => is_integer($rechercheCourrier) ? true : (is_string($rechercheCourrier) ? true : false),
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'maxPages' => count($data),
-            'currentPage' => $request->query->getInt('page')
+            'currentPage' => $request->query->getInt('page'),
+            'errorMessage' => $request->get('errorMessage') ?? null,
         ]);
     }
 
@@ -79,7 +80,8 @@ class AccueilController extends AbstractController
     public function indexbyid(
         Courrier $id,
         StatutCourrierRepository $statutsCourrierRepo,
-        ExpediteurRepository $expediteurRepository
+        ExpediteurRepository $expediteurRepository,
+        Request $request
     ): Response {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -90,7 +92,9 @@ class AccueilController extends AbstractController
         return $this->render('suivi_detail/index.html.twig', [
             'courrierId' => $id,
             'statutsCourrier' => $statutsCourrier,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 }

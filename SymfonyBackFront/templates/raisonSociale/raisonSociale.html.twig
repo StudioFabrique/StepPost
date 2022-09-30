@@ -5,11 +5,11 @@
 {% block body %}
 <main class="w-[90%] m-auto">
     <div class="flex justify-between items-center">
-        <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Liste des raisons sociales</h1>
-    <div class="my-5">
-        <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_addRaisonSociale') }}">Créer une raison sociale</a>
-        <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
-    </div>
+        <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Liste des raisons sociales</h1>
+        <div class="my-5">
+            <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_addRaisonSociale') }}">Créer une raison sociale</a>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
+        </div>
     </div>
     <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left text-gray-500 table-fixed">
@@ -55,5 +55,6 @@
             </tbody>
         </table>
     </section>
+    {{ raisonsSociales|length == 0 ? 'Aucune raisons sociales'}}
 </main>
 {% endblock %}

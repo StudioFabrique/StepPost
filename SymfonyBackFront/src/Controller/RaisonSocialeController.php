@@ -9,6 +9,7 @@ use App\Repository\ExpediteurRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,12 +22,14 @@ use Symfony\Component\HttpFoundation\Request;
 class RaisonSocialeController extends AbstractController
 {
     #[Route('/', name: 'raisonSociale')]
-    public function ShowRaisonsSociales(ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository): Response
+    public function ShowRaisonsSociales(ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository, Request $request): Response
     {
         $raisonsSociales = $clientRepository->findAll();
         return $this->render('raisonSociale/raisonSociale.html.twig', [
             'raisonsSociales' => $raisonsSociales,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -39,18 +42,15 @@ class RaisonSocialeController extends AbstractController
         return $this->render('raisonSociale/clientsRaisonSociale.html.twig', [
             'raison' => $raison,
             'clients' => $clients,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
     #[Route('/ajouterRaisonSociale', name: 'addRaisonSociale')]
     public function AddRaisonSociale(Request $request, ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository): Response
     {
-        // uniqueConstraint est une requête obtenue lorsque la raison sociale ajoutée existe déjà.
-        // L'opérateur ternaire (?:) utilisé permet de ne pas afficher l'erreur lors du premier rendu
-        // du formulaire. 
-        $uniqueConstraint = $request->get('uniqueConstraint') != null ? $request->get('uniqueConstraint') : 'no error';
-
         $raisonSociale = new Client();
         $form = ($this->createForm(ClientType::class, $raisonSociale))->handleRequest($request);
 
@@ -58,18 +58,17 @@ class RaisonSocialeController extends AbstractController
             try {
                 $raisonSociale->setRaisonSociale(strip_tags(strtolower($form->get('raisonSociale')->getData())));
                 $clientRepository->add($raisonSociale, true);
-                return $this->redirectToRoute('app_raisonSociale', []);
+                return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => 'La raison sociale a bien été créé']);
             } catch (UniqueConstraintViolationException $e) {
-                return $this->redirectToRoute('addRaisonSociale', [
-                    'uniqueConstraint' => 'La raison sociale existe déjà.'
-                ]);
+                return $this->redirectToRoute('app_addRaisonSociale', ['errorMessage' => 'La raison sociale saisie existe déjà', 'isError' => true]);
             }
         }
 
         return $this->renderForm('raisonSociale/newRaisonSociale.html.twig', [
-            'uniqueConstraint' => $uniqueConstraint,
             'form' => $form,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -84,14 +83,20 @@ class RaisonSocialeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $raison = $form->getData();
             $raison->SetRaisonSociale((strip_tags(strtolower($form->get('raisonSociale')->getData()))));
-            $em->persist($raison);
-            $em->flush();
-            return $this->redirectToRoute('app_raisonSociale');
+            try {
+                $em->persist($raison);
+                $em->flush();
+                return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => 'La raison sociale ' . $form->get('raisonSociale') . ' a bien été modifié']);
+            } catch (Exception) {
+                return $this->redirectToRoute('app_editRaisonSociale', ['errorMessage' => 'La modification de la raison sociale a échoué', 'isError' => true]);
+            }
         }
 
         return $this->renderForm('raisonSociale/editRaisonSociale.html.twig', [
             'form' => $form,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -100,8 +105,13 @@ class RaisonSocialeController extends AbstractController
     {
         $raisonId = $request->get('raisonId');
         $raison = $clientRepository->find($raisonId);
-        $clientRepository->remove($raison, true);
-        return $this->redirectToRoute('app_raisonSociale'); // ajouter la suppression des raisons sociales de chaques expediteurs avec confirmation.
+
+        try {
+            $clientRepository->remove($raison, true);
+            return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => 'La raison sociale ' . $raison->getRaisonSociale() . ' a bien été supprimé']);
+        } catch (Exception) {
+            return $this->redirectToRoute('app_deleteRaisonSociale', ['errorMessage' => 'La suppression de la raison sociale ' . $raison->getRaisonSociale() . ' a échoué']);
+        }
     }
 
     #[Route('/detacherClient', name: 'deleteClientRaisonSociale')]
@@ -110,11 +120,21 @@ class RaisonSocialeController extends AbstractController
         $expediteurId = $request->get('expediteurId');
         $raisonId = $request->get('raisonId');
         $expediteur = $expediteurRepository->find($expediteurId);
-        $em->persist($clientRepository->find($raisonId)->removeExpediteur($expediteur));
-        $em->flush();
-        return $this->redirectToRoute('app_clientsRaisonSociale', [
-            'raisonId' => $raisonId
-        ]);
+
+        try {
+            $em->persist($clientRepository->find($raisonId)->removeExpediteur($expediteur));
+            $em->flush();
+            return $this->redirectToRoute('app_clientsRaisonSociale', [
+                'raisonId' => $raisonId,
+                'errorMessage' => "L'expéditeur " . ($expediteur->getPrenom() ?? null) . " " . $expediteur->getNom() . " a bien été détaché de cette raison sociale"
+            ]);
+        } catch (Exception) {
+            return $this->redirectToRoute('app_clientsRaisonSociale', [
+                'raisonId' => $raisonId,
+                'errorMessage' => "L'expéditeur " . ($expediteur->getPrenom() ?? null) . " " . $expediteur->getNom() . " n'a pas pu être détaché de cette raison sociale",
+                'isError' => true
+            ]);
+        }
     }
 
     #[Route('/ajouterClient', name: 'addClientRaisonSociale')]
@@ -125,7 +145,9 @@ class RaisonSocialeController extends AbstractController
         return $this->render('raisonSociale/addClientsRaisonSociale.html.twig', [
             'clients' => $clients,
             'raisonId' => $raisonId,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -134,11 +156,22 @@ class RaisonSocialeController extends AbstractController
     {
         $raisonId = $request->get('raisonId');
         $expediteurId = $request->get('expediteurId');
-        $em->persist($expediteurRepository->find($expediteurId)->setClient($clientRepository->find($raisonId)));
-        $em->flush();
-        return $this->redirectToRoute('app_clientsRaisonSociale', [
-            'raisonId' => $raisonId,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
-        ]);
+        $expediteur = $expediteurRepository->find($expediteurId);
+
+        try {
+            $em->persist($expediteur->setClient($clientRepository->find($raisonId)));
+            $em->flush();
+            return $this->redirectToRoute('app_clientsRaisonSociale', [
+                'raisonId' => $raisonId,
+                'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+                'errorMessage' => "L'expéditeur " . ($expediteur->getPrenom() ?? null) . " " . $expediteur->getNom() . " a été ajouté à cette raison sociale"
+            ]);
+        } catch (Exception) {
+            return $this->redirectToRoute('app_clientsRaisonSociale', [
+                'raisonId' => $raisonId,
+                'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+                'errorMessage' => "L'expéditeur " . ($expediteur->getPrenom() ?? null) . " " . $expediteur->getNom() . " n'a pas pu être ajouté à cette raison sociale"
+            ]);
+        }
     }
 }

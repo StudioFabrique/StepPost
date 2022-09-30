@@ -10,6 +10,7 @@ use App\Repository\FacteurRepository;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,7 +34,9 @@ class FacteurController extends AbstractController
 
         return $this->render('facteur/index.html.twig', [
             'facteurs' => $facteurs,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -58,16 +61,18 @@ class FacteurController extends AbstractController
                         ->setUpdatedAt(new DateTime('now')),
                     true
                 );
+                return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur a bien été créé']);
             } catch (UniqueConstraintViolationException $e) {
-                return $this->redirectToRoute('app_facteur');
+                return $this->redirectToRoute('app_newFacteur', ['errorMessage' => "La création du facteur a échoué, l'adresse mail est déjà attribué à un facteur existant", 'isError' => true]);
             }
-            return $this->redirectToRoute('app_facteur');
         }
 
         return $this->renderForm('facteur/form.html.twig', [
             'form' => $form,
             'title' => 'Créer un facteur',
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -92,16 +97,24 @@ class FacteurController extends AbstractController
                 ->setCreatedAt($ancienFacteur->getCreatedAt())
                 ->setUpdatedAt(new DateTime())
                 ->setPassword($ancienFacteur->getPassword());
-            $em->persist($facteur);
-            $em->flush();
 
-            return $this->redirectToRoute('app_facteur');
+
+
+            try {
+                $em->persist($facteur);
+                $em->flush();
+                return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur a été modifié']);
+            } catch (Exception) {
+                return $this->redirectToRoute('app_editFacteur', ['errorMessage' => "La modification a échoué, l'adresse mail saisie est déjà associée à un autre facteur", 'isError' => true]);
+            }
         }
 
         return $this->renderForm('facteur/form.html.twig', [
             'form' => $form,
             'title' => 'Modifier le facteur',
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -109,7 +122,12 @@ class FacteurController extends AbstractController
     public function deleteFacteur(Request $request, FacteurRepository $facteurRepo): Response
     {
         $idFacteur = $request->get('id');
-        $facteurRepo->remove($facteurRepo->find($idFacteur), true);
-        return $this->redirectToRoute('app_facteur');
+
+        try {
+            $facteurRepo->remove($facteurRepo->find($idFacteur), true);
+            return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur a bien été supprimé']);
+        } catch (Exception) {
+            return $this->redirectToRoute('app_facteur', ['errorMessage' => 'La suppression du facteur a échoué', 'isError' => true]);
+        }
     }
 }

@@ -98,7 +98,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->leftJoin('s.statut', 'd')
             ->leftJoin('c.expediteur', 'e')
             ->groupBy('c.id')
-            ->orderBy('s.date', $order)
+            ->orderBy('date', $order)
             ->getQuery();
         return $qb->getResult();
     }

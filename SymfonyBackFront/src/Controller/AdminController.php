@@ -7,6 +7,7 @@ use App\Form\UserType;
 use App\Repository\ExpediteurRepository;
 use App\Repository\UserRepository;
 use DateTime;
+use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,7 +41,9 @@ class AdminController extends AbstractController
 
         return $this->render('admin/index.html.twig', [
             'admins' => $admins,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -61,14 +64,20 @@ class AdminController extends AbstractController
             $userStep->setCreatedAt(new DateTime('now'));
             $userStep->setUpdatedAt(new DateTime('now'));
             $userStep->setRoles(['ROLE_ADMIN']);
-            $userStepRepository->add($userStep);
-            return $this->redirectToRoute('app_admin', [], Response::HTTP_SEE_OTHER);
+            try {
+                $userStepRepository->add($userStep);
+                return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur a été créé"], Response::HTTP_SEE_OTHER);
+            } catch (Exception) {
+                return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'adresse mail saisie est déjà associée à un administrateur existant", 'isError' => true], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->renderForm('admin/new.html.twig', [
             'user_step' => $userStep,
             'form' => $form,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
@@ -89,27 +98,34 @@ class AdminController extends AbstractController
             );
             $userStep->setPassword($hashedPassword);
             $userStep->setRoles($isSuperAdmin ? ['ROLE_ADMIN', 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN']);
-
             $userStep->setUpdatedAt(new DateTime('now'));
-            $userStepRepository->add($userStep);
-            return $this->redirectToRoute('app_admin', [], Response::HTTP_SEE_OTHER);
+
+            try {
+                $userStepRepository->add($userStep);
+                return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur a été modifié"], Response::HTTP_SEE_OTHER);
+            } catch (Exception) {
+                return $this->redirectToRoute('app_admin', ['errorMessage' => "L'email saisie est déjà attribuée à un autre administrateur", 'isError' => true], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->renderForm('admin/edit.html.twig', [
             'user_step' => $userStep,
             'form' => $form,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive()
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
         ]);
     }
 
 
     #[Route('/delete/{id}', name: 'admin_delete', methods: ['POST'])]
-    public function delete(Request $request, User $userStep, UserRepository $userStepRepository): Response
+    public function delete(User $admin, UserRepository $userStepRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $userStep->getId(), $request->request->get('_token'))) {
-            $userStepRepository->remove($userStep);
+        try {
+            $userStepRepository->remove($admin);
+            return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur a été supprimé"], Response::HTTP_SEE_OTHER);
+        } catch (Exception) {
+            return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur n'a pas pu être supprimé", 'isError' => true], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->redirectToRoute('app_admin', [], Response::HTTP_SEE_OTHER);
     }
 }

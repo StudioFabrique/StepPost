@@ -14,7 +14,9 @@
         {% endblock %}
     </head>
         {% include('partials/_header.html.twig') %}
-        
+        {% if errorMessage != null %}
+            {% include "partials/_errorAlert.html.twig" %}
+        {% endif %}
         {% if expediteursInactifs != null %}
             {% include "partials/_banner.html.twig" %}
         {% endif %}

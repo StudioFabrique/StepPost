@@ -8,7 +8,6 @@
         <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Raison sociale</h1>
         <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_raisonSociale') }}">Retour</a>
     </div>
-    <p>{{ uniqueConstraint != 'no error' ? uniqueConstraint : null }}</p>
     {{form(form)}}
 </main>
 {% endblock %}

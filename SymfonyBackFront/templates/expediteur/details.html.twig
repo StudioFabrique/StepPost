@@ -6,8 +6,10 @@
 </div>
 <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Détails de l'expéditeur</h1>
 <div class="flex-col items-center space-x-10 space-y-5">
-    <p class="py-5">Nom / Nom de l'entreprise : {{expediteur.nom}}</p>
+    <p class="pt-5 ml-2">Email : {{ expediteur.email }}</p>
     <p class="">Prénom / Service : {{expediteur.prenom ?? 'non défini'}} </p>
+    <hr class="border-blue-900 border-1 absolute w-full right-0">
+    <p class="py-5">Nom / Nom de l'entreprise : {{expediteur.nom}}</p>
     <hr class="border-blue-900 border-1 absolute w-full right-0">
     <p class="pt-5">Adresse : {{ expediteur.adresse }}</p>
     <hr class="border-blue-900 border-1 absolute w-full right-0">
