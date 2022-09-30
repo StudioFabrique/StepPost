@@ -48,32 +48,32 @@ class AdminController extends AbstractController
     }
 
     #[Route('/ajouter', name: 'admin_add')]
-    public function new(Request $request, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
+    public function new(Request $request, UserRepository $adminRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
     {
-        $userStep = new User();
-        $form = $this->createForm(UserType::class, $userStep);
+        $admin = new User();
+        $form = $this->createForm(UserType::class, $admin);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $pass = $form->get('password')->getData();
             $hashedPassword = $passwordHasher->hashPassword(
-                $userStep,
+                $admin,
                 $pass
             );
-            $userStep->setPassword($hashedPassword);
-            $userStep->setCreatedAt(new DateTime('now'));
-            $userStep->setUpdatedAt(new DateTime('now'));
-            $userStep->setRoles(['ROLE_ADMIN']);
+            $admin->setPassword($hashedPassword);
+            $admin->setCreatedAt(new DateTime('now'));
+            $admin->setUpdatedAt(new DateTime('now'));
+            $admin->setRoles(['ROLE_ADMIN']);
             try {
-                $userStepRepository->add($userStep);
-                return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur a été créé"], Response::HTTP_SEE_OTHER);
+                $adminRepository->add($admin);
+                return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur "  . $form->get('nom')->getData() . " a été créé"], Response::HTTP_SEE_OTHER);
             } catch (Exception) {
                 return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'adresse mail saisie est déjà associée à un administrateur existant", 'isError' => true], Response::HTTP_SEE_OTHER);
             }
         }
 
         return $this->renderForm('admin/new.html.twig', [
-            'user_step' => $userStep,
+            'user_step' => $admin,
             'form' => $form,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
@@ -82,34 +82,34 @@ class AdminController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'admin_edit')]
-    public function edit(Request $request, UserRepository $userStepRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
+    public function edit(Request $request, UserRepository $adminRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
     {
         $adminId = $request->get('id');
-        $userStep = $userStepRepository->find($adminId);
-        $isSuperAdmin = in_array('ROLE_SUPERADMIN', $userStep->getRoles()) ? true : false;
-        $form = $this->createForm(UserType::class, $userStep);
+        $admin = $adminRepository->find($adminId);
+        $isSuperAdmin = in_array('ROLE_SUPERADMIN', $admin->getRoles()) ? true : false;
+        $form = $this->createForm(UserType::class, $admin);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $pass = $form->get('password')->getData();
             $hashedPassword = $passwordHasher->hashPassword(
-                $userStep,
+                $admin,
                 $pass
             );
-            $userStep->setPassword($hashedPassword);
-            $userStep->setRoles($isSuperAdmin ? ['ROLE_ADMIN', 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN']);
-            $userStep->setUpdatedAt(new DateTime('now'));
+            $admin->setPassword($hashedPassword);
+            $admin->setRoles($isSuperAdmin ? ['ROLE_ADMIN', 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN']);
+            $admin->setUpdatedAt(new DateTime('now'));
 
             try {
-                $userStepRepository->add($userStep);
-                return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur a été modifié"], Response::HTTP_SEE_OTHER);
+                $adminRepository->add($admin);
+                return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur " . $form->get('nom')->getData() . " a été modifié"], Response::HTTP_SEE_OTHER);
             } catch (Exception) {
                 return $this->redirectToRoute('app_admin', ['errorMessage' => "L'email saisie est déjà attribuée à un autre administrateur", 'isError' => true], Response::HTTP_SEE_OTHER);
             }
         }
 
         return $this->renderForm('admin/edit.html.twig', [
-            'user_step' => $userStep,
+            'user_step' => $admin,
             'form' => $form,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
@@ -119,13 +119,13 @@ class AdminController extends AbstractController
 
 
     #[Route('/delete/{id}', name: 'admin_delete', methods: ['POST'])]
-    public function delete(User $admin, UserRepository $userStepRepository): Response
+    public function delete(User $admin, UserRepository $adminRepository): Response
     {
         try {
-            $userStepRepository->remove($admin);
-            return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur a été supprimé"], Response::HTTP_SEE_OTHER);
+            $adminRepository->remove($admin);
+            return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur " . $admin->getNom() . " a été supprimé"], Response::HTTP_SEE_OTHER);
         } catch (Exception) {
-            return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur n'a pas pu être supprimé", 'isError' => true], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur " . $admin->getNom() . " n'a pas pu être supprimé", 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 }

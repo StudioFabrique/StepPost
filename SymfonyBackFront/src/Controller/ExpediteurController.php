@@ -124,7 +124,7 @@ class ExpediteurController extends AbstractController
                     ->html($body);
                 $mailer->send($mail);
                 return $this->redirectToRoute('app_expediteur', [
-                    'errorMessage' => "L'expediteur a été créé"
+                    'errorMessage' => "L'expéditeur "  . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) .  " a été créé"
                 ]);
             } catch (TransportExceptionInterface $e) {
                 $errorHandler = "Une erreur s'est produite lors de l'envoi du mail";
@@ -158,9 +158,9 @@ class ExpediteurController extends AbstractController
             );
             try {
                 $expediteurRepository->add($expediteur);
-                return $this->redirectToRoute('app_expediteur', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur " . ($form->get('nom')->getData() ?? null) . " " . $form->get('prenom')->getData() . " a été modifié"], Response::HTTP_SEE_OTHER);
             } catch (Exception $e) {
-                return $this->redirectToRoute('app_editExpediteur', ['errorMessage' => "La modification de l'adresse mail est impossible car elle est déjà attribuée à un autre expéditeur", 'isError' => true], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_editExpediteur', ['errorMessage' => "La modification de l'expediteur " . ($form->get('nom')->getData() ?? null) . " " . $form->get('prenom')->getData() . " est impossible car l'adresse mail est déjà attribuée à un autre expéditeur", 'isError' => true], Response::HTTP_SEE_OTHER);
             }
         }
 
@@ -179,9 +179,9 @@ class ExpediteurController extends AbstractController
     {
         try {
             $expediteurRepository->remove($expediteur);
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur a bien été supprimé", Response::HTTP_SEE_OTHER]);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur " . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) . " a bien été supprimé", Response::HTTP_SEE_OTHER]);
         } catch (Exception) {
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur n'a pas pu être supprimé.", 'isError' => true], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur " . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) . " n'a pas pu être supprimé.", 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 
@@ -213,9 +213,9 @@ class ExpediteurController extends AbstractController
             $em->persist($expediteur);
             $em->flush();
             $mailer->send($email);
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur a bien été activé"]);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur " . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) . " a bien été activé"]);
         } catch (UniqueConstraintViolationException $e) {
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'activation de l'expéditeur n'a pas pu être effectué", 'isError' => true]);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'activation de l'expéditeur "  . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) .  " n'a pas pu être effectué", 'isError' => true]);
         }
     }
 }
