@@ -86,7 +86,7 @@ class RaisonSocialeController extends AbstractController
             try {
                 $em->persist($raison);
                 $em->flush();
-                return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => 'La raison sociale ' . $form->get('raisonSociale') . ' a bien été modifié']);
+                return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => 'La raison sociale ' . $form->get('raisonSociale')->getData() . ' a bien été modifié']);
             } catch (Exception) {
                 return $this->redirectToRoute('app_editRaisonSociale', ['errorMessage' => 'La modification de la raison sociale a échoué', 'isError' => true]);
             }
@@ -161,13 +161,13 @@ class RaisonSocialeController extends AbstractController
         try {
             $em->persist($expediteur->setClient($clientRepository->find($raisonId)));
             $em->flush();
-            return $this->redirectToRoute('app_clientsRaisonSociale', [
+            return $this->redirectToRoute('app_addClientRaisonSociale', [
                 'raisonId' => $raisonId,
                 'expediteursInactifs' => $expediteurRepository->findAllInactive(),
                 'errorMessage' => "L'expéditeur " . ($expediteur->getPrenom() ?? null) . " " . $expediteur->getNom() . " a été ajouté à cette raison sociale"
             ]);
         } catch (Exception) {
-            return $this->redirectToRoute('app_clientsRaisonSociale', [
+            return $this->redirectToRoute('app_addClientRaisonSociale', [
                 'raisonId' => $raisonId,
                 'expediteursInactifs' => $expediteurRepository->findAllInactive(),
                 'errorMessage' => "L'expéditeur " . ($expediteur->getPrenom() ?? null) . " " . $expediteur->getNom() . " n'a pas pu être ajouté à cette raison sociale"
