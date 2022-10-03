@@ -89,7 +89,7 @@ class FacteurController extends AbstractController
             $facteur = (new FormatageObjet)->stringToLowerObject(
                 $formData,
                 Facteur::class,
-                array('createdAt, updatedAt'),
+                array('createdAt', 'updatedAt'),
                 false
             );
 
@@ -99,7 +99,9 @@ class FacteurController extends AbstractController
                 ->setUpdatedAt(new DateTime())
                 ->setPassword($ancienFacteur->getPassword());
 
-
+            foreach ($ancienFacteur->getStatutsCourrier() as $statut) {
+                $facteur->addStatutsCourrier($statut);
+            }
 
             try {
                 $em->persist($facteur);

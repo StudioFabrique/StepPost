@@ -83,10 +83,11 @@ class ExpediteurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $expediteur = $form->getData();
+            $expediteur->setClient(null);
             $expediteurArray = (new FormatageObjet)
                 ->stringToLowerObject(
-                    $form->getData(),
+                    $expediteur,
                     Expediteur::class,
                     array('client', 'createdAt', 'updatedAt'),
                     true
@@ -106,10 +107,9 @@ class ExpediteurController extends AbstractController
 
 
             try {
-                var_dump($expediteurArray);
                 $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
                 $expediteur->setCreatedAt(new DateTime('now'))->setUpdatedAt(new DateTime('now'))->setClient(null)->setRoles(['ROLE_INACTIF'])->setPassword(' ');
-                $expediteurRepo->add($expediteur);
+                $expediteurRepo->add($expediteur->setClient($form->get('client')->getData()), true);
             } catch (UniqueConstraintViolationException) {
                 return $this->redirectToRoute('app_addExpediteur', [
                     'errorMessage' => "L'adresse mail saisie est déjà associé à un compte expéditeur",
@@ -146,19 +146,21 @@ class ExpediteurController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'editExpediteur')]
-    public function edit(Request $request, Expediteur $ancienExpediteur, ExpediteurRepository $expediteurRepository): Response
+    public function edit(Request $request, Expediteur $ancienExpediteur, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(ExpediteurType::class, $ancienExpediteur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $ancienExpediteur->setClient(null);
             $expediteur = (new FormatageObjet)->stringToLowerObject(
-                $form->getData(),
+                $ancienExpediteur,
                 Expediteur::class,
                 array('client')
             );
             try {
-                $expediteurRepository->add($expediteur);
+                $em->persist($expediteur->setClient($form->get('client')->getData()));
+                $em->flush();
                 return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur " . ($form->get('nom')->getData() ?? null) . " " . $form->get('prenom')->getData() . " a été modifié"], Response::HTTP_SEE_OTHER);
             } catch (Exception $e) {
                 return $this->redirectToRoute('app_editExpediteur', ['errorMessage' => "La modification de l'expediteur " . ($form->get('nom')->getData() ?? null) . " " . $form->get('prenom')->getData() . " est impossible car l'adresse mail est déjà attribuée à un autre expéditeur", 'isError' => true], Response::HTTP_SEE_OTHER);

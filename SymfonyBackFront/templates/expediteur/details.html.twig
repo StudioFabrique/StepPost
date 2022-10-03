@@ -5,27 +5,27 @@
     <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
 </div>
 <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Détails de l'expéditeur</h1>
-<div class="flex-col items-center space-x-10 space-y-5">
-    <p class="pt-5 ml-2">Email : {{ expediteur.email }}</p>
-    <p class="">Prénom / Service : {{expediteur.prenom ?? 'non défini'}} </p>
-    <hr class="border-blue-900 border-1 absolute w-full right-0">
-    <p class="py-5">Nom / Nom de l'entreprise : {{expediteur.nom}}</p>
-    <hr class="border-blue-900 border-1 absolute w-full right-0">
-    <p class="pt-5">Adresse : {{ expediteur.adresse }}</p>
-    <hr class="border-blue-900 border-1 absolute w-full right-0">
-    <p class="pt-5">Complément d'adresse : {{ expediteur.complement }}</p>
-    <hr class="border-blue-900 border-1 absolute w-full right-0">
-    <p class="pt-5">Code Postal : {{ expediteur.codePostal }}</p>
-    <hr class="border-blue-900 border-1 absolute w-full right-0">
-    <p class="pt-5">Ville : {{ expediteur.ville }}</p>
-    <hr class="border-blue-900 border-1 absolute w-full right-0">
-    <p class="pt-5">Téléphone : {{ expediteur.telephone }}</p>
-    <hr class="border-blue-900 border-1 absolute w-full right-0">
-    <div class="pt-5">
+<div class="flex justify-center gap-5 m-4 bg-slate-200 p-4">
+    <p>Email : {{ expediteur.email }}</p>
+
+    <p>Prénom / Service : {{expediteur.prenom ?? 'non défini'}} </p>
+
+    <p>Nom / Nom de l'entreprise : {{expediteur.nom}}</p>
+
+    <p>Adresse : {{ expediteur.adresse }}</p>
+
+    <p>Complément d'adresse : {{ expediteur.complement }}</p>
+
+    <p>Code Postal : {{ expediteur.codePostal }}</p>
+
+    <p>Ville : {{ expediteur.ville }}</p>
+
+    <p>Téléphone : {{ expediteur.telephone }}</p>
+
+    <div>
         <h2>Destinataires :</h2>
-        <div class="flex-row w-50">
         {% for destinataire in expediteur.destinataires %}
-            <div class="flex items-center m-5">
+            <div class="flex items-center m-4 bg-slate-300 rounded-lg px-2">
                 <svg class="w-5" xmlns="http://www.w3.org/2000/svg" width="43.36" height="43.36" viewBox="0 0 43.36 43.36">
                     <g id="Calque_2" data-name="Calque 2">
                     <g id="Calque_1-2" data-name="Calque 1">
@@ -41,7 +41,6 @@
                 <p class="px-4">{{ destinataire.nom }} {{ destinataire.prenom }}</p>
             </div>
         {% endfor %}
-        </div>
     </div>
 </div>
 

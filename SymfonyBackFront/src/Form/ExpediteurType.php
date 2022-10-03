@@ -73,6 +73,11 @@ class ExpediteurType extends AbstractType
                 'attr' => [
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
                 ],
+            ])
+            ->add('client', EntityType::class, [
+                'label' => 'Raison Sociale *',
+                'class' => Client::class,
+                'choice_label' => 'raisonSociale'
             ]);
     }
 

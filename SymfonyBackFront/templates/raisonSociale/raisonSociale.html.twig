@@ -38,7 +38,9 @@
                     <td class="px-6 py-4">
                         {{ raison.raisonSociale }}
                     </td>
-                    <td></td>
+                    <td class="px-2 py-4 pl-20">
+                        <b>{{ raison.expediteurs|length }}</b>
+                    </td>
                     <td class="px-2 py-4">
                         <a class="text-blue-800 bg-blue-100 p-2 rounded"
                             href="{{ path('app_editRaisonSociale',{raisonId : raison.id}) }}">
