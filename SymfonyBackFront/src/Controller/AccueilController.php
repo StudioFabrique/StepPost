@@ -66,7 +66,7 @@ class AccueilController extends AbstractController
             'order' => $order == "DESC" ? "ASC" : "DESC",
             'isSearching' => is_integer($rechercheCourrier) ? true : (is_string($rechercheCourrier) ? true : false),
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
-            'maxPages' => count($data),
+            'nbCourriersTotal' => count($data),
             'currentPage' => $request->query->getInt('page'),
             'errorMessage' => $request->get('errorMessage') ?? null,
         ]);

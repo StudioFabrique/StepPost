@@ -125,17 +125,21 @@
         </table>
     </section>
     <div class="flex justify-center m-4">
-        {% set maxPages = maxPages % 10 == 0 ? maxPages / 10 : maxPages / 10 + 1 %}
-        {% if currentPage > 3 %}
+        {% set multi10 = '1' %}
+        {% set letterNb = -1 %}
+        {% for i in range(1, nbCourriersTotal|length) %}
+            {% set multi10 = multi10 ~ 0 %}
+            {% set letterNb = letterNb + 1 %}
+        {% endfor %}
+        {% set maxPages = nbCourriersTotal % 10 == 0 ? nbCourriersTotal / 10 : ((nbCourriersTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% if maxPages > 1 %}
             <a href="http://localhost:8000/accueil/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
-        {% endif %}
             <p>{{ knp_pagination_render(courriers) }} </p>
-        {% if maxPages|round != currentPage %}
-            <a href={{"http://localhost:8000/accueil/?page=" ~ (maxPages|round)|trans }} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{ maxPages|round }} </a>
+            <a href={{"http://localhost:8000/accueil/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
         {% endif %}
     </div>
-    {% else %}
-        <p>Aucun courriers</p>
-    {% endif %}
+        {% else %}
+            <p>Aucun courriers</p>
+        {% endif %}
 </main>
 {% endblock %}
