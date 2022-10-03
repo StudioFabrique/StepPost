@@ -63,14 +63,23 @@
                         {% endif %}
                     </td>
                 </tr>
-
-                {# {{dump(admin)}} #}
                 {% endfor %}
             </tbody>
         </table>
     </section>
-    <div class="flex justify-center mt-4">
-        {{ knp_pagination_render(admins) }}
+    <div class="flex justify-center m-4">
+        {% set multi10 = '1' %}
+        {% set letterNb = -1 %}
+        {% for i in range(1, nbAdminsTotal|length) %}
+            {% set multi10 = multi10 ~ 0 %}
+            {% set letterNb = letterNb + 1 %}
+        {% endfor %}
+        {% set maxPages = nbAdminsTotal <= 10 ? nbAdminsTotal / 10 : ((nbAdminsTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% if maxPages > 1 %}
+            <a href="http://localhost:8000/accueil/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            <p>{{ knp_pagination_render(admins) }} </p>
+            <a href={{"http://localhost:8000/accueil/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+        {% endif %}
     </div>
 </main>
 {% endblock %}

@@ -68,7 +68,7 @@ class ExpediteurController extends AbstractController
             'isSearch' => $rechercheExpediteur,
             'openDetails' => $openDetails,
             'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false
+            'isError' => $request->get('isError') ?? false,
         ]);
     }
 

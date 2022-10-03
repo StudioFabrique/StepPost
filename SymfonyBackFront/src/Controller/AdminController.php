@@ -32,9 +32,9 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $donner = $admins->findAll([], ['id' => 'DESC']);
+        $data = $admins->findAll([], ['id' => 'DESC']);
         $admins = $paginator->paginate(
-            $donner,
+            $data,
             $request->query->getInt('page', 1),
             3
         );
@@ -43,7 +43,8 @@ class AdminController extends AbstractController
             'admins' => $admins,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false
+            'isError' => $request->get('isError') ?? false,
+            'nbAdminsTotal' => count($data)
         ]);
     }
 
