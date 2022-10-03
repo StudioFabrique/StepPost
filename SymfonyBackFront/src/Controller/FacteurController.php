@@ -25,9 +25,9 @@ class FacteurController extends AbstractController
     #[Route('/facteurs', name: 'facteur')]
     public function showFacteurs(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, Request $request, ExpediteurRepository $expediteurRepository): Response
     {
-
+        $data = $facteurRepo->findAll();
         $facteurs = $paginatorInterface->paginate(
-            $facteurRepo->findAll(),
+            $data,
             $request->query->getInt('page', 1),
             8
         );
@@ -36,7 +36,8 @@ class FacteurController extends AbstractController
             'facteurs' => $facteurs,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false
+            'isError' => $request->get('isError') ?? false,
+            'nbFacteursTotal' => count($data)
         ]);
     }
 

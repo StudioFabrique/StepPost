@@ -76,9 +76,9 @@
         {% endfor %}
         {% set maxPages = nbAdminsTotal <= 10 ? nbAdminsTotal / 10 : ((nbAdminsTotal % multi10)|slice(0, letterNb)) + 1 %}
         {% if maxPages > 1 %}
-            <a href="http://localhost:8000/accueil/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            <a href="http://localhost:8000/admin/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
             <p>{{ knp_pagination_render(admins) }} </p>
-            <a href={{"http://localhost:8000/accueil/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+            <a href={{"http://localhost:8000/admin/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
         {% endif %}
     </div>
 </main>

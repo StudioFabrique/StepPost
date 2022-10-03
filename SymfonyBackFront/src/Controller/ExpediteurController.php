@@ -69,6 +69,7 @@ class ExpediteurController extends AbstractController
             'openDetails' => $openDetails,
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
+            'nbExpediteursTotal' => count($data)
         ]);
     }
 

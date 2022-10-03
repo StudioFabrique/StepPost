@@ -77,8 +77,19 @@
             </tbody>
         </table>
     </section>
-    <div class="flex justify-center mt-4">
-        {{ knp_pagination_render(facteurs) }}
+    <div class="flex justify-center m-4">
+        {% set multi10 = '1' %}
+        {% set letterNb = -1 %}
+        {% for i in range(1, nbFacteursTotal|length) %}
+            {% set multi10 = multi10 ~ 0 %}
+            {% set letterNb = letterNb + 1 %}
+        {% endfor %}
+        {% set maxPages = nbFacteursTotal <= 10 ? nbFacteursTotal / 10 : ((nbFacteursTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% if maxPages > 1 %}
+            <a href="http://localhost:8000/facteurs/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            <p>{{ knp_pagination_render(courriers) }} </p>
+            <a href={{"http://localhost:8000/facteurs/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+        {% endif %}
     </div>
     {{ facteurs|length == 0 ? 'Aucun facteurs'}}
 </main>

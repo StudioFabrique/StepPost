@@ -179,8 +179,19 @@
             </tbody>
         </table>
     </section>
-    <div class="flex justify-center mt-4">
-        {{ knp_pagination_render(expediteurs) }}
+    <div class="flex justify-center m-4">
+        {% set multi10 = '1' %}
+        {% set letterNb = -1 %}
+        {% for i in range(1, nbExpediteursTotal|length) %}
+            {% set multi10 = multi10 ~ 0 %}
+            {% set letterNb = letterNb + 1 %}
+        {% endfor %}
+        {% set maxPages = nbExpediteursTotal <= 10 ? nbExpediteursTotal / 10 : ((nbExpediteursTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% if maxPages > 1 %}
+            <a href="http://localhost:8000/expediteurs/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            <p>{{ knp_pagination_render(courriers) }} </p>
+            <a href={{"http://localhost:8000/expediteurs/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+        {% endif %}
     </div>
     <p>{{ expediteurs|length == 0 ? 'Aucun expéditeurs'}}</p>
 </main>

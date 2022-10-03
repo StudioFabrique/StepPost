@@ -10,6 +10,8 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use Knp\Component\Pager\Paginator;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,14 +24,20 @@ use Symfony\Component\HttpFoundation\Request;
 class RaisonSocialeController extends AbstractController
 {
     #[Route('/', name: 'raisonSociale')]
-    public function ShowRaisonsSociales(ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository, Request $request): Response
+    public function ShowRaisonsSociales(PaginatorInterface $paginator, ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository, Request $request): Response
     {
-        $raisonsSociales = $clientRepository->findAll();
+        $data = $clientRepository->findAll();
+
+        $raisonsSociales = $paginator->paginate(
+            $data,
+            $request->query->getInt('page', 1)
+        );
         return $this->render('raisonSociale/raisonSociale.html.twig', [
             'raisonsSociales' => $raisonsSociales,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false
+            'isError' => $request->get('isError') ?? false,
+            'nbRaisonsTotal' => count($data)
         ]);
     }
 

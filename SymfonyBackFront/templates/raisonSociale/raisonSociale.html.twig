@@ -59,6 +59,20 @@
             </tbody>
         </table>
     </section>
+    <div class="flex justify-center m-4">
+        {% set multi10 = '1' %}
+        {% set letterNb = -1 %}
+        {% for i in range(1, nbRaisonsTotal|length) %}
+            {% set multi10 = multi10 ~ 0 %}
+            {% set letterNb = letterNb + 1 %}
+        {% endfor %}
+        {% set maxPages = nbRaisonsTotal <= 10 ? nbRaisonsTotal / 10 : ((nbRaisonsTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% if maxPages > 1 %}
+            <a href="http://localhost:8000/RaisonSociale/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            <p>{{ knp_pagination_render(raisonsSociales) }} </p>
+            <a href={{"http://localhost:8000/RaisonSociale/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+        {% endif %}
+    </div>
     {{ raisonsSociales|length == 0 ? 'Aucune raisons sociales'}}
 </main>
 {% endblock %}

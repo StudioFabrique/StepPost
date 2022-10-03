@@ -4,12 +4,10 @@
     const errorAlert = document.getElementById('errorAlert');
     errorAlert.remove();
   }, 5000);
-  
-  
 </script>
 {% endblock %}
 {% block body %}
-<div id="errorAlert" class="flex animate-pulse fixed bg-zinc-100 rounded-lg p-2 right-0 bottom-0 -translate-x-2 -translate-y-2 border-2 border-[#140A82]">
+<div id="errorAlert" class="flex animate-pulse fixed bg-zinc-100 rounded-lg p-2 right-0 top-0 border-2 border-[#140A82]">
   
     {% if isError %}
       <svg xmlns="http://www.w3.org/2000/svg" width="43.36" height="43.36" viewBox="0 0 43.36 43.36">
@@ -36,6 +34,22 @@
       </svg>    
     {% endif %}
     <p class="pl-4 pr-1 pt-2">{{ errorMessage }}</p>
+
+<script>
+
+  const errorAlert = document.getElementById('errorAlert');
+    errorAlert.animate([
+        {
+            transform: "translateX(1000px)"
+        },
+        {
+            transform: "translateX(0px)"
+        }
+    ], {
+        duration: 250
+    });
+
+</script>
 
 </div>
 {% endblock %}
