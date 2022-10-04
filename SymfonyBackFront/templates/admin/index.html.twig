@@ -36,6 +36,7 @@
                 </tr>
             </thead>
             <tbody>
+                {% set i = -1 %}
                 {% for user in admins %}
                 {% set role = 'ROLE_SUPERADMIN' in user.roles ? 'Administrateur' : 'Gestionnaire' %}
                 <tr class="bg-white border-b ">
@@ -59,14 +60,16 @@
                     </td>
                     <td class="px-6 py-4">
                         {% if app.user.id != user.id %}
-                            <button onclick="ShowConfirmation()" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
+                            <button onclick="ShowConfirmation({{i}})" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
+                            <div id="confirmBox" class="fixed -ml-24 bg-[#140A82] rounded-lg p-2">
+                                <p class="text-white">Êtes-vous sûr de vouloir supprimer cet admin ? </p>
+                                <button class="bg-red-100 border-2 border-black rounded-lg p-1 mx-4 text-red-800" onclick="HideConfirmation({{i}})">Annuler</button>
+                                <a href="{{ path('app_admin_delete', {'id': user.id}) }}" class="bg-red-100 border-2 border-black rounded-lg p-1 mx-4 text-red-800 whitespace-nowrap">Confirmer la suppression</a>
+                            </div>
                         {% endif %}
                     </td>
                 </tr>
-                <div id="confirmBox" class="fixed m-10">
-                    <button onclick="HideConfirmation()">Annuler</button>
-                    <a href="{{ path('app_admin_delete', {'id': user.id}) }}">Confirmer la suppression</a>
-                </div>
+                {% set i = i + 1 %}
                 {% endfor %}
             </tbody>
         </table>
@@ -88,13 +91,19 @@
 </main>
 
 <script>
-    const confirmBox = document.getElementById("confirmBox");
-    // confirmBox.hidden = true;
-    function ShowConfirmation() {
-        confirmBox.hidden = false;
+    const confirmBoxes = document.querySelectorAll("#confirmBox");
+    confirmBoxes.hidden = true;
+    confirmBoxes.forEach(element => {
+        element.hidden = true;
+        });
+    function ShowConfirmation(i) {
+        confirmBoxes.forEach(element => {
+            element.hidden = true;
+        });
+        confirmBoxes[i].hidden = false;
     }
-    function HideConfirmation() {
-        confirmBox.hidden = true;
+    function HideConfirmation(i) {
+        confirmBoxes[i].hidden = true;
     }
 </script>
 {% endblock %}
