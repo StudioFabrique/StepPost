@@ -59,10 +59,14 @@
                     </td>
                     <td class="px-6 py-4">
                         {% if app.user.id != user.id %}
-                            {{ include('admin/_delete_form.html.twig') }}
+                            <button onclick="ShowConfirmation()" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
                         {% endif %}
                     </td>
                 </tr>
+                <div id="confirmBox" class="fixed m-10">
+                    <button onclick="HideConfirmation()">Annuler</button>
+                    <a href="{{ path('app_admin_delete', {'id': user.id}) }}">Confirmer la suppression</a>
+                </div>
                 {% endfor %}
             </tbody>
         </table>
@@ -82,4 +86,15 @@
         {% endif %}
     </div>
 </main>
+
+<script>
+    const confirmBox = document.getElementById("confirmBox");
+    // confirmBox.hidden = true;
+    function ShowConfirmation() {
+        confirmBox.hidden = false;
+    }
+    function HideConfirmation() {
+        confirmBox.hidden = true;
+    }
+</script>
 {% endblock %}

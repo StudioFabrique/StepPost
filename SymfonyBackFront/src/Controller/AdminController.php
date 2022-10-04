@@ -119,7 +119,7 @@ class AdminController extends AbstractController
     }
 
 
-    #[Route('/delete/{id}', name: 'admin_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'admin_delete')]
     public function delete(User $admin, UserRepository $adminRepository): Response
     {
         try {

@@ -57,12 +57,12 @@ class FacteurController extends AbstractController
                     );
 
                 $facteurRepo->add(
-                    $facteur->setRoles(['ROLE_FACTEUR'])
+                    $facteur->setRoles(['ROLE_FACTEURINACTIF'])
                         ->setCreatedAt(new DateTime('now'))
                         ->setUpdatedAt(new DateTime('now')),
                     true
                 );
-                return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur a bien été créé']);
+                return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur ' . $facteur->getNom() . ' a bien été créé']);
             } catch (UniqueConstraintViolationException $e) {
                 return $this->redirectToRoute('app_newFacteur', ['errorMessage' => "La création du facteur a échoué, l'adresse mail est déjà attribué à un facteur existant", 'isError' => true]);
             }
@@ -94,7 +94,7 @@ class FacteurController extends AbstractController
             );
 
             $facteur
-                ->setRoles(['ROLE_FACTEUR'])
+                ->setRoles($ancienFacteur->getRoles())
                 ->setCreatedAt($ancienFacteur->getCreatedAt())
                 ->setUpdatedAt(new DateTime())
                 ->setPassword($ancienFacteur->getPassword());
@@ -106,7 +106,7 @@ class FacteurController extends AbstractController
             try {
                 $em->persist($facteur);
                 $em->flush();
-                return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur a été modifié']);
+                return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur ' . $facteur->getNom() . ' a été modifié']);
             } catch (Exception) {
                 return $this->redirectToRoute('app_editFacteur', ['errorMessage' => "La modification a échoué, l'adresse mail saisie est déjà associée à un autre facteur", 'isError' => true]);
             }
