@@ -8,7 +8,7 @@
     <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
 </div>
 
-<main class="w-[90%] m-auto">
+<main class="w-[95%] m-auto">
     <h1 class=" text-xl font-bold italic text-[#25BA00] mb-2">Le suivi n° {{ courrierId.bordereau }} en detail </h1>
     <section>
         {% for statut in statutsCourrier %}
@@ -27,7 +27,6 @@
         </div>
         {% endfor %}
     </section>
-
 </main>
 
 {% endblock %}

@@ -3,13 +3,16 @@
 {% block title %}Raisons Sociales{% endblock %}
 
 {% block body %}
-<main class="w-[90%] m-auto">
+<main class="w-[95%] m-auto">
+    <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Clients de {{ raison.raisonSociale }}</h1>
     <div class="flex justify-between items-center">
-        <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Clients de {{ raison.raisonSociale }}</h1>
+        <div></div>
+        <div class="my-5">
         <a class="text-white bg-[#24A640] p-2 rounded"
             href="{{ path('app_addClientRaisonSociale', {raisonId: raison.id}) }}">Ajouter un
             expéditeur</a>
         <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_raisonSociale') }}">Retour</a>
+        </div>
     </div
     <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left text-gray-500 table-fixed">

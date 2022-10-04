@@ -125,10 +125,11 @@ class FacteurController extends AbstractController
     public function deleteFacteur(Request $request, FacteurRepository $facteurRepo): Response
     {
         $idFacteur = $request->get('id');
+        $facteur = $facteurRepo->find($idFacteur);
 
         try {
-            $facteurRepo->remove($facteurRepo->find($idFacteur), true);
-            return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur a bien été supprimé']);
+            $facteurRepo->remove($facteur, true);
+            return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur ' . $facteur->getNom() . ' a bien été supprimé']);
         } catch (Exception) {
             return $this->redirectToRoute('app_facteur', ['errorMessage' => 'La suppression du facteur a échoué', 'isError' => true]);
         }

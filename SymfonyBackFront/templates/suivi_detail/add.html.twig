@@ -3,11 +3,12 @@
 {% block title %}Ajouter un statut{% endblock %}
 
 {% block body %}
-    <main class="w-[90%] m-auto">
-    <div class="flex justify-between items-center">
+    <main class="w-[95%] m-auto">
         <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Mettre à jour le statut</h1>
-        <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_suiviId', {id: id}) }}">Retour</a>
-    </div>
+        <div class="flex justify-between items-center">
+            <div></div>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_suiviId', {id: id}) }}">Retour</a>
+        </div>
 
     {{ include('suivi_detail/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
     </main>
