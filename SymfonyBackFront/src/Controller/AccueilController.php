@@ -46,7 +46,6 @@ class AccueilController extends AbstractController
         $order = $request->get('order') ?? "DESC";
         $rechercheCourrier = $request->get('recherche') ?? null;
 
-
         if ($rechercheCourrier == null) {
             $data = $statutCourrierRepo->findCourriers($order);
         } else {

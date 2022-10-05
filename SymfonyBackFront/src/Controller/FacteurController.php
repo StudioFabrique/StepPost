@@ -8,7 +8,6 @@ use App\Form\FacteurType;
 use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
 use DateTime;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
@@ -42,34 +41,10 @@ class FacteurController extends AbstractController
     }
 
     #[Route('/nouveauFacteur', 'newFacteur')]
-    public function newFacteur(FacteurRepository $facteurRepo, Request $request, ExpediteurRepository $expediteurRepository): Response
+    public function newFacteur(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
-        $form = ($this->createForm(FacteurType::class))->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            try {
-                $facteur = (new FormatageObjet)
-                    ->stringToLowerObject(
-                        $form->getData(),
-                        Facteur::class,
-                        array('createdAt', 'updatedAt')
-                    );
-
-                $facteurRepo->add(
-                    $facteur->setRoles(['ROLE_FACTEURINACTIF'])
-                        ->setCreatedAt(new DateTime('now'))
-                        ->setUpdatedAt(new DateTime('now')),
-                    true
-                );
-                return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur ' . $facteur->getNom() . ' a bien été créé']);
-            } catch (UniqueConstraintViolationException $e) {
-                return $this->redirectToRoute('app_newFacteur', ['errorMessage' => "La création du facteur a échoué, l'adresse mail est déjà attribué à un facteur existant", 'isError' => true]);
-            }
-        }
-
         return $this->renderForm('facteur/form.html.twig', [
-            'form' => $form,
+            // 'form' => $form,
             'title' => 'Créer un facteur',
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,

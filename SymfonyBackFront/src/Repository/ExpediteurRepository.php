@@ -88,11 +88,27 @@ class ExpediteurRepository extends ServiceEntityRepository
 
     public function findLike($nom)
     {
-        return $this->_em->createQuery('
-        SELECT expediteur
-        FROM App\Entity\Expediteur expediteur
-        WHERE expediteur.nom LIKE :nom
-        ')->setParameter('nom', '%' . $nom . '%');
+        // return $this->_em->createQuery('
+        // SELECT expediteur
+        // FROM App\Entity\Expediteur expediteur
+        // WHERE expediteur.nom LIKE :nom
+        // ')->setParameter('nom', '%' . $nom . '%');
+
+        return $this->_em->createQueryBuilder('e')
+            ->select('
+                e.id,
+                e.email,
+                e.nom,
+                e.prenom,
+                e.roles,
+                client.raisonSociale AS raisonSociale
+            ')
+            ->from('App\Entity\Expediteur', 'e')
+            ->where('e.nom LIKE :nom')
+            ->leftJoin('e.client', 'client')
+            ->setParameter('nom', '%' . $nom . '%')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findAllInactive($role = 'ROLE_INACTIF')

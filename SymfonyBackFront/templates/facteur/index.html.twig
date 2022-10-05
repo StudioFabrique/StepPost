@@ -94,7 +94,7 @@
         {% set maxPages = nbFacteursTotal <= 10 ? nbFacteursTotal / 10 : ((nbFacteursTotal % multi10)|slice(0, letterNb)) + 1 %}
         {% if maxPages > 1 %}
             <a href="http://localhost:8000/facteurs/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
-            <p>{{ knp_pagination_render(courriers) }} </p>
+            <p>{{ knp_pagination_render(facteurs) }} </p>
             <a href={{"http://localhost:8000/facteurs/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
         {% endif %}
     </div>

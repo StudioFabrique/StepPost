@@ -3,7 +3,7 @@
 {% block title %}Administrateurs{% endblock %}
 
 {% block body %}
-<main class="w-[95%] m-auto">
+<main data-turbo="false" class="w-[95%] m-auto">
     <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Administrateurs</h1>
     <section class="flex justify-between items-center" style="padding-bottom:2%;">
         <div class="absolute right-0 mx-20">
@@ -64,7 +64,7 @@
                             <div id="confirmBox" class="fixed -ml-24 bg-[#140A82] rounded-lg p-2">
                                 <p class="text-white">Êtes-vous sûr de vouloir supprimer cet admin ? </p>
                                 <button class="bg-red-100 border-2 border-black rounded-lg p-1 mx-4 text-red-800" onclick="HideConfirmation({{i}})">Annuler</button>
-                                <a href="{{ path('app_admin_delete', {'id': user.id}) }}" class="bg-red-100 border-2 border-black rounded-lg p-1 mx-4 text-red-800 whitespace-nowrap">Confirmer la suppression</a>
+                                <a href="{{ path('app_admin_delete', {'id': user.id}) }}" data-turbo="false" class="bg-red-100 border-2 border-black rounded-lg p-1 mx-4 text-red-800 whitespace-nowrap">Confirmer la suppression</a>
                             </div>
                         {% endif %}
                     </td>

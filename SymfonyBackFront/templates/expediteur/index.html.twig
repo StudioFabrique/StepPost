@@ -148,7 +148,15 @@
                 {% if role == 'expéditeur' %}
                 <tr class="bg-white border-b ">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    {% if isSearch == true %}
+                        {% if checkBoxExact == false %}
+                            {{ expediteur.raisonSociale ? expediteur.raisonSociale : 'Non défini' }}
+                        {% else %}
+                            {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
+                        {% endif %}
+                    {% else %}
                         {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
+                    {% endif %}
                     </th>
                     <td class="px-6 py-4">
                         <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id}) }}">{{ expediteur.email

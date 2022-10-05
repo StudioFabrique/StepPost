@@ -36,18 +36,18 @@
       <p class="pl-4 pr-1 pt-2">{{ errorMessage }}</p>
     </div>
 <script>
-
   const errorAlert = document.getElementById('errorAlert');
-    errorAlert.animate([
-        {
-            transform: "translateX(600px)"
-        },
-        {
-            transform: "translateX(0px)"
-        }
+  errorAlert.animate([
+      {
+        transform: "translateX(600px)"
+      },
+      {
+        transform: "translateX(0px)"
+      }
     ], {
-        duration: 500
+      duration: 500
     });
+  
 
 </script>
 {% endblock %}
