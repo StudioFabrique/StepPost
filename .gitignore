@@ -1,0 +1,19 @@
+###> symfony/framework-bundle ###
+/SymfonyBackFront/.env.local
+/SymfonyBackFront/.env.local.php
+/SymfonyBackFront/.env.*.local
+/SymfonyBackFront/config/secrets/prod/prod.decrypt.private.php
+/SymfonyBackFront/public/bundles/
+/SymfonyBackFront/var/
+/SymfonyBackFront/vendor/
+###< symfony/framework-bundle ###
+
+###> symfony/webpack-encore-bundle ###
+/SymfonyBackFront/node_modules/
+/SymfonyBackFront/public/build/
+/SymfonyBackFront/npm-debug.log
+/SymfonyBackFront/yarn-error.log
+###< symfony/webpack-encore-bundle ###
+
+/SymfonyBackFront/step_postAdmin.sql
+/SymfonyBackFront/assets/controllers/facteurs_controller.js
