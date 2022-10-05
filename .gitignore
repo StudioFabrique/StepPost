@@ -16,4 +16,4 @@
 ###< symfony/webpack-encore-bundle ###
 
 /SymfonyBackFront/step_postAdmin.sql
-/SymfonyBackFront/assets/controllers/facteurs_controller.js
+/SymfonyBackFront/assets/controllers/facteur_controller.js
