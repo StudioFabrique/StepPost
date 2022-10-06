@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block javascript %}
+{{ parent() }}
+{% endblock %}
+
 {% block title %}Administrateurs{% endblock %}
 
 {% block body %}
@@ -81,11 +85,15 @@
             {% set multi10 = multi10 ~ 0 %}
             {% set letterNb = letterNb + 1 %}
         {% endfor %}
-        {% set maxPages = nbAdminsTotal <= 10 ? nbAdminsTotal / 10 : ((nbAdminsTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% set maxPages = admins|length <= 10 ? nbAdminsTotal / 10 : ((nbAdminsTotal % multi10)|slice(0, letterNb)) + 1 %}
         {% if maxPages > 1 %}
-            <a href="http://localhost:8000/admin/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            {% if currentPage != 1 %}
+                <a href="{{ path('app_admin', {currentPage: 1}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            {% endif %}
             <p>{{ knp_pagination_render(admins) }} </p>
-            <a href={{"http://localhost:8000/admin/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+            {% if currentPage != maxPages %}
+                <a href="{{ path('app_admin', {currentPage: maxPages}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+            {% endif %}
         {% endif %}
     </div>
 </main>
@@ -101,6 +109,14 @@
             element.hidden = true;
         });
         confirmBoxes[i].hidden = false;
+        confirmBoxes[i].animate([
+            {transform: "scale(0)"},
+            {transform: "scale(1.2)"},
+            {transform: "scale(1)"}
+            ] , {
+            duration: 300
+            }
+        );
     }
     function HideConfirmation(i) {
         confirmBoxes[i].hidden = true;

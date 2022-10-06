@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block javascripts %}
+{{ parent() }}
+{% endblock %}
+
 {% block title %}Raisons Sociales{% endblock %}
 
 {% block body %}
@@ -69,11 +73,15 @@
             {% set multi10 = multi10 ~ 0 %}
             {% set letterNb = letterNb + 1 %}
         {% endfor %}
-        {% set maxPages = nbRaisonsTotal <= 10 ? nbRaisonsTotal / 10 : ((nbRaisonsTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% set maxPages = raisonsSociales|length <= 10 ? nbRaisonsTotal / 10 : ((nbRaisonsTotal % multi10)|slice(0, letterNb)) + 1 %}
         {% if maxPages > 1 %}
-            <a href="http://localhost:8000/RaisonSociale/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            {% if currentPage != 1 %}
+                <a href="{{ path('app_raisonSociale', {currentPage: 1}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            {% endif %}
             <p>{{ knp_pagination_render(raisonsSociales) }} </p>
-            <a href={{"http://localhost:8000/RaisonSociale/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+            {% if currentPage != maxPages %}
+                <a href="{{ path('app_raisonSociale', {currentPage: maxPages}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+            {% endif %}
         {% endif %}
     </div>
     {{ raisonsSociales|length == 0 ? 'Aucune raisons sociales'}}

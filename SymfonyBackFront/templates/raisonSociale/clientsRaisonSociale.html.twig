@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block javascripts %}
+{{ parent() }}
+{% endblock %}
+
 {% block title %}Raisons Sociales{% endblock %}
 
 {% block body %}
@@ -13,7 +17,10 @@
             expéditeur</a>
         <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_raisonSociale') }}">Retour</a>
         </div>
-    </div
+    </div>
+    {% if clients|length == 0 %}
+        <p>Aucun expéditeurs n'est associé à cette raison sociale</p>
+    {% else %}
     <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left text-gray-500 table-fixed">
             <thead class="text-xs text-white uppercase bg-[#140A82]">
@@ -49,5 +56,6 @@
             </tbody>
         </table>
     </section>
+    {% endif %}
 </main>
 {% endblock %}

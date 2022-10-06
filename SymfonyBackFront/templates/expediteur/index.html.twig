@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block javascripts %}
+{{ parent() }}
+{% endblock %}
+
 {% block title %}Liste des expéditeurs{% endblock %}
 
 {% block body %}
@@ -194,11 +198,15 @@
             {% set multi10 = multi10 ~ 0 %}
             {% set letterNb = letterNb + 1 %}
         {% endfor %}
-        {% set maxPages = nbExpediteursTotal <= 10 ? nbExpediteursTotal / 10 : ((nbExpediteursTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% set maxPages = expediteurs|length <= 10 ? nbExpediteursTotal / 10 : ((nbExpediteursTotal % multi10)|slice(0, letterNb)) + 1 %}
         {% if maxPages > 1 %}
-            <a href="http://localhost:8000/expediteurs/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
-            <p>{{ knp_pagination_render(courriers) }} </p>
-            <a href={{"http://localhost:8000/expediteurs/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+            {% if currentPage != 1 %}
+                <a href="{{ path('app_expediteur', {currentPage: 1}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            {% endif %}
+                <p>{{ knp_pagination_render(expediteurs) }} </p>
+            {% if currentPage != maxPages %}
+                <a href="{{ path('app_expediteur', {currentPage: maxPages}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+            {% endif %}
         {% endif %}
     </div>
     <p>{{ expediteurs|length == 0 ? 'Aucun expéditeurs'}}</p>

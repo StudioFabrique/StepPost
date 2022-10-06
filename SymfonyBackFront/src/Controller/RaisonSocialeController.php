@@ -26,16 +26,18 @@ class RaisonSocialeController extends AbstractController
     #[Route('/', name: 'raisonSociale')]
     public function ShowRaisonsSociales(PaginatorInterface $paginator, ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository, Request $request): Response
     {
+        $currentPage = $request->get('currentPage') ?? 1;
         $data = $clientRepository->findAll();
 
         $raisonsSociales = $paginator->paginate(
             $data,
-            $request->query->getInt('page', 1)
+            $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
         return $this->render('raisonSociale/raisonSociale.html.twig', [
             'raisonsSociales' => $raisonsSociales,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
+            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') < 2 : $currentPage,
             'isError' => $request->get('isError') ?? false,
             'nbRaisonsTotal' => count($data)
         ]);

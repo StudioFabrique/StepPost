@@ -24,16 +24,18 @@ class FacteurController extends AbstractController
     #[Route('/facteurs', name: 'facteur')]
     public function showFacteurs(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, Request $request, ExpediteurRepository $expediteurRepository): Response
     {
+        $currentPage = $request->get('currentPage') ?? 1;
         $data = $facteurRepo->findAll();
+
         $facteurs = $paginatorInterface->paginate(
             $data,
-            $request->query->getInt('page', 1),
-            8
+            $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
 
         return $this->render('facteur/index.html.twig', [
             'facteurs' => $facteurs,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') < 2 : $currentPage,
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
             'nbFacteursTotal' => count($data)

@@ -46,6 +46,7 @@ class ExpediteurController extends AbstractController
         $rechercheExpediteur = $request->get('recherche');
         $isCheckBoxExact = $request->get('checkBoxExact');
         $openDetails = $request->get('openDetails') ?? false;
+        $currentPage = $request->get('currentPage') ?? 1;
 
         if ($rechercheExpediteur != null && strval($rechercheExpediteur)) {
             $isCheckBoxExact ? $data = $expediteurs->findBy(['nom' => $rechercheExpediteur])
@@ -56,8 +57,7 @@ class ExpediteurController extends AbstractController
 
         $expediteur = $paginator->paginate(
             $data,
-            $request->query->getInt('page', 1),
-            8
+            $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
 
         $expediteursInactifs = $expediteurs->findAllInactive(); // faire une requête perso SQL pour selectionner tous les expediteurs inactifs
@@ -67,6 +67,7 @@ class ExpediteurController extends AbstractController
             'expediteursInactifs' => $expediteursInactifs,
             'isSearch' => $rechercheExpediteur,
             'openDetails' => $openDetails,
+            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') < 2 : $currentPage,
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
             'nbExpediteursTotal' => count($data),
@@ -126,7 +127,7 @@ class ExpediteurController extends AbstractController
                     ->html($body);
                 $mailer->send($mail);
                 return $this->redirectToRoute('app_expediteur', [
-                    'errorMessage' => "L'expéditeur "  . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) .  " a été créé"
+                    'errorMessage' => "L'expéditeur "  . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) .  " a été créé et un email de confirmation lui a été envoyé"
                 ]);
             } catch (TransportExceptionInterface $e) {
                 $errorHandler = "Une erreur s'est produite lors de l'envoi du mail";
@@ -217,9 +218,9 @@ class ExpediteurController extends AbstractController
             $em->persist($expediteur);
             $em->flush();
             $mailer->send($email);
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur " . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) . " a bien été activé"]);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur " . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) . " a bien été activé et il a été informé par mail"]);
         } catch (UniqueConstraintViolationException $e) {
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'activation de l'expéditeur "  . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) .  " n'a pas pu être effectué", 'isError' => true]);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'activation du compte de l'expéditeur "  . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) .  " n'a pas pu être effectué", 'isError' => true]);
         }
     }
 }

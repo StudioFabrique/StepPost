@@ -131,11 +131,19 @@
             {% set multi10 = multi10 ~ 0 %}
             {% set letterNb = letterNb + 1 %}
         {% endfor %}
-        {% set maxPages = nbCourriersTotal <= 10 ? nbCourriersTotal / 10 : ((nbCourriersTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% if nbCourriersTotal|length == 2 %}
+            {% set maxPages = (nbCourriersTotal % 10) < 5 ? (nbCourriersTotal / 10)|round + 1 : (nbCourriersTotal / 10)|round %}
+        {% else %}
+            {% set maxPages = courriers|length <= 10 ? nbCourriersTotal / 10 : ((nbCourriersTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% endif %}
         {% if maxPages > 1 %}
-            <a href="http://localhost:8000/accueil/?page=1" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
-            <p>{{ knp_pagination_render(courriers) }} </p>
-            <a href={{"http://localhost:8000/accueil/?page=" ~ (maxPages)|trans}} class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+            {% if currentPage != 1 %}
+                <a href="{{ path('app_accueil', {currentPage: 1, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            {% endif %}
+            <div class="bg-[#140A82]">{{ knp_pagination_render(courriers) }} </div>
+            {% if currentPage != maxPages %}
+                <a href="{{ path('app_accueil', {currentPage: maxPages, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+            {% endif %}
         {% endif %}
     </div>
         {% else %}

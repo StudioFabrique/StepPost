@@ -45,6 +45,7 @@ class AccueilController extends AbstractController
 
         $order = $request->get('order') ?? "DESC";
         $rechercheCourrier = $request->get('recherche') ?? null;
+        $currentPage = $request->get('currentPage') ?? 1;
 
         if ($rechercheCourrier == null) {
             $data = $statutCourrierRepo->findCourriers($order);
@@ -56,7 +57,7 @@ class AccueilController extends AbstractController
 
         $courriers = $paginator->paginate(
             $data,
-            $request->query->getInt('page', 1),
+            $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
 
         return $this->render('accueil/index.html.twig', [
@@ -66,7 +67,7 @@ class AccueilController extends AbstractController
             'isSearching' => is_integer($rechercheCourrier) ? true : (is_string($rechercheCourrier) ? true : false),
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'nbCourriersTotal' => count($data),
-            'currentPage' => $request->query->getInt('page'),
+            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
             'errorMessage' => $request->get('errorMessage') ?? null,
         ]);
     }
