@@ -7,7 +7,7 @@
 {% block title %}Administrateurs{% endblock %}
 
 {% block body %}
-<main data-turbo="false" class="w-[95%] m-auto">
+<main data-controller="remove" class="w-[95%] m-auto">
     <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Administrateurs</h1>
     <section class="flex justify-between items-center" style="padding-bottom:2%;">
         <div class="absolute right-0 mx-20">
@@ -64,11 +64,11 @@
                     </td>
                     <td class="px-6 py-4">
                         {% if app.user.id != user.id %}
-                            <button onclick="ShowConfirmation({{i}})" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
+                            <button id="showButton" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
                             <div id="confirmBox" class="fixed -ml-24 bg-[#140A82] rounded-lg p-2">
                                 <p class="text-white">Êtes-vous sûr de vouloir supprimer cet admin ? </p>
-                                <button class="bg-red-100 border-2 border-black rounded-lg p-1 mx-4 text-red-800" onclick="HideConfirmation({{i}})">Annuler</button>
-                                <a href="{{ path('app_admin_delete', {'id': user.id}) }}" data-turbo="false" class="bg-red-100 border-2 border-black rounded-lg p-1 mx-4 text-red-800 whitespace-nowrap">Confirmer la suppression</a>
+                                <button id="hideButton" class="bg-red-100 border-2 border-black rounded-lg p-1 mx-4 text-red-800">Annuler</button>
+                                <a href="{{ path('app_admin_delete', {'id': user.id}) }}" class="bg-red-100 border-2 border-black rounded-lg p-1 mx-4 text-red-800 whitespace-nowrap">Confirmer la suppression</a>
                             </div>
                         {% endif %}
                     </td>
@@ -85,41 +85,16 @@
             {% set multi10 = multi10 ~ 0 %}
             {% set letterNb = letterNb + 1 %}
         {% endfor %}
-        {% set maxPages = admins|length <= 10 ? nbAdminsTotal / 10 : ((nbAdminsTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% set maxPages = (nbAdminsTotal % 10) < 5 and (nbAdminsTotal % 10) != 0 ? (nbAdminsTotal / 10)|round + 1 : (nbAdminsTotal / 10)|round %}
         {% if maxPages > 1 %}
             {% if currentPage != 1 %}
                 <a href="{{ path('app_admin', {currentPage: 1}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
             {% endif %}
-            <p>{{ knp_pagination_render(admins) }} </p>
+            <div class="bg-[#140A82]">{{ knp_pagination_render(admins) }}</div>
             {% if currentPage != maxPages %}
                 <a href="{{ path('app_admin', {currentPage: maxPages}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
             {% endif %}
         {% endif %}
     </div>
 </main>
-
-<script>
-    const confirmBoxes = document.querySelectorAll("#confirmBox");
-    confirmBoxes.hidden = true;
-    confirmBoxes.forEach(element => {
-        element.hidden = true;
-        });
-    function ShowConfirmation(i) {
-        confirmBoxes.forEach(element => {
-            element.hidden = true;
-        });
-        confirmBoxes[i].hidden = false;
-        confirmBoxes[i].animate([
-            {transform: "scale(0)"},
-            {transform: "scale(1.2)"},
-            {transform: "scale(1)"}
-            ] , {
-            duration: 300
-            }
-        );
-    }
-    function HideConfirmation(i) {
-        confirmBoxes[i].hidden = true;
-    }
-</script>
 {% endblock %}

@@ -95,12 +95,12 @@
             {% set multi10 = multi10 ~ 0 %}
             {% set letterNb = letterNb + 1 %}
         {% endfor %}
-        {% set maxPages = facteurs|length <= 10 ? nbFacteursTotal / 10 : ((nbFacteursTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% set maxPages = (nbFacteursTotal % 10) < 5 and (nbFacteursTotal % 10) != 0 ? (nbFacteursTotal / 10)|round + 1 : (nbFacteursTotal / 10)|round %}
         {% if maxPages > 1 %}
             {% if currentPage != 1 %}
                 <a href="{{ path('app_facteur', {currentPage: 1}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
             {% endif %}
-                <p>{{ knp_pagination_render(facteurs) }} </p>
+            <div class="bg-[#140A82]">{{ knp_pagination_render(facteurs) }} </div>
             {% if currentPage != maxPages %}
                 <a href="{{ path('app_facteur', {currentPage: maxPages}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
             {% endif %}

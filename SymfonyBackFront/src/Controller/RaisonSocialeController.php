@@ -37,7 +37,7 @@ class RaisonSocialeController extends AbstractController
             'raisonsSociales' => $raisonsSociales,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
-            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') < 2 : $currentPage,
+            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
             'isError' => $request->get('isError') ?? false,
             'nbRaisonsTotal' => count($data)
         ]);

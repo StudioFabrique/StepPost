@@ -35,7 +35,7 @@ class FacteurController extends AbstractController
         return $this->render('facteur/index.html.twig', [
             'facteurs' => $facteurs,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
-            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') < 2 : $currentPage,
+            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
             'nbFacteursTotal' => count($data)

@@ -73,12 +73,12 @@
             {% set multi10 = multi10 ~ 0 %}
             {% set letterNb = letterNb + 1 %}
         {% endfor %}
-        {% set maxPages = raisonsSociales|length <= 10 ? nbRaisonsTotal / 10 : ((nbRaisonsTotal % multi10)|slice(0, letterNb)) + 1 %}
+        {% set maxPages = (nbRaisonsTotal % 10) < 5 and (nbRaisonsTotal % 10) != 0 ? (nbRaisonsTotal / 10)|round + 1 : (nbRaisonsTotal / 10)|round %}
         {% if maxPages > 1 %}
             {% if currentPage != 1 %}
                 <a href="{{ path('app_raisonSociale', {currentPage: 1}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
             {% endif %}
-            <p>{{ knp_pagination_render(raisonsSociales) }} </p>
+            <div class="bg-[#140A82]">{{ knp_pagination_render(raisonsSociales) }} </div>
             {% if currentPage != maxPages %}
                 <a href="{{ path('app_raisonSociale', {currentPage: maxPages}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
             {% endif %}

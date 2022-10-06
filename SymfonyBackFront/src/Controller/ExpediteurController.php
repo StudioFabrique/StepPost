@@ -67,7 +67,7 @@ class ExpediteurController extends AbstractController
             'expediteursInactifs' => $expediteursInactifs,
             'isSearch' => $rechercheExpediteur,
             'openDetails' => $openDetails,
-            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') < 2 : $currentPage,
+            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
             'nbExpediteursTotal' => count($data),
@@ -179,7 +179,7 @@ class ExpediteurController extends AbstractController
     }
 
 
-    #[Route('/delete/{id}', name: 'deleteExpediteur', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'deleteExpediteur')]
     public function Delete(Expediteur $expediteur, ExpediteurRepository $expediteurRepository): Response
     {
         try {

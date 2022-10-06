@@ -33,6 +33,7 @@ class AdminController extends AbstractController
         }
 
         $currentPage = $request->get('currentPage') ?? 1;
+
         $data = $admins->findAll([], ['id' => 'DESC']);
         $admins = $paginator->paginate(
             $data,
@@ -44,7 +45,7 @@ class AdminController extends AbstractController
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
-            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') < 2 : $currentPage,
+            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
             'nbAdminsTotal' => count($data)
         ]);
     }
