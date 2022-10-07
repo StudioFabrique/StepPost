@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     connect() {
-        console.log('test');
+        const newFacteurEndpoint = this.element.dataset.newFacteurEndpoint;
         const btn = document.getElementById("facteur_submit");
         const mailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
         const numberRegex = /^[0-9]$/;
@@ -23,18 +23,22 @@ export default class extends Controller {
                 fd.append("nom", nom);
                 fd.append("password", password);
     
-                console.log(email);
-                fetch("https://step-post-nodejs.herokuapp.com/api/facteur/new-facteur", {method: 'POST', body: fd}).then((response) =>
-                response.json().then((result) => {
-                    console.log(response);
-                    console.log(result);
-                    if (result) {
-                    console.log("Facteur créé");
-                    } else {
-                    console.log("Problème serveur");
-                    }
-                })
-                );
+                
+                fetch(newFacteurEndpoint,
+                     {/* headers: `Authorisation: Bearer ${}`  ,
+                     */method: 'POST', body: fd})
+                     .then((response) =>
+                        response.json()
+                            .then((result) => {
+                                console.log(response);
+                                console.log(result);
+                                if (result) {
+                                console.log("Facteur créé");
+                                } else {
+                                console.log("Problème serveur");
+                                }
+                        })
+                    );
             } else {
                 // generate error alert
             }

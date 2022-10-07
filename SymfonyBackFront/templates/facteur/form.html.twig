@@ -7,7 +7,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-<main class="w-[95%] m-auto" data-controller="facteur">
+<main class="w-[95%] m-auto" data-controller="facteur" data-new-facteur-endpoint="{{ newFacteurEndpoint }}">
     <p data-controller="hello"></p>
     <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
     <div class="flex justify-between items-center">

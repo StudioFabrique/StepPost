@@ -50,7 +50,8 @@ class FacteurController extends AbstractController
             'title' => 'Créer un facteur',
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false
+            'isError' => $request->get('isError') ?? false,
+            'newFacteurEndpoint' => $_ENV["ENDPOINT_NEWFACTEUR"]
         ]);
     }
 

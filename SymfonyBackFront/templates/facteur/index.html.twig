@@ -7,7 +7,7 @@
 {% block title %}Gestion des facteurs{% endblock %}
 
 {% block body %}
-<main class="w-[95%] m-auto">
+<main data-controller="remove" class="w-[95%] m-auto">
     <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Liste et gestion des facteurs</h1>
     <section class="flex justify-between items-center">
         <form class="flex " action="" method="get">
@@ -79,9 +79,12 @@
                         </a>
                     </td>
                     <td class="px-6 py-4">
-                        <a class="text-red-600 bg-blue-100 p-2 rounded" href="{{ path('app_deleteFacteur', {id: facteur.id}) }}">
-                            Supprimer
-                        </a>
+                        <button id="showButton" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
+                        <div id="confirmBox" class="fixed -ml-36 bg-[#140A82] rounded-lg p-2">
+                            <p class="text-white">Êtes-vous sûr de vouloir supprimer ce facteur ? </p>
+                            <button id="hideButton" class="bg-red-100 border-2 border-black rounded-lg p-0.5 mx-10 text-red-800">Annuler</button>
+                            <a href="{{ path('app_deleteFacteur', {id: facteur.id}) }}" class="bg-red-700 border-2 border-black rounded-lg p-1 mx-4 text-white whitespace-nowrap">Confirmer</a>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
