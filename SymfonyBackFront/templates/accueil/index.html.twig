@@ -25,14 +25,14 @@
             </div>
         </form>
         <div class="flex space-x-2">
-            <a class="text-white bg-[#1d71d0] p-2 rounded" href="{{ path('app_expediteur') }}">Gestion
+            <a class="text-white bg-[#1d71d0] hover:bg-[#042e5e] p-2 rounded" href="{{ path('app_expediteur') }}">Gestion
                 expéditeurs</a>
-            <a class="text-white bg-[#939a16] p-2 rounded" href="{{ path('app_facteur') }}">Gestion
+            <a class="text-white bg-[#939a16] hover:bg-[#545804] p-2 rounded" href="{{ path('app_facteur') }}">Gestion
                 facteurs</a>
-            <a class="text-white bg-[#24A640] p-2 rounded" href="{{ path('app_raisonSociale') }}">Gestion raisons
+            <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded" href="{{ path('app_raisonSociale') }}">Gestion raisons
                 sociales</a>
             {% if 'ROLE_SUPERADMIN' in app.user.roles  %}
-            <a class="text-white bg-[#298b7a] p-2 rounded" href="{{ path('app_admin') }}">Gestion
+            <a class="text-white bg-[#298b7a] hover:bg-[#0c5246] p-2 rounded" href="{{ path('app_admin') }}">Gestion
                 administrateurs</a>
             {% endif %}
         </div>
