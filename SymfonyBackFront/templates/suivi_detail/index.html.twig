@@ -8,8 +8,8 @@
 
 {% block body %}
 <div class="absolute right-0 mx-10">
-    <a class="text-white bg-[#25BA00] p-2 rounded" href="{{ path('app_statut_add', ({ id: courrierId })) }}">Mettre à jour le statut</a>
-    <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
+    <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" href="{{ path('app_statut_add', ({ id: courrierId })) }}">Mettre à jour le statut</a>
+    <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
 </div>
 
 <main class="w-[95%] m-auto">

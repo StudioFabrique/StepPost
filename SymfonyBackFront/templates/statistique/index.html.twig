@@ -14,9 +14,7 @@
 <main class="w-[95%] m-auto">
     <section class="">
         <a class="text-white bg-[#1d71d0] p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
-        <div class="flex justify-between">
-            <canvas id="myChart" class=""></canvas>
-        </div>
+        {{ render_chart(chart) }}
     </section>
 </main>
 {% endblock %}

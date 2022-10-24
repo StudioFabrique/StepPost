@@ -16,10 +16,19 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+
+/* 
+Cette classe donne la possiblité de créer, modifier, activer et supprimer un admin.
+Seul le super admin a les droits d'accès aux différentes méthodes de cette classe.
+*/
+
 #[Route('/admin', name: 'app_')]
 #[IsGranted('ROLE_SUPERADMIN')]
 class AdminController extends AbstractController
 {
+    /* 
+    La méthode index affiche la liste des admins avec une pagination
+    */
     #[Route('/', name: 'admin')]
     public function index(
         UserRepository $admins,

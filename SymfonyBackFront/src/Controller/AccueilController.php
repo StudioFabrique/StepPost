@@ -16,7 +16,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /*
 Cette classe est le point d'entrée de l'application après que 
 l'utilisateur (Administrateur) se soit connecté à l'application.
-Le route parent est /accueil ayant comme alias/nom app_.
 Par l'intermédiaire de cette classe, l'administrateur va pouvoir gérer les différents
 courriers présents dans la base données.
 */
@@ -26,8 +25,7 @@ courriers présents dans la base données.
 class AccueilController extends AbstractController
 {
     /*
-    La fonction index est le point d'entrée de la classe.
-    Cette fonction affiche tous les courriers avec une pagination.
+    Cette méthode affiche tous les courriers avec une pagination.
     */
     #[Route('/', name: 'accueil')]
     public function index(

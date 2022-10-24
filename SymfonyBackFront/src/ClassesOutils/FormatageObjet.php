@@ -5,13 +5,22 @@ namespace App\ClassesOutils;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
-// Cette classe contient des fonctions permettant de formatter des objets selons certains critères.
+// Cette classe contient des méthodes permettant de formatter des objets selons certains critères.
 
 class FormatageObjet
 {
-    // Cette fonction permet de tranformer tous les champs d'une entité (venant d'un formulaire par exemple) en lowercase.
+    // Cette méthode permet de tranformer tous les champs d'une entité (venant d'un formulaire par exemple) en lowercase.
+    // Les données de types array et de type int sont automatiquement ignorées lors de la conversion
+    /* 
+    Cette méthode accepte en paramètres :
+    - un objet de type Entité Symfony
+    - le nom de la classe (type) de l'objet pour la conversion en sortie
+    - (optionnel, null par defaut) un tableau (array) composé de chaînes de caractères (string) :
+        pour indiquer les données associées à ne pas convertir afin d'éviter les erreurs lors de la denormalization
+    - (optionnel, faux par defaut) un type boolean pour extraire les valeurs sous formes de array au lieu d'un objet
+     */
 
-    public function stringToLowerObject($object, $objectClass, array $exclude = null, bool $isArrayOut = false)
+    public function stringToLowerObject($object, string $objectClass, array $exclude = null, bool $isArrayOut = false)
     {
         $serializer = new Serializer([new ObjectNormalizer()]);
         $objectToTransform = $serializer->normalize($object);

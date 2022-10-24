@@ -25,7 +25,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 /*
-Cette classe permet de créer, modifier, activer et supprimer un expéditeur.
+Cette classe donne la possibilité de créer, modifier, activer et supprimer un expéditeur.
 */
 
 #[Route('/', name: 'app_')]
