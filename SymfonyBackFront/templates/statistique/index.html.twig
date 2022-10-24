@@ -7,14 +7,16 @@
 {% block title %}Statistiques{% endblock %}
 
 {% block javascript %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"/>
+    {{ parent() }}
+    <script src="/libs/chart.js/chart.min.js"></script>
 {% endblock %}
 
 {% block body %}
 <main class="w-[95%] m-auto">
     <section class="">
-        <a class="text-white bg-[#1d71d0] p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
-        {{ render_chart(chart) }}
+        <a class="text-white bg-[#1d71d0] hover:bg-[#0f335c] p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
+        <div class="w-80 m-10">{{ render_chart(chart) }}</div>
+        
     </section>
 </main>
 {% endblock %}

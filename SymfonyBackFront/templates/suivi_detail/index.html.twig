@@ -27,6 +27,7 @@
                     a été {{ statut.statut ? statut.statut.etat }}
                     {{ statut.statut ? statut.statut.etat == "Remise" ? "au facteur" }}
                 </p>
+                <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded" href="{{ path('app_delete_statut', { id: courrierId }) }}">Supprimer</a>
             </div>
         </div>
         {% endfor %}

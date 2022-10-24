@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Expediteur;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -115,12 +116,12 @@ class ExpediteurRepository extends ServiceEntityRepository
     {
         $qb = $this->_em->createQueryBuilder('e')
             ->select('
-            e.id,
-            e.email,
-            e.nom,
-            e.prenom,
-            e.roles,
-            client.raisonSociale AS raisonSociale
+                e.id,
+                e.email,
+                e.nom,
+                e.prenom,
+                e.roles,
+                client.raisonSociale AS raisonSociale
             ')
             ->from('App\Entity\Expediteur', 'e')
             ->where('e.roles LIKE :role')
@@ -128,6 +129,20 @@ class ExpediteurRepository extends ServiceEntityRepository
             ->setParameter('role', '%' . $role . '%')
             ->getQuery();
 
+        return $qb->getResult();
+    }
+
+    public function findExpediteurLastHours($nbHours)
+    {
+        $dateToSearch = (new DateTime('now'))->modify('-' . $nbHours . ' hours');
+        $qb = $this->_em->createQueryBuilder('e')
+            ->select('
+                e.createdAt
+            ')
+            ->from('App\Entity\Expediteur', 'e')
+            ->where('e.createdAt >= :dateToSearch')
+            ->setParameter('dateToSearch', $dateToSearch)
+            ->getQuery();
         return $qb->getResult();
     }
 }

@@ -182,4 +182,19 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->getQuery();
         return $qb->getResult();
     }
+
+    public function FindCourriersByLastStatut($statutId)
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->select(
+                '
+                MAX(s.date),
+                MAX(s.statut)'
+            )
+            ->groupBy('s.courrier')
+            ->having("MAX(s.statut) = :statutid")
+            ->setParameter('statutid', $statutId)
+            ->getQuery();
+        return $qb->getResult();
+    }
 }

@@ -2,11 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Statut;
 use App\Entity\StatutCourrier;
-use App\Form\StatutCourrierType;
 use App\Repository\CourrierRepository;
-use App\Repository\ExpediteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\StatutRepository;
 use DateTime;
@@ -50,7 +47,21 @@ class SuiviDetailController extends AbstractController
             $statutCourrierRepository->add($statutCourrier, true);
             return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => 'Le statut a été mis à jour'], Response::HTTP_SEE_OTHER);
         } catch (Exception) {
-            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => 'Impossible mettre le statut à jour', 'isError' => true], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => 'Impossible de mettre le statut à jour', 'isError' => true], Response::HTTP_SEE_OTHER);
+        }
+    }
+
+    #[Route('/supprimerStatut', 'delete_statut')]
+    public function DeleteStatut(Request $request, StatutRepository $statutRepository): Response
+    {
+        $courrierId = $request->get('id');
+        $statutId = $request->get('statutId');
+
+        try {
+            $statutRepository->remove($statutRepository->find($statutId));
+            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => 'Le statut a bien été supprimé']);
+        } catch (Exception $e) {
+            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => 'Impossible de supprimer le statut', 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 }
