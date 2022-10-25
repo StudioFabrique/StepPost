@@ -69,30 +69,4 @@ class AccueilController extends AbstractController
             'errorMessage' => $request->get('errorMessage') ?? null,
         ]);
     }
-
-    /*
-    La fonction indexbyid affiche les différents statuts d'un courrier dans un template.
-    */
-
-    #[Route('/suivi/{id}', name: 'suiviId')]
-    public function indexbyid(
-        Courrier $id,
-        StatutCourrierRepository $statutsCourrierRepo,
-        ExpediteurRepository $expediteurRepository,
-        Request $request
-    ): Response {
-        if (!$this->getUser()) {
-            return $this->redirectToRoute('app_login');
-        }
-
-        $statutsCourrier = $statutsCourrierRepo->findBy(["courrier" => $id], ["date" => "DESC"]);
-
-        return $this->render('suivi_detail/index.html.twig', [
-            'courrierId' => $id,
-            'statutsCourrier' => $statutsCourrier,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
-            'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false
-        ]);
-    }
 }

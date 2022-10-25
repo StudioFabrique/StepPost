@@ -6,11 +6,21 @@
 
 {% block title %}N°{{ courrierId.bordereau }}{% endblock %}
 
+{% set showUpdateButton = statutsCourrier|length >= 7 ? false : true %}
+
 {% block body %}
-<div class="absolute right-0 mx-10">
-    <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" href="{{ path('app_statut_add', ({ id: courrierId })) }}">Mettre à jour le statut</a>
+<div class="absolute right-0 mx-10" data-controller="statut">
+    {% if showUpdateButton %}<a id="button" class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" >Mettre à jour le statut</a>{% endif %}
     <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
 </div>
+
+{% if showUpdateButton %}
+<div id="boxContent" class="flex-col  fixed bg-[#91c8cf] rounded-lg p-2 right-28 top-28">
+    {% for statut in statutsRestants %}
+        <div><a class="m-1" href="{{ path('app_statut_add', ({ id: courrierId })) }}">{{ statut.etat }}</a></div>
+    {% endfor %}
+</div>
+{% endif %}
 
 <main class="w-[95%] m-auto">
     <h1 class=" text-xl font-bold italic text-[#25BA00] mb-2">Le suivi n° {{ courrierId.bordereau }} en detail </h1>
@@ -27,7 +37,7 @@
                     a été {{ statut.statut ? statut.statut.etat }}
                     {{ statut.statut ? statut.statut.etat == "Remise" ? "au facteur" }}
                 </p>
-                <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded" href="{{ path('app_delete_statut', { id: courrierId }) }}">Supprimer</a>
+                <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded" href="{{ path('app_delete_statut', { id: courrierId, statutId: statut.id }) }}">Supprimer</a>
             </div>
         </div>
         {% endfor %}

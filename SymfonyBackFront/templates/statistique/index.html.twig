@@ -12,11 +12,25 @@
 {% endblock %}
 
 {% block body %}
-<main class="w-[95%] m-auto">
-    <section class="">
-        <a class="text-white bg-[#1d71d0] hover:bg-[#0f335c] p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
-        <div class="w-80 m-10">{{ render_chart(chart) }}</div>
-        
+<main class="w-[95%] m-auto" data-controller="chart">
+    <section id="menu">
+        <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
+    </section>
+
+    <section class="mt-10">
+        <p class="text-xl text-blue-600 mb-5">Ces dernières <span class="text-white bg-[#140A82] p-1.5 rounded-lg">24 H</span></p>
+        <div class="flex justify-between">
+            <div><p><span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpressionLast }}</span> {{ nbCourriersImpressionLast > 1 ? 'bordereaux ont été imprimés' : 'bordereau a été imprimé' }}</p></div>
+            <div><p><span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpressionLast }}</span> {{ nbCourriersImpressionLast > 1 ? 'courriers/colis ont été envoyés' : 'courrier/coli a été envoyé' }}</p></div>
+        </div>
+        <div class="flex justify-evenly">
+            <div><p><span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurActifLast }}</span> {{ nbExpediteurActifLast > 1 ? 'expéditeurs se sont inscrits' : 'expéditeur a été inscrit' }}</p></div>
+            <div><p><span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurInactifLast }}</span> {{ nbExpediteurInactifLast > 1 ? "expéditeurs en attente d'activation" : "expéditeur en attente d'activation" }}</p></div>
+        </div>
+    </section>
+    <hr class="border-y-2 m-5 border-blue-900 absolute w-full -left-5">
+    <section id="chart">
+        <div class="w-80 m-10"><p class="text-center m-5">Statuts actuels des courriers</p> {{ render_chart(chart) }}</div>
     </section>
 </main>
 {% endblock %}

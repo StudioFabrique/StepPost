@@ -65,6 +65,7 @@ class AdminController extends AbstractController
         $admin = new User();
         $form = $this->createForm(UserType::class, $admin);
         $form->handleRequest($request);
+        $jsonMessages = json_decode(file_get_contents("messages.json"), true);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $pass = $form->get('password')->getData();

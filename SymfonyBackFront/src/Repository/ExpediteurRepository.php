@@ -132,7 +132,7 @@ class ExpediteurRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function findExpediteurLastHours($nbHours)
+    public function FindExpediteurLastHours($nbHours, $role)
     {
         $dateToSearch = (new DateTime('now'))->modify('-' . $nbHours . ' hours');
         $qb = $this->_em->createQueryBuilder('e')
@@ -141,7 +141,9 @@ class ExpediteurRepository extends ServiceEntityRepository
             ')
             ->from('App\Entity\Expediteur', 'e')
             ->where('e.createdAt >= :dateToSearch')
+            ->andWhere('e.roles LIKE :role')
             ->setParameter('dateToSearch', $dateToSearch)
+            ->setParameter('role', '%' . $role . '%')
             ->getQuery();
         return $qb->getResult();
     }

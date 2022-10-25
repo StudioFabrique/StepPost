@@ -9,7 +9,6 @@ export default class extends Controller {
         const confirmBoxes = document.querySelectorAll("#confirmBox");
 
         confirmBoxes.forEach(element => {
-            console.log(element);
             element.hidden = true;
         });
 

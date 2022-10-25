@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\StatutCourrier;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -189,11 +190,48 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->select(
                 '
                 MAX(s.date),
-                MAX(s.statut)'
+                MAX(s.statut)
+                '
             )
             ->groupBy('s.courrier')
             ->having("MAX(s.statut) = :statutid")
             ->setParameter('statutid', $statutId)
+            ->getQuery();
+        return $qb->getResult();
+    }
+
+    public function FindCourrierImpressionLastHours($nbHours)
+    {
+        $dateToSearch = (new DateTime('now'))->modify('-' . $nbHours . ' hours');
+        $qb = $this->_em->createQueryBuilder('s')
+            ->select('
+                s.date,
+                c.id
+            ')
+            ->from('App\Entity\StatutCourrier', 's')
+            ->where('s.date >= :dateToSearch and st.id = 1')
+            ->groupBy('c.id')
+            ->join('s.courrier', 'c')
+            ->join('s.statut', 'st')
+            ->setParameter('dateToSearch', $dateToSearch)
+            ->getQuery();
+        return $qb->getResult();
+    }
+
+    public function FindCourrierEnvoiLastHours($nbHours)
+    {
+        $dateToSearch = (new DateTime('now'))->modify('-' . $nbHours . ' hours');
+        $qb = $this->_em->createQueryBuilder('s')
+            ->select('
+                s.date,
+                c.id
+            ')
+            ->from('App\Entity\StatutCourrier', 's')
+            ->where('s.date >= :dateToSearch and st.id = 3')
+            ->groupBy('c.id')
+            ->join('s.courrier', 'c')
+            ->join('s.statut', 'st')
+            ->setParameter('dateToSearch', $dateToSearch)
             ->getQuery();
         return $qb->getResult();
     }

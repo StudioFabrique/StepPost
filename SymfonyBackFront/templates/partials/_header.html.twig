@@ -15,7 +15,7 @@
                     {% if app.user %}
                     <h1 class="text-black text-xl font-bold mr-3" id="dropdownDefault" data-dropdown-toggle="dropdown">
                         {{app.user.nom|capitalize}}</h1>
-                    <a href="{{ path('app_statistiques') }}" class="mr-3">Statistiques</a>
+                    <a data-turbo="false" href="{{ path('app_statistiques') }}" class="mr-3">Statistiques</a>
                     <a href="{{ path('app_logout') }}">Déconnexion</a>
                     {% endif %}
                 </div>
