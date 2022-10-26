@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\ClassesOutils\FormatageObjet;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
+use App\Repository\CourrierRepository;
 use App\Repository\ExpediteurRepository;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -84,6 +85,11 @@ class ExpediteurController extends AbstractController
         $form = $this->createForm(ExpediteurType::class);
         $form->handleRequest($request);
 
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Expéditeur"]["Création"];
+        $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Création"];
+        $messageErreurBis = $messages["Messages Erreurs"]["Expéditeur"]["CréationBis"];
+
         if ($form->isSubmitted() && $form->isValid()) {
             $expediteur = $form->getData();
             $expediteur->setClient(null);
@@ -114,7 +120,7 @@ class ExpediteurController extends AbstractController
                 $expediteurRepo->add($expediteur->setClient($form->get('client')->getData()), true);
             } catch (UniqueConstraintViolationException) {
                 return $this->redirectToRoute('app_addExpediteur', [
-                    'errorMessage' => "L'adresse mail saisie est déjà associé à un compte expéditeur",
+                    'errorMessage' => $messageErreur,
                     'isError' => true
                 ]);
             }
@@ -127,13 +133,12 @@ class ExpediteurController extends AbstractController
                     ->html($body);
                 $mailer->send($mail);
                 return $this->redirectToRoute('app_expediteur', [
-                    'errorMessage' => "L'expéditeur "  . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) .  " a été créé et un email de confirmation lui a été envoyé"
+                    'errorMessage' => $message
                 ]);
             } catch (TransportExceptionInterface $e) {
-                $errorHandler = "Une erreur s'est produite lors de l'envoi du mail";
-                // supprimer le compte expéditeur créé pendant l'envoi raté de l'email
+                // supprimer le compte expéditeur créé si envoi raté de l'email
                 return $this->redirectToRoute('app_addExpediteur', [
-                    'errorMessage' => $errorHandler ?? null,
+                    'errorMessage' => $messageErreurBis,
                     'isError' => true
                 ]);
             }
@@ -153,6 +158,10 @@ class ExpediteurController extends AbstractController
         $form = $this->createForm(ExpediteurType::class, $ancienExpediteur);
         $form->handleRequest($request);
 
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Expéditeur"]["Modification"];
+        $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Modification"];
+
         if ($form->isSubmitted() && $form->isValid()) {
             $ancienExpediteur->setClient(null);
             $expediteur = (new FormatageObjet)->stringToLowerObject(
@@ -163,9 +172,9 @@ class ExpediteurController extends AbstractController
             try {
                 $em->persist($expediteur->setClient($form->get('client')->getData()));
                 $em->flush();
-                return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur " . ($form->get('nom')->getData() ?? null) . " " . $form->get('prenom')->getData() . " a été modifié"], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_expediteur', ['errorMessage' => $message], Response::HTTP_SEE_OTHER);
             } catch (Exception $e) {
-                return $this->redirectToRoute('app_editExpediteur', ['errorMessage' => "La modification de l'expediteur " . ($form->get('nom')->getData() ?? null) . " " . $form->get('prenom')->getData() . " est impossible car l'adresse mail est déjà attribuée à un autre expéditeur", 'isError' => true], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_editExpediteur', ['errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
             }
         }
 
@@ -182,17 +191,24 @@ class ExpediteurController extends AbstractController
     #[Route('/delete/{id}', name: 'deleteExpediteur')]
     public function Delete(Expediteur $expediteur, ExpediteurRepository $expediteurRepository): Response
     {
+
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Expéditeur"]["Suppression"];
+        $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Suppression"];
+
         try {
             $expediteurRepository->remove($expediteur);
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur " . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) . " a bien été supprimé", Response::HTTP_SEE_OTHER]);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => $message, Response::HTTP_SEE_OTHER]);
         } catch (Exception) {
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur " . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) . " n'a pas pu être supprimé.", 'isError' => true], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 
     #[Route('/detailsExpediteur', name: 'detailsExpediteur')]
     public function Details(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
+
+
         $expediteurId = $request->get('expediteurId');
         $expediteur = $expediteurRepository->find($expediteurId);
         return $this->render('expediteur/details.html.twig', [
@@ -206,6 +222,10 @@ class ExpediteurController extends AbstractController
     #[Route('/activer', name: 'activateExpediteur')]
     public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em, MailerInterface $mailer): RedirectResponse
     {
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Expéditeur"]["Activation"];
+        $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Activation"];
+
         $expediteurId = $request->get('expediteurId');
         $expediteur = ($expediteurRepository->find($expediteurId))->setRoles(['ROLE_CLIENT']);
         $email = (new Email())
@@ -218,9 +238,9 @@ class ExpediteurController extends AbstractController
             $em->persist($expediteur);
             $em->flush();
             $mailer->send($email);
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'expéditeur " . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) . " a bien été activé et il a été informé par mail"]);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => $message]);
         } catch (UniqueConstraintViolationException $e) {
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => "L'activation du compte de l'expéditeur "  . $expediteur->getNom() . " " . ($expediteur->getPrenom() ?? null) .  " n'a pas pu être effectué", 'isError' => true]);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => $messageErreur, 'isError' => true]);
         }
     }
 }

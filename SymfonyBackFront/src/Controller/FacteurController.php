@@ -45,6 +45,10 @@ class FacteurController extends AbstractController
     #[Route('/nouveauFacteur', 'newFacteur')]
     public function newFacteur(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Facteur"]["Création"];
+        $messageErreur = $messages["Messages Erreurs"]["Facteur"]["Création"];
+
         return $this->renderForm('facteur/form.html.twig', [
             // 'form' => $form,
             'title' => 'Créer un facteur',
@@ -58,6 +62,10 @@ class FacteurController extends AbstractController
     #[Route('/modifierFacteur', 'editFacteur')]
     public function editFacteur(FacteurRepository $facteurRepo, Request $request, EntityManagerInterface $em, ExpediteurRepository $expediteurRepository): Response
     {
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Facteur"]["Modification"];
+        $messageErreur = $messages["Messages Erreurs"]["Facteur"]["Modification"];
+
         $ancienFacteur = $facteurRepo->find($request->get('id'));
         $form = $this->createForm(FacteurType::class, $ancienFacteur)->handleRequest($request);
 
@@ -102,14 +110,18 @@ class FacteurController extends AbstractController
     #[Route('/supprimerFacteur', 'deleteFacteur')]
     public function deleteFacteur(Request $request, FacteurRepository $facteurRepo): Response
     {
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Facteur"]["Suppression"];
+        $messageErreur = $messages["Messages Erreurs"]["Facteur"]["Suppression"];
+
         $idFacteur = $request->get('id');
         $facteur = $facteurRepo->find($idFacteur);
 
         try {
             $facteurRepo->remove($facteur, true);
-            return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur ' . $facteur->getNom() . ' a bien été supprimé']);
+            return $this->redirectToRoute('app_facteur', ['errorMessage' => $message]);
         } catch (Exception) {
-            return $this->redirectToRoute('app_facteur', ['errorMessage' => 'La suppression du facteur a échoué', 'isError' => true]);
+            return $this->redirectToRoute('app_facteur', ['errorMessage' => $messageErreur, 'isError' => true]);
         }
     }
 }

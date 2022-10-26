@@ -65,7 +65,10 @@ class AdminController extends AbstractController
         $admin = new User();
         $form = $this->createForm(UserType::class, $admin);
         $form->handleRequest($request);
-        $jsonMessages = json_decode(file_get_contents("messages.json"), true);
+
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Administrateur"]["Création"];
+        $messageErreur = $messages["Messages Erreurs"]["Administrateur"]["Création"];
 
         if ($form->isSubmitted() && $form->isValid()) {
             $pass = $form->get('password')->getData();
@@ -79,9 +82,9 @@ class AdminController extends AbstractController
             $admin->setRoles(['ROLE_ADMIN']);
             try {
                 $adminRepository->add($admin);
-                return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur "  . $form->get('nom')->getData() . " a été créé"], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin', ['errorMessage' => $message], Response::HTTP_SEE_OTHER);
             } catch (Exception) {
-                return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'adresse mail saisie est déjà associée à un administrateur existant", 'isError' => true], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin_add', ['errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
             }
         }
 
@@ -103,6 +106,10 @@ class AdminController extends AbstractController
         $form = $this->createForm(UserType::class, $admin);
         $form->handleRequest($request);
 
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Administrateur"]["Modification"];
+        $messageErreur = $messages["Messages Erreurs"]["Administrateur"]["Modification"];
+
         if ($form->isSubmitted() && $form->isValid()) {
             $pass = $form->get('password')->getData();
             $hashedPassword = $passwordHasher->hashPassword(
@@ -115,9 +122,9 @@ class AdminController extends AbstractController
 
             try {
                 $adminRepository->add($admin);
-                return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur " . $form->get('nom')->getData() . " a été modifié"], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin', ['errorMessage' => $message], Response::HTTP_SEE_OTHER);
             } catch (Exception) {
-                return $this->redirectToRoute('app_admin', ['errorMessage' => "L'email saisie est déjà attribuée à un autre administrateur", 'isError' => true], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin', ['errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
             }
         }
 
@@ -134,11 +141,15 @@ class AdminController extends AbstractController
     #[Route('/delete/{id}', name: 'admin_delete')]
     public function delete(User $admin, UserRepository $adminRepository): Response
     {
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Administrateur"]["Suppression"];
+        $messageErreur = $messages["Messages Erreurs"]["Administrateur"]["Suppression"];
+
         try {
             $adminRepository->remove($admin);
-            return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur " . $admin->getNom() . " a été supprimé"], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin', ['errorMessage' => $message], Response::HTTP_SEE_OTHER);
         } catch (Exception) {
-            return $this->redirectToRoute('app_admin', ['errorMessage' => "L'administrateur " . $admin->getNom() . " n'a pas pu être supprimé", 'isError' => true], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin', ['errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 }

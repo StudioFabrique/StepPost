@@ -6,7 +6,12 @@
 
 {% block title %}N°{{ courrierId.bordereau }}{% endblock %}
 
-{% set showUpdateButton = statutsCourrier|length >= 7 ? false : true %}
+{% set statutsTermine = false %}
+{% for statut in statutsCourrier %}
+    {% if statut.statut.id == 5 %} {% set statutsTermine = true %} {% endif %}
+{% endfor %}
+
+{% set showUpdateButton = statutsCourrier|length >= 7 or statutsTermine ? false : true %}
 
 {% block body %}
 <div class="absolute right-0 mx-10" data-controller="statut">
@@ -17,13 +22,15 @@
 {% if showUpdateButton %}
 <div id="boxContent" class="flex-col  fixed bg-[#91c8cf] rounded-lg p-2 right-28 top-28">
     {% for statut in statutsRestants %}
-        <div><a class="m-1" href="{{ path('app_statut_add', ({ id: courrierId })) }}">{{ statut.etat }}</a></div>
+        <div><a class="m-1" href="{{ path('app_statut_add', ({ courrierId: courrierId, statutId: statut.id })) }}">{{ statut.etat }}</a></div>
     {% endfor %}
 </div>
 {% endif %}
 
 <main class="w-[95%] m-auto">
+    
     <h1 class=" text-xl font-bold italic text-[#25BA00] mb-2">Le suivi n° {{ courrierId.bordereau }} en detail </h1>
+
     <section>
         {% for statut in statutsCourrier %}
         <div class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 mb-4">
@@ -37,11 +44,17 @@
                     a été {{ statut.statut ? statut.statut.etat }}
                     {{ statut.statut ? statut.statut.etat == "Remise" ? "au facteur" }}
                 </p>
-                <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded" href="{{ path('app_delete_statut', { id: courrierId, statutId: statut.id }) }}">Supprimer</a>
+                <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded" href="{{ path('app_delete_statut', { courrierId: statut.courrier.id, statutId: statut.id }) }}">Supprimer</a>
             </div>
         </div>
         {% endfor %}
     </section>
+    {% if showSignature %}
+    <div class="absolute mt-10 right-0">
+        <p class="text-xl">signature :</p>
+        <img class="border-2 border-gray-200 shadow-md" src="{{ signature }}" alt="">
+    </div>
+    {% endif %}
 </main>
 
 {% endblock %}

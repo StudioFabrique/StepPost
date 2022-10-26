@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CourrierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CourrierRepository::class)]
@@ -50,6 +51,9 @@ class Courrier
 
     #[ORM\OneToMany(mappedBy: 'courrier', targetEntity: StatutCourrier::class)]
     private Collection $statutsCourrier;
+
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    private $signature = null;
 
     public function __construct()
     {
@@ -224,6 +228,18 @@ class Courrier
                 $statutsCourrier->setCourrier(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSignature()
+    {
+        return $this->signature;
+    }
+
+    public function setSignature($signature): self
+    {
+        $this->signature = $signature;
 
         return $this;
     }

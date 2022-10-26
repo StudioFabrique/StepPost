@@ -227,7 +227,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.id
             ')
             ->from('App\Entity\StatutCourrier', 's')
-            ->where('s.date >= :dateToSearch and st.id = 3')
+            ->where('s.date >= :dateToSearch and st.id = 2')
             ->groupBy('c.id')
             ->join('s.courrier', 'c')
             ->join('s.statut', 'st')

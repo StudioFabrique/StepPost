@@ -20,12 +20,21 @@
     <section class="mt-10">
         <p class="text-xl text-blue-600 mb-5">Ces dernières <span class="text-white bg-[#140A82] p-1.5 rounded-lg">24 H</span></p>
         <div class="flex justify-between">
-            <div><p><span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpressionLast }}</span> {{ nbCourriersImpressionLast > 1 ? 'bordereaux ont été imprimés' : 'bordereau a été imprimé' }}</p></div>
-            <div><p><span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpressionLast }}</span> {{ nbCourriersImpressionLast > 1 ? 'courriers/colis ont été envoyés' : 'courrier/coli a été envoyé' }}</p></div>
-        </div>
-        <div class="flex justify-evenly">
-            <div><p><span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurActifLast }}</span> {{ nbExpediteurActifLast > 1 ? 'expéditeurs se sont inscrits' : 'expéditeur a été inscrit' }}</p></div>
-            <div><p><span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurInactifLast }}</span> {{ nbExpediteurInactifLast > 1 ? "expéditeurs en attente d'activation" : "expéditeur en attente d'activation" }}</p></div>
+            <div class="flex-col">
+                <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpressionLast }}</span> 
+                <p>{{ nbCourriersImpressionLast > 1 ? 'bordereaux ont été imprimés' : 'bordereau a été imprimé' }}</p>
+            </div>
+            <div>
+                <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersEnvoiLast }}</span> 
+                <p>{{ nbCourriersImpressionLast > 1 ? 'courriers/colis ont été envoyés' : 'courrier/coli a été envoyé' }}</p>
+            </div>
+            <div>
+                <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurActifLast }}</span> 
+                <p>{{ nbExpediteurActifLast > 1 ? 'expéditeurs se sont inscrits' : 'expéditeur a été inscrit' }}</p>
+            </div>
+            <div>
+                <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurInactifLast }}</span> 
+                <p>{{ nbExpediteurInactifLast > 1 ? "expéditeurs en attente d'activation" : "expéditeur en attente d'activation" }}</p></div>
         </div>
     </section>
     <hr class="border-y-2 m-5 border-blue-900 absolute w-full -left-5">

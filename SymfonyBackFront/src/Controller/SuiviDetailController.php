@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Courrier;
+use App\Entity\Statut;
 use App\Entity\StatutCourrier;
 use App\Repository\CourrierRepository;
 use App\Repository\ExpediteurRepository;
@@ -31,11 +32,16 @@ class SuiviDetailController extends AbstractController
         StatutCourrierRepository $statutsCourrierRepo,
         ExpediteurRepository $expediteurRepository,
         Request $request,
-        StatutRepository $statutRepository
+        StatutRepository $statutRepository,
+        CourrierRepository $courrierRepository
     ): Response {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
+
+        $courrierId = $request->get('id');
+        $signature = $courrierRepository->find($courrierId)->getSignature() ?? null;
+        $signatureBase64 = $signature != null ? base64_decode(base64_encode(stream_get_contents($signature))) : null;
 
         $statuts = array();
         $statutsExistants = array();
@@ -58,7 +64,9 @@ class SuiviDetailController extends AbstractController
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
-            'statutsRestants' => $statuts
+            'statutsRestants' => $statuts,
+            'signature' => $signatureBase64,
+            'showSignature' => $signatureBase64 == null ? false : true
         ]);
     }
 
@@ -66,7 +74,9 @@ class SuiviDetailController extends AbstractController
 
     public function Update(Request $request, StatutCourrierRepository $statutCourrierRepository, StatutRepository $statutRepository, CourrierRepository $courrierRepository): Response
     {
-        $courrierId = $request->get('id');
+        $courrierId = $request->get('courrierId');
+        $statutId = $request->get('statutId');
+
         $statuts = $courrierRepository->find($courrierId)->getStatutsCourrier();
 
         $lastStatutId = 0;
@@ -84,7 +94,7 @@ class SuiviDetailController extends AbstractController
         $statutCourrier = new StatutCourrier();
         $statutCourrier
             ->setCourrier($courrierRepository->find($courrierId))
-            ->setStatut($statut)
+            ->setStatut($statutRepository->find($statutId))
             ->setDate(new DateTime('now'))
             ->setFacteur($facteur);
         try {
@@ -98,7 +108,7 @@ class SuiviDetailController extends AbstractController
     #[Route('/supprimerStatut', 'delete_statut')]
     public function DeleteStatut(Request $request, StatutCourrierRepository $statutCourrierRepository): Response
     {
-        $courrierId = $request->get('id');
+        $courrierId = $request->get('courrierId');
         $statutId = $request->get('statutId');
 
         try {
