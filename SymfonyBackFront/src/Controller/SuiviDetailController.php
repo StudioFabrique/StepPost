@@ -21,7 +21,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[IsGranted('ROLE_ADMIN')]
 class SuiviDetailController extends AbstractController
 {
-
     /*
     La fonction indexbyid affiche les différents statuts d'un courrier dans un template.
     */
@@ -45,11 +44,13 @@ class SuiviDetailController extends AbstractController
 
         $statuts = array();
         $statutsExistants = array();
+        $nomFacteur = null;
 
         $statutsCourrier = $statutsCourrierRepo->findBy(["courrier" => $id], ["date" => "DESC"]);
 
         foreach ($statutsCourrier as $statut) {
             array_push($statutsExistants, $statut->getStatut());
+            $nomFacteur = $statut->getFacteur() != null ? $statut->getFacteur()->getNom() : null;
         }
 
         foreach ($statutRepository->findAll() as $statut) {
@@ -66,14 +67,22 @@ class SuiviDetailController extends AbstractController
             'isError' => $request->get('isError') ?? false,
             'statutsRestants' => $statuts,
             'signature' => $signatureBase64,
-            'showSignature' => $signatureBase64 == null ? false : true
+            'showSignature' => $signatureBase64 == null ? false : true,
+            'facteur' => $nomFacteur
         ]);
     }
 
     #[Route('/mettreAjourStatut', name: 'statut_add')]
-
     public function Update(Request $request, StatutCourrierRepository $statutCourrierRepository, StatutRepository $statutRepository, CourrierRepository $courrierRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Statut courrier"]["Mise à jour"];
+        $messageErreur = $messages["Messages Erreurs"]["Statut courrier"]["Mise à jour"];
+
         $courrierId = $request->get('courrierId');
         $statutId = $request->get('statutId');
 
@@ -99,23 +108,31 @@ class SuiviDetailController extends AbstractController
             ->setFacteur($facteur);
         try {
             $statutCourrierRepository->add($statutCourrier, true);
-            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => 'Le statut a été mis à jour'], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => $message], Response::HTTP_SEE_OTHER);
         } catch (Exception) {
-            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => 'Impossible de mettre le statut à jour', 'isError' => true], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 
     #[Route('/supprimerStatut', 'delete_statut')]
     public function DeleteStatut(Request $request, StatutCourrierRepository $statutCourrierRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Statut courrier"]["Suppression"];
+        $messageErreur = $messages["Messages Erreurs"]["Statut courrier"]["Suppression"];
+
         $courrierId = $request->get('courrierId');
         $statutId = $request->get('statutId');
 
         try {
             $statutCourrierRepository->remove($statutCourrierRepository->find($statutId), true);
-            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => 'Le statut a bien été supprimé']);
+            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => $message]);
         } catch (Exception $e) {
-            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => 'Impossible de supprimer le statut', 'isError' => true], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 }

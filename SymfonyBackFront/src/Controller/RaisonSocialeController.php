@@ -25,6 +25,10 @@ class RaisonSocialeController extends AbstractController
     #[Route('/', name: 'raisonSociale')]
     public function ShowRaisonsSociales(PaginatorInterface $paginator, ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository, Request $request): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $currentPage = $request->get('currentPage') ?? 1;
         $data = $clientRepository->findAll();
 
@@ -32,6 +36,7 @@ class RaisonSocialeController extends AbstractController
             $data,
             $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
+
         return $this->render('raisonSociale/raisonSociale.html.twig', [
             'raisonsSociales' => $raisonsSociales,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
@@ -45,6 +50,10 @@ class RaisonSocialeController extends AbstractController
     #[Route('/RaisonSocialeClients', name: 'clientsRaisonSociale')]
     public function ShowClientsRaisonsSociales(ClientRepository $clientRepository, Request $request, ExpediteurRepository $expediteurRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $raisonId = $request->get('raisonId');
         $raison = $clientRepository->find($raisonId);
         $clients = $raison->getExpediteurs();
@@ -60,6 +69,14 @@ class RaisonSocialeController extends AbstractController
     #[Route('/ajouterRaisonSociale', name: 'addRaisonSociale')]
     public function AddRaisonSociale(Request $request, ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Raison sociale"]["Création"];
+        $messageErreur = $messages["Messages Erreurs"]["Raison sociale"]["Création"];
+
         $raisonSociale = new Client();
         $form = ($this->createForm(ClientType::class, $raisonSociale))->handleRequest($request);
 
@@ -67,9 +84,9 @@ class RaisonSocialeController extends AbstractController
             try {
                 $raisonSociale->setRaisonSociale(strip_tags(strtolower($form->get('raisonSociale')->getData())));
                 $clientRepository->add($raisonSociale, true);
-                return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => 'La raison sociale a bien été créé']);
+                return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $message)]);
             } catch (UniqueConstraintViolationException $e) {
-                return $this->redirectToRoute('app_addRaisonSociale', ['errorMessage' => 'La raison sociale saisie existe déjà', 'isError' => true]);
+                return $this->redirectToRoute('app_addRaisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $messageErreur), 'isError' => true]);
             }
         }
 
@@ -84,20 +101,28 @@ class RaisonSocialeController extends AbstractController
     #[Route('/modifierRaisonSociale', name: 'editRaisonSociale')]
     public function EditRaisonSociale(ClientRepository $clientRepository, Request $request, ManagerRegistry $manager, ExpediteurRepository $expediteurRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Raison sociale"]["Modification"];
+        $messageErreur = $messages["Messages Erreurs"]["Raison sociale"]["Modification"];
+
         $em = $manager->getManager();
         $raisonId = $request->get('raisonId');
-        $raison = $clientRepository->find($raisonId);
-        $form = ($this->createForm(ClientType::class, $raison))->handleRequest($request);
+        $raisonSociale = $clientRepository->find($raisonId);
+        $form = ($this->createForm(ClientType::class, $raisonSociale))->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $raison = $form->getData();
-            $raison->SetRaisonSociale((strip_tags(strtolower($form->get('raisonSociale')->getData()))));
+            $raisonSociale = $form->getData();
+            $raisonSociale->SetRaisonSociale((strip_tags(strtolower($form->get('raisonSociale')->getData()))));
             try {
-                $em->persist($raison);
+                $em->persist($raisonSociale);
                 $em->flush();
-                return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => 'La raison sociale ' . $form->get('raisonSociale')->getData() . ' a bien été modifié']);
+                return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $message)]);
             } catch (Exception) {
-                return $this->redirectToRoute('app_editRaisonSociale', ['errorMessage' => 'La modification de la raison sociale a échoué', 'isError' => true]);
+                return $this->redirectToRoute('app_editRaisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $messageErreur), 'isError' => true]);
             }
         }
 
@@ -112,43 +137,33 @@ class RaisonSocialeController extends AbstractController
     #[Route('/supprimerRaisonSociale', name: 'deleteRaisonSociale')]
     public function RemoveRaisonSociale(ClientRepository $clientRepository, Request $request): RedirectResponse
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Raison sociale"]["Suppression"];
+        $messageErreur = $messages["Messages Erreurs"]["Raison sociale"]["Suppression"];
+
         $raisonId = $request->get('raisonId');
-        $raison = $clientRepository->find($raisonId);
+        $raisonSociale = $clientRepository->find($raisonId);
 
         try {
-            $clientRepository->remove($raison, true);
-            return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => 'La raison sociale ' . $raison->getRaisonSociale() . ' a bien été supprimé']);
+            $clientRepository->remove($raisonSociale, true);
+            return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $message)]);
         } catch (Exception) {
-            return $this->redirectToRoute('app_deleteRaisonSociale', ['errorMessage' => 'La suppression de la raison sociale ' . $raison->getRaisonSociale() . ' a échoué']);
+            return $this->redirectToRoute('app_deleteRaisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $messageErreur)]);
         }
     }
 
-    #[Route('/detacherClient', name: 'deleteClientRaisonSociale')]
-    public function DeleteClientFrom(Request $request, ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em): RedirectResponse
-    {
-        $expediteurId = $request->get('expediteurId');
-        $raisonId = $request->get('raisonId');
-        $expediteur = $expediteurRepository->find($expediteurId);
-
-        try {
-            $em->persist($clientRepository->find($raisonId)->removeExpediteur($expediteur));
-            $em->flush();
-            return $this->redirectToRoute('app_clientsRaisonSociale', [
-                'raisonId' => $raisonId,
-                'errorMessage' => "L'expéditeur " . ($expediteur->getPrenom() ?? null) . " " . $expediteur->getNom() . " a bien été détaché de cette raison sociale"
-            ]);
-        } catch (Exception) {
-            return $this->redirectToRoute('app_clientsRaisonSociale', [
-                'raisonId' => $raisonId,
-                'errorMessage' => "L'expéditeur " . ($expediteur->getPrenom() ?? null) . " " . $expediteur->getNom() . " n'a pas pu être détaché de cette raison sociale",
-                'isError' => true
-            ]);
-        }
-    }
 
     #[Route('/ajouterClient', name: 'addClientRaisonSociale')]
     public function AddClientFrom(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $raisonId = $request->get('raisonId');
         $clients = $expediteurRepository->findAllWithoutClient();
         return $this->render('raisonSociale/addClientsRaisonSociale.html.twig', [
@@ -163,6 +178,14 @@ class RaisonSocialeController extends AbstractController
     #[Route('/ajouterLeClient', name: 'addTheClientRaisonSociale')]
     public function AddTheClientFrom(Request $request, ExpediteurRepository $expediteurRepository, ClientRepository $clientRepository, EntityManagerInterface $em): RedirectResponse
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Raison sociale"]["Ajout expéditeur"];
+        $messageErreur = $messages["Messages Erreurs"]["Raison sociale"]["Ajout expéditeur"];
+
         $raisonId = $request->get('raisonId');
         $expediteurId = $request->get('expediteurId');
         $expediteur = $expediteurRepository->find($expediteurId);
@@ -173,13 +196,44 @@ class RaisonSocialeController extends AbstractController
             return $this->redirectToRoute('app_addClientRaisonSociale', [
                 'raisonId' => $raisonId,
                 'expediteursInactifs' => $expediteurRepository->findAllInactive(),
-                'errorMessage' => "L'expéditeur " . ($expediteur->getPrenom() ?? null) . " " . $expediteur->getNom() . " a été ajouté à cette raison sociale"
+                'errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)
             ]);
         } catch (Exception) {
             return $this->redirectToRoute('app_addClientRaisonSociale', [
                 'raisonId' => $raisonId,
                 'expediteursInactifs' => $expediteurRepository->findAllInactive(),
-                'errorMessage' => "L'expéditeur " . ($expediteur->getPrenom() ?? null) . " " . $expediteur->getNom() . " n'a pas pu être ajouté à cette raison sociale"
+                'errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur)
+            ]);
+        }
+    }
+
+    #[Route('/detacherClient', name: 'deleteClientRaisonSociale')]
+    public function DeleteClientFrom(Request $request, ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em): RedirectResponse
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Raison sociale"]["Supression expéditeur"];
+        $messageErreur = $messages["Messages Erreurs"]["Raison sociale"]["Supression expéditeur"];
+
+        $expediteurId = $request->get('expediteurId');
+        $raisonId = $request->get('raisonId');
+        $expediteur = $expediteurRepository->find($expediteurId);
+
+        try {
+            $em->persist($clientRepository->find($raisonId)->removeExpediteur($expediteur));
+            $em->flush();
+            return $this->redirectToRoute('app_clientsRaisonSociale', [
+                'raisonId' => $raisonId,
+                'errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)
+            ]);
+        } catch (Exception) {
+            return $this->redirectToRoute('app_clientsRaisonSociale', [
+                'raisonId' => $raisonId,
+                'errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur),
+                'isError' => true
             ]);
         }
     }

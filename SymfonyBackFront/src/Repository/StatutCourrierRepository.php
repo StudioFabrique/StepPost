@@ -184,23 +184,28 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function FindCourriersByLastStatut($statutId)
+    public function findCourriersByLastStatut($statutId, $facteurId = null)
     {
         $qb = $this->createQueryBuilder('s')
             ->select(
                 '
                 MAX(s.date),
-                MAX(s.statut)
+                MAX(s.statut),
+                f.id
                 '
             )
+            ->join('s.courrier', 'f')
             ->groupBy('s.courrier')
-            ->having("MAX(s.statut) = :statutid")
+            ->having($facteurId == null ? ("MAX(s.statut) = :statutid") : ("MAX(s.statut) = :statutid and f.id = :facteurid"))
             ->setParameter('statutid', $statutId)
             ->getQuery();
+        if ($facteurId != null) {
+            $qb->setParameter('facteurid', $facteurId);
+        }
         return $qb->getResult();
     }
 
-    public function FindCourrierImpressionLastHours($nbHours)
+    public function findCourrierImpressionLastHours($nbHours)
     {
         $dateToSearch = (new DateTime('now'))->modify('-' . $nbHours . ' hours');
         $qb = $this->_em->createQueryBuilder('s')
@@ -218,7 +223,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function FindCourrierEnvoiLastHours($nbHours)
+    public function findCourrierEnvoiLastHours($nbHours)
     {
         $dateToSearch = (new DateTime('now'))->modify('-' . $nbHours . ' hours');
         $qb = $this->_em->createQueryBuilder('s')
@@ -232,6 +237,51 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->join('s.courrier', 'c')
             ->join('s.statut', 'st')
             ->setParameter('dateToSearch', $dateToSearch)
+            ->getQuery();
+        return $qb->getResult();
+    }
+
+    public function findCourrierRecuLastHours($nbHours)
+    {
+        $dateToSearch = (new DateTime('now'))->modify('-' . $nbHours . ' hours');
+        $qb = $this->_em->createQueryBuilder('s')
+            ->select('
+                s.date,
+                c.id
+            ')
+            ->from('App\Entity\StatutCourrier', 's')
+            ->where('s.date >= :dateToSearch and st.id = 5')
+            ->groupBy('c.id')
+            ->join('s.courrier', 'c')
+            ->join('s.statut', 'st')
+            ->setParameter('dateToSearch', $dateToSearch)
+            ->getQuery();
+        return $qb->getResult();
+    }
+
+    public function findTopFacteurs()
+    {
+
+
+        // SELECT
+        //     courrier_id,
+        //     MAX(DATE) AS DATE,
+        //     MAX(status_id) AS etat
+        // FROM
+        //     statutCourrier
+        // GROUP BY
+        //     courrier_id
+        $qb = $this->createQueryBuilder('s')
+            ->select(
+                '
+                    f.nom,
+                    count(distinct s.courrier) as nombre_courriers
+                '
+            )
+            ->orderBy("count(distinct s.courrier)", "desc")
+            ->groupBy("f.nom")
+            ->join('s.facteur', 'f')
+            ->join('s.courrier', 'c')
             ->getQuery();
         return $qb->getResult();
     }

@@ -62,6 +62,10 @@ class AdminController extends AbstractController
     #[Route('/ajouter', name: 'admin_add')]
     public function new(Request $request, UserRepository $adminRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $admin = new User();
         $form = $this->createForm(UserType::class, $admin);
         $form->handleRequest($request);
@@ -82,9 +86,9 @@ class AdminController extends AbstractController
             $admin->setRoles(['ROLE_ADMIN']);
             try {
                 $adminRepository->add($admin);
-                return $this->redirectToRoute('app_admin', ['errorMessage' => $message], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin', ['errorMessage' => str_replace('[nom]', $admin->getNom(), $message)], Response::HTTP_SEE_OTHER);
             } catch (Exception) {
-                return $this->redirectToRoute('app_admin_add', ['errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin_add', ['errorMessage' => str_replace('[nom]', $admin->getNom(), $messageErreur), 'isError' => true], Response::HTTP_SEE_OTHER);
             }
         }
 
@@ -100,6 +104,10 @@ class AdminController extends AbstractController
     #[Route('/edit/{id}', name: 'admin_edit')]
     public function edit(Request $request, UserRepository $adminRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $adminId = $request->get('id');
         $admin = $adminRepository->find($adminId);
         $isSuperAdmin = in_array('ROLE_SUPERADMIN', $admin->getRoles()) ? true : false;
@@ -122,9 +130,9 @@ class AdminController extends AbstractController
 
             try {
                 $adminRepository->add($admin);
-                return $this->redirectToRoute('app_admin', ['errorMessage' => $message], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin', ['errorMessage' => str_replace('[nom]', $admin->getNom(), $message)], Response::HTTP_SEE_OTHER);
             } catch (Exception) {
-                return $this->redirectToRoute('app_admin', ['errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin', ['errorMessage' => str_replace('[nom]', $admin->getNom(), $messageErreur), 'isError' => true], Response::HTTP_SEE_OTHER);
             }
         }
 
@@ -141,15 +149,19 @@ class AdminController extends AbstractController
     #[Route('/delete/{id}', name: 'admin_delete')]
     public function delete(User $admin, UserRepository $adminRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
         $message = $messages["Messages Informations"]["Administrateur"]["Suppression"];
         $messageErreur = $messages["Messages Erreurs"]["Administrateur"]["Suppression"];
 
         try {
             $adminRepository->remove($admin);
-            return $this->redirectToRoute('app_admin', ['errorMessage' => $message], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin', ['errorMessage' => str_replace('[nom]', $admin->getNom(), $message)], Response::HTTP_SEE_OTHER);
         } catch (Exception) {
-            return $this->redirectToRoute('app_admin', ['errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin', ['errorMessage' => str_replace('[nom]', $admin->getNom(), $messageErreur), 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 }

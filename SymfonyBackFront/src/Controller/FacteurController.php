@@ -24,6 +24,10 @@ class FacteurController extends AbstractController
     #[Route('/facteurs', name: 'facteur')]
     public function showFacteurs(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, Request $request, ExpediteurRepository $expediteurRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $currentPage = $request->get('currentPage') ?? 1;
         $data = $facteurRepo->findAll();
 
@@ -45,6 +49,10 @@ class FacteurController extends AbstractController
     #[Route('/nouveauFacteur', 'newFacteur')]
     public function newFacteur(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
         $message = $messages["Messages Informations"]["Facteur"]["Création"];
         $messageErreur = $messages["Messages Erreurs"]["Facteur"]["Création"];
@@ -62,6 +70,10 @@ class FacteurController extends AbstractController
     #[Route('/modifierFacteur', 'editFacteur')]
     public function editFacteur(FacteurRepository $facteurRepo, Request $request, EntityManagerInterface $em, ExpediteurRepository $expediteurRepository): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
         $message = $messages["Messages Informations"]["Facteur"]["Modification"];
         $messageErreur = $messages["Messages Erreurs"]["Facteur"]["Modification"];
@@ -110,6 +122,10 @@ class FacteurController extends AbstractController
     #[Route('/supprimerFacteur', 'deleteFacteur')]
     public function deleteFacteur(Request $request, FacteurRepository $facteurRepo): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
         $message = $messages["Messages Informations"]["Facteur"]["Suppression"];
         $messageErreur = $messages["Messages Erreurs"]["Facteur"]["Suppression"];
@@ -119,9 +135,9 @@ class FacteurController extends AbstractController
 
         try {
             $facteurRepo->remove($facteur, true);
-            return $this->redirectToRoute('app_facteur', ['errorMessage' => $message]);
+            return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $message)]);
         } catch (Exception) {
-            return $this->redirectToRoute('app_facteur', ['errorMessage' => $messageErreur, 'isError' => true]);
+            return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $messageErreur), 'isError' => true]);
         }
     }
 }

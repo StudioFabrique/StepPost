@@ -13,13 +13,16 @@
 
 {% block body %}
 <main class="w-[95%] m-auto" data-controller="chart">
-    <section id="menu">
-        <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
-    </section>
-
     <section class="mt-10">
-        <p class="text-xl text-blue-600 mb-5">Ces dernières <span class="text-white bg-[#140A82] p-1.5 rounded-lg">24 H</span></p>
         <div class="flex justify-between">
+            <div>
+                <p class="text-2xl text-[#140A82] mb-5">Ces dernières <span class="text-white bg-[#140A82] p-1.5 rounded-lg">24 H</span></p>
+            </div>
+            <div>
+                <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
+            </div>
+        </div>
+        <div class="flex justify-between text-gray-600">
             <div class="flex-col">
                 <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpressionLast }}</span> 
                 <p>{{ nbCourriersImpressionLast > 1 ? 'bordereaux ont été imprimés' : 'bordereau a été imprimé' }}</p>
@@ -29,17 +32,55 @@
                 <p>{{ nbCourriersImpressionLast > 1 ? 'courriers/colis ont été envoyés' : 'courrier/coli a été envoyé' }}</p>
             </div>
             <div>
+                <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersRecuLast }}</span> 
+                <p>{{ nbCourriersImpressionLast > 1 ? 'courriers/colis ont été distribués' : 'courrier/coli a été distribué' }}</p>
+            </div>
+            <div>
                 <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurActifLast }}</span> 
                 <p>{{ nbExpediteurActifLast > 1 ? 'expéditeurs se sont inscrits' : 'expéditeur a été inscrit' }}</p>
             </div>
             <div>
                 <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurInactifLast }}</span> 
-                <p>{{ nbExpediteurInactifLast > 1 ? "expéditeurs en attente d'activation" : "expéditeur en attente d'activation" }}</p></div>
+                <p>{{ nbExpediteurInactifLast > 1 ? "expéditeurs en attente d'activation" : "expéditeur en attente d'activation" }}</p>
+            </div>
+        </div>
+        <div>
         </div>
     </section>
-    <hr class="border-y-2 m-5 border-blue-900 absolute w-full -left-5">
-    <section id="chart">
-        <div class="w-80 m-10"><p class="text-center m-5">Statuts actuels des courriers</p> {{ render_chart(chart) }}</div>
+    <hr class="border-y-1 my-10 border-gray-400">
+    <section>
+        <div class="flex justify-between m-10">
+            <div class="w-80">
+                <p class="text-center m-5 text-xl my-10">Statuts actuels des courriers</p> <p>{{ render_chart(chart1) }}</p>
+            </div>
+            <div class="w-[50%]">
+                <p class="text-center m-5 text-xl my-10">Nombres de courriers pris en charges par les facteurs</p> <p>{{ render_chart(chart2) }}</p>
+            </div>
+        </div>
+        <div class="flex justify-center gap-x-2 mb-6">
+            <div class="rotate-180 hover:scale-125">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35.9" height="39.2" viewBox="0 0 35.9 39.2">
+                    <g id="Calque_2" data-name="Calque 2">
+                      <g id="Calque_1-2" data-name="Calque 1">
+                        <g id="FlecheD3">
+                          <path class="fill-[#140A82]" id="Tracé_1486" data-name="Tracé 1486" d="M4.78,39.2a4.75,4.75,0,0,1-2.41-.66A4.71,4.71,0,0,1,0,34.42V4.78A4.71,4.71,0,0,1,2.37.66a4.74,4.74,0,0,1,4.75,0L33.46,15.43a4.78,4.78,0,0,1,0,8.33L7.12,38.58A4.68,4.68,0,0,1,4.78,39.2Zm0-35.52a1.12,1.12,0,0,0-.56.15,1.1,1.1,0,0,0-.55,1V34.42a1.11,1.11,0,0,0,1.1,1.11,1.08,1.08,0,0,0,.55-.15l26.34-14.8a1.12,1.12,0,0,0,0-1.93L5.32,3.82a1.1,1.1,0,0,0-.53-.14Z"/>
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+            </div>
+            <div class="hover:scale-125">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35.9" height="39.2" viewBox="0 0 35.9 39.2">
+                    <g id="Calque_2" data-name="Calque 2">
+                      <g id="Calque_1-2" data-name="Calque 1">
+                        <g id="FlecheD3">
+                          <path class="fill-[#140A82]" id="Tracé_1486" data-name="Tracé 1486" d="M4.78,39.2a4.75,4.75,0,0,1-2.41-.66A4.71,4.71,0,0,1,0,34.42V4.78A4.71,4.71,0,0,1,2.37.66a4.74,4.74,0,0,1,4.75,0L33.46,15.43a4.78,4.78,0,0,1,0,8.33L7.12,38.58A4.68,4.68,0,0,1,4.78,39.2Zm0-35.52a1.12,1.12,0,0,0-.56.15,1.1,1.1,0,0,0-.55,1V34.42a1.11,1.11,0,0,0,1.1,1.11,1.08,1.08,0,0,0,.55-.15l26.34-14.8a1.12,1.12,0,0,0,0-1.93L5.32,3.82a1.1,1.1,0,0,0-.53-.14Z"/>
+                        </g>
+                      </g>
+                    </g>
+                </svg>
+            </div>
+        </div>
     </section>
 </main>
 {% endblock %}
