@@ -7,34 +7,38 @@
 {% block body %}
 <main class="w-[95%] m-auto">
     <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Détails de l'expéditeur</h1>
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between">
         <div></div>
         <div>
         <a class="text-white bg-[#140A82] p-2 rounded" href="{{ path('app_editExpediteur', {id: expediteur.id}) }}">Modifier</a>
         <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
         </div>
     </div>
-    <div>
-        <p>Email : {{ expediteur.email }}</p>
-
-        <p>Prénom / Service : {{expediteur.prenom ?? 'non défini'}} </p>
-
-        <p>Nom / Nom de l'entreprise : {{expediteur.nom}}</p>
-
-        <p>Adresse : {{ expediteur.adresse }}</p>
-
-        <p>Complément d'adresse : {{ expediteur.complement }}</p>
-
-        <p>Code Postal : {{ expediteur.codePostal }}</p>
-
-        <p>Ville : {{ expediteur.ville }}</p>
-
-        <p>Téléphone : {{ expediteur.telephone }}</p>
-
+    <div class="flex-col gap-y-32">
+        <div class="flex justify-center gap-x-10">
+            <p class="text-gray-600">Email : <span class="text-[#140A82]">{{ expediteur.email }}</span></p>
+    
+            <p class="text-gray-600">Prénom / Service : <span class="text-[#140A82]">{{expediteur.prenom ?? 'non défini'}} </span></p>
+    
+            <p class="text-gray-600">Nom / Nom de l'entreprise : <span class="text-[#140A82]">{{expediteur.nom}}</span></p>
+        </div>
+        <div class="flex justify-center gap-x-10">
+            <p class="text-gray-600">Adresse : <span class="text-[#140A82]">{{ expediteur.adresse }}</span></p>
+    
+            <p class="text-gray-600">Complément d'adresse : <span class="text-[#140A82]">{{ expediteur.complement }}</span></p>
+    
+            <p class="text-gray-600">Code Postal : <span class="text-[#140A82]">{{ expediteur.codePostal }}</span></p>
+    
+            <p class="text-gray-600">Ville : <span class="text-[#140A82]">{{ expediteur.ville }}</span></p>
+        </div>
+        <div class="flex justify-center gap-x-10">
+            <p class="text-gray-600">Téléphone : <span class="text-[#140A82]">{{ expediteur.telephone }}</span></p>
+        </div>
+        <hr class="border-y-1 my-10 border-gray-400">
         <div>
-            <h2>Destinataires :</h2>
+            <h2 class="text-xl font-semibold border-y-1 my-10 border-gray-400 text-[#140A82]">Destinataires :</h2>
             {% for destinataire in expediteur.destinataires %}
-                <div class="flex items-center m-4 bg-slate-300 rounded-lg px-2">
+                <div class="flex items-center m-4 shadow-lg rounded-lg px-2">
                     <svg class="w-5" xmlns="http://www.w3.org/2000/svg" width="43.36" height="43.36" viewBox="0 0 43.36 43.36">
                         <g id="Calque_2" data-name="Calque 2">
                         <g id="Calque_1-2" data-name="Calque 1">

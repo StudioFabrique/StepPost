@@ -184,8 +184,12 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function findCourriersByLastStatut($statutId, $facteurId = null)
+    public function findCourriersByLastStatut($statutId, $nbHours = null)
     {
+        $dateToSearch = null;
+        if ($nbHours != null) {
+            $dateToSearch = (new DateTime('now'))->modify('-' . $nbHours . ' hours');
+        }
         $qb = $this->createQueryBuilder('s')
             ->select(
                 '
@@ -196,11 +200,11 @@ class StatutCourrierRepository extends ServiceEntityRepository
             )
             ->join('s.courrier', 'f')
             ->groupBy('s.courrier')
-            ->having($facteurId == null ? ("MAX(s.statut) = :statutid") : ("MAX(s.statut) = :statutid and f.id = :facteurid"))
+            ->having($dateToSearch == null ? ("MAX(s.statut) = :statutid") : ("MAX(s.statut) = :statutid and f.id = :facteurid"))
             ->setParameter('statutid', $statutId)
             ->getQuery();
-        if ($facteurId != null) {
-            $qb->setParameter('facteurid', $facteurId);
+        if ($nbHours != null) {
+            $qb->setParameter('hours', $nbHours);
         }
         return $qb->getResult();
     }

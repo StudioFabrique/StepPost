@@ -22,26 +22,22 @@
                 <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
             </div>
         </div>
-        <div class="flex justify-between text-gray-600">
-            <div class="flex-col">
-                <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpressionLast }}</span> 
+        <div class="flex justify-between text-gray-600 my-10">
+            <div>
+                <p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpressionLast }}</p> 
                 <p>{{ nbCourriersImpressionLast > 1 ? 'bordereaux ont été imprimés' : 'bordereau a été imprimé' }}</p>
             </div>
             <div>
-                <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersEnvoiLast }}</span> 
+                <p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersEnvoiLast }}</p> 
                 <p>{{ nbCourriersImpressionLast > 1 ? 'courriers/colis ont été envoyés' : 'courrier/coli a été envoyé' }}</p>
             </div>
             <div>
-                <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersRecuLast }}</span> 
+                <p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersRecuLast }}</p> 
                 <p>{{ nbCourriersImpressionLast > 1 ? 'courriers/colis ont été distribués' : 'courrier/coli a été distribué' }}</p>
             </div>
             <div>
-                <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurActifLast }}</span> 
-                <p>{{ nbExpediteurActifLast > 1 ? 'expéditeurs se sont inscrits' : 'expéditeur a été inscrit' }}</p>
-            </div>
-            <div>
-                <span id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurInactifLast }}</span> 
-                <p>{{ nbExpediteurInactifLast > 1 ? "expéditeurs en attente d'activation" : "expéditeur en attente d'activation" }}</p>
+                <p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurActifLast }}</p> 
+                <p>{{ nbExpediteurActifLast > 1 ? 'expéditeurs ont été inscrits' : 'expéditeur a été inscrit' }}</p>
             </div>
         </div>
         <div>

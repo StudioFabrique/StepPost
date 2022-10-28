@@ -25,7 +25,6 @@ class StatistiqueController extends AbstractController
 
         $nbHours = $request->get('nbHours') ?? 24;
         $nbExpediteurActifLast = count($expediteurRepository->FindExpediteurLastHours($nbHours, 'ROLE_CLIENT')); // Le nombre d'expéditeurs inscrits et actifs ces dernières x heures
-        $nbExpediteurInactifLast = count($expediteurRepository->FindExpediteurLastHours($nbHours, 'ROLE_INACTIF')); // Le nombre d'expéditeurs inscrits et inactifs ces dernières x heures
         $nbCourriersImpressionLast = count($statutCourrierRepository->FindCourrierImpressionLastHours($nbHours)); // Le nombre de bordereaux des courriers/colis imprimé ces dernières x heures
         $nbCourriersEnvoiLast = count($statutCourrierRepository->FindCourrierEnvoiLastHours($nbHours)); // Le nombre de courriers/colis envoyés ces dernières x heures
         $nbCourriersRecuLast =  count($statutCourrierRepository->FindCourrierRecuLastHours($nbHours));
@@ -112,7 +111,6 @@ class StatistiqueController extends AbstractController
             'errorMessage' => null,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'nbExpediteurActifLast' => $nbExpediteurActifLast,
-            'nbExpediteurInactifLast' => $nbExpediteurInactifLast,
             'nbCourriersImpressionLast' => $nbCourriersImpressionLast,
             'nbCourriersEnvoiLast' => $nbCourriersEnvoiLast,
             'nbCourriersRecuLast' => $nbCourriersRecuLast,
