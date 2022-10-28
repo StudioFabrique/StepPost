@@ -25,11 +25,11 @@
         <div class="flex justify-between text-gray-600 my-10">
             <div>
                 <p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpressionLast }}</p> 
-                <p>{{ nbCourriersImpressionLast > 1 ? 'bordereaux ont été imprimés' : 'bordereau a été imprimé' }}</p>
+                <p>{{ nbCourriersImpressionLast > 1 ? 'bordereaux ont été générés' : 'bordereau a été généré' }}</p>
             </div>
             <div>
                 <p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersEnvoiLast }}</p> 
-                <p>{{ nbCourriersImpressionLast > 1 ? 'courriers/colis ont été envoyés' : 'courrier/coli a été envoyé' }}</p>
+                <p>{{ nbCourriersImpressionLast > 1 ? 'courriers/colis ont été pris en charges' : 'courrier/coli a été pris en charge' }}</p>
             </div>
             <div>
                 <p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersRecuLast }}</p> 
@@ -53,9 +53,9 @@
                 <p class="text-center m-5 text-xl my-10">Nombres de courriers pris en charges par les facteurs</p> <p>{{ render_chart(chart2) }}</p>
             </div>
         </div>
-        <div class="flex justify-center gap-x-2 mb-6">
+        <div class="flex justify-between gap-x-2 mb-6">
             <div class="rotate-180 hover:scale-125">
-                <svg xmlns="http://www.w3.org/2000/svg" width="35.9" height="39.2" viewBox="0 0 35.9 39.2">
+                <svg hidden="true" id="left-arrow" xmlns="http://www.w3.org/2000/svg" width="35.9" height="39.2" viewBox="0 0 35.9 39.2">
                     <g id="Calque_2" data-name="Calque 2">
                       <g id="Calque_1-2" data-name="Calque 1">
                         <g id="FlecheD3">
@@ -66,7 +66,7 @@
                   </svg>
             </div>
             <div class="hover:scale-125">
-                <svg xmlns="http://www.w3.org/2000/svg" width="35.9" height="39.2" viewBox="0 0 35.9 39.2">
+                <svg id="left-arrow" xmlns="http://www.w3.org/2000/svg" width="35.9" height="39.2" viewBox="0 0 35.9 39.2">
                     <g id="Calque_2" data-name="Calque 2">
                       <g id="Calque_1-2" data-name="Calque 1">
                         <g id="FlecheD3">
