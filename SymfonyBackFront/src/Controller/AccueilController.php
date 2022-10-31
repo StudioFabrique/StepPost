@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\DateType;
 use App\Repository\ExpediteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\StatutRepository;
@@ -55,12 +56,19 @@ class AccueilController extends AbstractController
                     : $data = $statutCourrierRepo->findCourriers($order));
         }
 
+        $form = $this->createForm(DateType::class)->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->redirectToRoute('app_accueil', ['order' => $order, 'DateMin' => $form->get('DateMin')->getData(), 'DateMax' => $form->get('dateMax')->getData()]);
+        }
+
         $courriers = $paginator->paginate(
             $data,
             $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
 
         return $this->render('accueil/index.html.twig', [
+
             'isError' => $request->get('isError') ?? false,
             'courriers' => $courriers,
             'statuts' => $statuts->findAll(),
@@ -70,6 +78,8 @@ class AccueilController extends AbstractController
             'nbCourriersTotal' => count($data),
             'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
             'errorMessage' => $request->get('errorMessage') ?? null,
+            'DateMin' => $request->get('DateMin') ?? null,
+            'DateMax' => $request->get('DateMax') ?? null
         ]);
     }
 
@@ -77,21 +87,26 @@ class AccueilController extends AbstractController
     public function exportCsv(Request $request, StatutCourrierRepository $statutCourrierRepository)
     {
         $data = $statutCourrierRepository->findCourriers($request->get('order'), $request->get('dateMin') ?? null, $request->get('dateMax'));
-        $path = '/home/martin/Téléchargements/courriers-' . date_format(new DateTime('now'), 'h:m') . '.csv';
+        $path = '/home/martin/Téléchargements/courriers-' . date_format(new DateTime('now'), 'h-i') . '.csv';
         $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
         $i = 1;
         foreach ($data as $courrier) {
             $csvCourriers[$i] = [
                 $courrier['date'],
                 $courrier['nomExpediteur'],
-                $courrier['statut'], $courrier['bordereau'],
-                $courrier['type'], $courrier['nom'], $courrier['prenom'],
+                $courrier['etat'],
+                $courrier['bordereau'],
+                $courrier['type'] == 0 ? 'Lettre avec suivi' : ($courrier['type'] == 1 ? 'Lettre avec accusé de reception' : 'Colis'),
+                $courrier['nom'],
+                $courrier['prenom'],
                 $courrier['adresse'],
                 $courrier['codePostal'],
                 $courrier['ville']
             ];
             $i++;
         }
+
+        var_dump($csvCourriers[1]);
 
         try {
             $writer = Writer::createFromPath($path, 'w');
