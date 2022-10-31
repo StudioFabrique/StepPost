@@ -60,22 +60,8 @@ class AccueilController extends AbstractController
             $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
 
-
-        $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
-        $i = 1;
-        foreach ($courriers as $courrier) {
-            $csvCourriers[$i] = [$courrier['date'], $courrier['nomExpediteur'], $courrier['statut'], $courrier['bordereau'], $courrier['type'], $courrier['nom'], $courrier['prenom'], $courrier['adresse'], $courrier['codePostal'], $courrier['ville']];
-            $i++;
-        }
-
-        try {
-            $writer = Writer::createFromPath('/home/martin/Téléchargements/courriers-' . date_format(new DateTime('now'), 'h:m') . '.csv', 'w');
-            $writer->insertAll($csvCourriers);
-        } catch (CannotInsertRecord $e) {
-            $e->getRecord();
-        }
-
         return $this->render('accueil/index.html.twig', [
+            'isError' => $request->get('isError') ?? false,
             'courriers' => $courriers,
             'statuts' => $statuts->findAll(),
             'order' => $order == "DESC" ? "ASC" : "DESC",
@@ -87,10 +73,10 @@ class AccueilController extends AbstractController
         ]);
     }
 
-    #[Route('/', name: 'export_csv')]
-    public function exportCsv(Request $request)
+    #[Route('/exportCsv', name: 'export_csv')]
+    public function exportCsv(Request $request, StatutCourrierRepository $statutCourrierRepository)
     {
-        $data = $request->get('data');
+        $data = $statutCourrierRepository->findCourriers($request->get('order'), $request->get('dateMin') ?? null, $request->get('dateMax'));
         $path = '/home/martin/Téléchargements/courriers-' . date_format(new DateTime('now'), 'h:m') . '.csv';
         $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
         $i = 1;
@@ -110,7 +96,7 @@ class AccueilController extends AbstractController
         try {
             $writer = Writer::createFromPath($path, 'w');
             $writer->insertAll($csvCourriers);
-            return $this->redirectToRoute('app_accueil', ['errorMessage' => 'Le fichier a bien été exporté' . ' au répertoire ' . $path]);
+            return $this->redirectToRoute('app_accueil', ['errorMessage' => 'Le fichier a bien été exporté au répertoire ' . $path]);
         } catch (CannotInsertRecord $e) {
             $e->getRecord();
             return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);

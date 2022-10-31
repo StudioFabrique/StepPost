@@ -65,9 +65,9 @@ class StatutCourrierRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    public function findCourriers($order, array $dates = null)
+    public function findCourriers($order, DateTime $dateMin = null, DateTime $dateMax = null)
     {
-        $qb = $dates == null ?
+        $qb = $dateMin == null || $dateMax == null ?
             $this->createQueryBuilder('s')
             ->select(
                 'c.id AS courrier,
@@ -119,8 +119,8 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->groupBy('c.id')
             ->orderBy('date', $order)
             ->where("MAX(s.date) > :dateMin and MAX(s.date) < :dateMax")
-            ->setParameter('dateMin', $dates[0])
-            ->setParameter('dateMax', $dates[1])
+            ->setParameter('dateMin', $dateMin)
+            ->setParameter('dateMax', $dateMax)
             ->getQuery();
 
         return $qb->getResult();
