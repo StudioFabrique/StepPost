@@ -9,10 +9,12 @@
 {% block body %}
 
 <main class="w-[95%] m-auto">
-    <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded">
-        Export en CSV
-    </a>
-    <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Liste et gestion des courriers</h1>
+    <div class="my-5">
+        <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Liste et gestion des courriers</h1>
+        <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded" href="">
+                Export en CSV
+        </a>
+    </div>
     <section class="flex justify-between items-center">
         <form class="flex " action="" method="get">
             <div class="mb-3 xl:w-50">
@@ -34,7 +36,7 @@
                 facteurs</a>
             <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded" href="{{ path('app_raisonSociale') }}">Gestion raisons
                 sociales</a>
-            {% if 'ROLE_SUPERADMIN' in app.user.roles  %}
+            {% if 'ROLE_SUPERADMIN' in app.user.roles %}
             <a class="text-white bg-[#298b7a] hover:bg-[#0c5246] p-2 rounded" href="{{ path('app_admin') }}">Gestion
                 administrateurs</a>
             {% endif %}

@@ -14,13 +14,9 @@
 {% set showUpdateButton = statutsCourrier|length >= 7 or statutsTermine ? false : true %}
 
 {% block body %}
-<div class="absolute right-0 mx-10" data-controller="statut">
-    {% if showUpdateButton %}<a id="button" class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" >Mettre à jour le statut</a>{% endif %}
-    <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
-</div>
 
 {% if showUpdateButton %}
-<div id="boxContent" class="flex-col  fixed bg-[#91c8cf] rounded-lg p-2 right-28 top-28">
+<div id="boxContent" class="flex-col  fixed bg-[#91c8cf] rounded-lg p-2 right-28 top-36">
     {% for statut in statutsRestants %}
         <div><a class="m-1" href="{{ path('app_statut_add', { courrierId: courrierId, statutId: statut.id }) }}">{{ statut.etat }}</a></div>
     {% endfor %}
@@ -29,8 +25,16 @@
 
 <main class="w-[95%] m-auto">
     
-    <h1 class=" text-xl font-bold italic text-[#25BA00] mb-2">Le suivi n° {{ courrierId.bordereau }} en detail </h1>
-
+    
+    <div class="flex justify-between right-0 my-10" data-controller="statut">
+            <div>
+                <h1 class=" text-xl font-bold italic text-[#25BA00] mb-2">Le suivi n° {{ courrierId.bordereau }} en detail </h1>
+            </div>
+            <div class="flex gap-x-2">
+                {% if showUpdateButton %}<button id="button" class="text-white bg-green-500 hover:bg-green-700 p-2 rounded">Mettre à jour le statut</button>{% endif %}
+                <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
+            </div>
+        </div>
     <section>
         {% for statut in statutsCourrier %}
         <div class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 mb-4">
