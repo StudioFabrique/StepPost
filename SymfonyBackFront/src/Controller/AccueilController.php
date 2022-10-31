@@ -2,17 +2,18 @@
 
 namespace App\Controller;
 
-use App\Entity\Courrier;
-use App\Repository\CourrierRepository;
 use App\Repository\ExpediteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\StatutRepository;
+use DateTime;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use League\Csv\Writer;
+use League\Csv\CannotInsertRecord;
 
 /*
 Cette classe est le point d'entrée de l'application après que 
@@ -34,7 +35,7 @@ class AccueilController extends AbstractController
         Request $request,
         PaginatorInterface $paginator, // Interface de pagination
         StatutRepository $statuts,
-        ExpediteurRepository $expediteurRepository
+        ExpediteurRepository $expediteurRepository,
     ): Response {
 
         // vérification que l'admin soit bien connecté sinon redirection vers la page de connexion
@@ -59,6 +60,21 @@ class AccueilController extends AbstractController
             $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
 
+
+        $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
+        $i = 1;
+        foreach ($courriers as $courrier) {
+            $csvCourriers[$i] = [$courrier['date'], $courrier['nomExpediteur'], $courrier['statut'], $courrier['bordereau'], $courrier['type'], $courrier['nom'], $courrier['prenom'], $courrier['adresse'], $courrier['codePostal'], $courrier['ville']];
+            $i++;
+        }
+
+        try {
+            $writer = Writer::createFromPath('/home/martin/Téléchargements/courriers-' . date_format(new DateTime('now'), 'h:m') . '.csv', 'w');
+            $writer->insertAll($csvCourriers);
+        } catch (CannotInsertRecord $e) {
+            $e->getRecord();
+        }
+
         return $this->render('accueil/index.html.twig', [
             'courriers' => $courriers,
             'statuts' => $statuts->findAll(),
@@ -69,5 +85,35 @@ class AccueilController extends AbstractController
             'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
             'errorMessage' => $request->get('errorMessage') ?? null,
         ]);
+    }
+
+    #[Route('/', name: 'export_csv')]
+    public function exportCsv(Request $request)
+    {
+        $data = $request->get('data');
+        $path = '/home/martin/Téléchargements/courriers-' . date_format(new DateTime('now'), 'h:m') . '.csv';
+        $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
+        $i = 1;
+        foreach ($data as $courrier) {
+            $csvCourriers[$i] = [
+                $courrier['date'],
+                $courrier['nomExpediteur'],
+                $courrier['statut'], $courrier['bordereau'],
+                $courrier['type'], $courrier['nom'], $courrier['prenom'],
+                $courrier['adresse'],
+                $courrier['codePostal'],
+                $courrier['ville']
+            ];
+            $i++;
+        }
+
+        try {
+            $writer = Writer::createFromPath($path, 'w');
+            $writer->insertAll($csvCourriers);
+            return $this->redirectToRoute('app_accueil', ['errorMessage' => 'Le fichier a bien été exporté' . ' au répertoire ' . $path]);
+        } catch (CannotInsertRecord $e) {
+            $e->getRecord();
+            return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
+        }
     }
 }

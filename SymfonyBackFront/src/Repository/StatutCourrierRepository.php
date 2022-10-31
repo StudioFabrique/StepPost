@@ -67,7 +67,8 @@ class StatutCourrierRepository extends ServiceEntityRepository
 
     public function findCourriers($order, array $dates = null)
     {
-        $qb = $this->createQueryBuilder('s')
+        $qb = $dates == null ?
+            $this->createQueryBuilder('s')
             ->select(
                 'c.id AS courrier,
                 MAX(s.date) AS date,
@@ -90,7 +91,38 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->leftJoin('c.expediteur', 'e')
             ->groupBy('c.id')
             ->orderBy('date', $order)
+            ->getQuery()
+
+            :
+
+            $this->createQueryBuilder('s')
+            ->select(
+                'c.id AS courrier,
+                MAX(s.date) AS date,
+                MAX(d.id) AS statut,
+                c.nom,
+                c.prenom,
+                c.adresse,
+                c.complement,
+                c.ville,
+                c.codePostal,
+                c.telephone,
+                c.bordereau,
+                c.civilite,
+                c.type,
+                e.id AS expediteur,
+                e.nom AS nomExpediteur'
+            )
+            ->leftJoin('s.courrier', 'c')
+            ->leftJoin('s.statut', 'd')
+            ->leftJoin('c.expediteur', 'e')
+            ->groupBy('c.id')
+            ->orderBy('date', $order)
+            ->where("MAX(s.date) > :dateMin and MAX(s.date) < :dateMax")
+            ->setParameter('dateMin', $dates[0])
+            ->setParameter('dateMax', $dates[1])
             ->getQuery();
+
         return $qb->getResult();
     }
 
