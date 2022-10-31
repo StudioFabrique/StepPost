@@ -65,18 +65,8 @@ class StatutCourrierRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    public function findCourriers($order)
+    public function findCourriers($order, array $dates = null)
     {
-
-
-        // SELECT
-        //     courrier_id,
-        //     MAX(DATE) AS DATE,
-        //     MAX(status_id) AS etat
-        // FROM
-        //     statutCourrier
-        // GROUP BY
-        //     courrier_id
         $qb = $this->createQueryBuilder('s')
             ->select(
                 'c.id AS courrier,
