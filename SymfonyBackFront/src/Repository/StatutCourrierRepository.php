@@ -233,61 +233,69 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function findCourrierImpressionLastHours($nbHours)
+    public function findCourrierImpression($nbMonth = null)
     {
-        $dateToSearch = (new DateTime('now'))->modify('-' . $nbHours . ' hours');
+        $dateToSearch = $nbMonth != null ? (new DateTime('now'))->modify('-' . $nbMonth . ' hours') : null;
         $qb = $this->_em->createQueryBuilder('s')
             ->select('
                 s.date,
                 c.id
             ')
             ->from('App\Entity\StatutCourrier', 's')
-            ->where('s.date >= :dateToSearch and st.id = 1')
+            ->where($nbMonth == null ? 'st.id = 1' : 's.date >= :dateToSearch and st.id = 1')
             ->groupBy('c.id')
             ->join('s.courrier', 'c')
             ->join('s.statut', 'st')
-            ->setParameter('dateToSearch', $dateToSearch)
             ->getQuery();
+
+        if ($nbMonth != null) {
+            $qb->setParameter('dateToSearch', $dateToSearch);
+        }
         return $qb->getResult();
     }
 
-    public function findCourrierEnvoiLastHours($nbHours)
+    public function findCourrierEnvoi($nbMonth = null)
     {
-        $dateToSearch = (new DateTime('now'))->modify('-' . $nbHours . ' hours');
+        $dateToSearch = $nbMonth != null ? (new DateTime('now'))->modify('-' . $nbMonth . ' hours') : null;
         $qb = $this->_em->createQueryBuilder('s')
             ->select('
                 s.date,
                 c.id
             ')
             ->from('App\Entity\StatutCourrier', 's')
-            ->where('s.date >= :dateToSearch and st.id = 2')
+            ->where($nbMonth == null ? 'st.id = 2' : 's.date >= :dateToSearch and st.id = 2')
             ->groupBy('c.id')
             ->join('s.courrier', 'c')
             ->join('s.statut', 'st')
-            ->setParameter('dateToSearch', $dateToSearch)
             ->getQuery();
+        if ($nbMonth != null) {
+            $qb->setParameter('dateToSearch', $dateToSearch);
+        }
         return $qb->getResult();
     }
 
-    public function findCourrierRecuLastHours($nbHours)
+    public function findCourrierRecu($nbMonth = null)
     {
-        $dateToSearch = (new DateTime('now'))->modify('-' . $nbHours . ' hours');
+        $dateToSearch = $nbMonth != null ? (new DateTime('now'))->modify('-' . $nbMonth . ' hours') : null;
         $qb = $this->_em->createQueryBuilder('s')
             ->select('
                 s.date,
                 c.id
             ')
             ->from('App\Entity\StatutCourrier', 's')
-            ->where('s.date >= :dateToSearch and st.id = 5')
+            ->where($nbMonth == null ? 'st.id = 2' : 's.date >= :dateToSearch and st.id = 2')
             ->groupBy('c.id')
             ->join('s.courrier', 'c')
             ->join('s.statut', 'st')
-            ->setParameter('dateToSearch', $dateToSearch)
             ->getQuery();
+
+        if ($nbMonth != null) {
+            $qb->setParameter('dateToSearch', $dateToSearch);
+        }
         return $qb->getResult();
     }
 
-    public function findTopFacteurs()
+    public function findTopExpediteurs()
     {
 
 
@@ -302,14 +310,14 @@ class StatutCourrierRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('s')
             ->select(
                 '
-                    f.nom,
+                    e.nom,
                     count(distinct s.courrier) as nombre_courriers
                 '
             )
             ->orderBy("count(distinct s.courrier)", "desc")
-            ->groupBy("f.nom")
-            ->join('s.facteur', 'f')
+            ->groupBy("e.nom")
             ->join('s.courrier', 'c')
+            ->join('c.expediteur', 'e')
             ->getQuery();
         return $qb->getResult();
     }

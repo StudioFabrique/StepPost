@@ -14,22 +14,22 @@
         
     </div>
     <section class="flex justify-between items-center">
-        <form class="flex " action="" method="get">
+        <form class="" action="" method="get">
             <div class="mb-5 xl:w-50">
-                <div class="input-group relative flex flex-wrap items-stretch w-full mb-4">
+                <div>
                     <label for="Recherche" class="text-black opacity-50 italic"> Recherche par nom, prenom ou nº
                         bordereau</label>
-                    <input name="recherche" type="search" class="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 
+                    <input name="recherche" type="search" class="form-control relative flex-auto min-w-0  px-3 py-1.5 
                         text-base font-normal text-gray-700 bg-white bg-clip-padding border 
                         border-solid border-gray-300 rounded transition ease-in-out m-0 
                         focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder=""
                         aria-label="" aria-describedby="button-addon2">
+                </div>
                     <label for="date" class="text-[#140A82]">Minimum</label>
                     <input type="date" class="px-4" name="dateMin">
                     <label for="date" class="text-[#140A82]">Maximum</label>
                     <input type="date" class="px-4" name="dateMax">
                     <input type="submit" class="text-white bg-[#140A82] hover:bg-[#010a14] p-1 rounded my-1" value="Rechercher">
-                </div>
                 <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded" href="{{ path('app_export_csv', {order: order == 'ASC' ? 'DESC' : 'ASC', dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Exporter en csv</a>
             </div>
         </form>

@@ -10,10 +10,10 @@ export default class extends Controller {
             if(numberSaved > 0)
             {
                 let interval = setInterval(() => {
-                    numberCurrent++;
+                    numberCurrent += numberSaved > 100 ? 10 : 2;
                     element.textContent = numberCurrent;
-                    if(numberCurrent >= numberSaved) {clearInterval(interval);}
-                }, 100);
+                    if(numberCurrent >= numberSaved) { element.textContent = numberSaved;clearInterval(interval);}
+                }, 0.5);
             }
         });
         
