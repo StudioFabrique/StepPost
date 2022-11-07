@@ -87,7 +87,7 @@ class AccueilController extends AbstractController
     public function exportCsv(Request $request, StatutCourrierRepository $statutCourrierRepository)
     {
         $data = $statutCourrierRepository->findCourriers($request->get('order'), $request->get('dateMin') ?? null, $request->get('dateMax'));
-        $path = '/home/martin/Téléchargements/courriers-' . date_format(new DateTime('now'), 'h-i') . '.csv';
+        $path = $_ENV('CSV_EXPORT_PATH') . '/courriers-' . date_format(new DateTime('now'), 'h-i') . '.csv';
         $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
         $i = 1;
         foreach ($data as $courrier) {
