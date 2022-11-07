@@ -2,6 +2,11 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
     connect() {
+        const content = document.getElementById('elementBox');
+        const button = document.getElementById('button');
+        console.log(content);
+        content.style.visibility = "visible";
+
         const numbers = document.querySelectorAll('#number');
         numbers.forEach(element => {
             const numberSaved = parseInt(element.textContent);
@@ -16,6 +21,5 @@ export default class extends Controller {
                 }, 0.5);
             }
         });
-        
     }
 }

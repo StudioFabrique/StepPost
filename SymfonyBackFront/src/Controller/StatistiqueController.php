@@ -30,6 +30,43 @@ class StatistiqueController extends AbstractController
         $nbCourriersRecu =  count($statutCourrierRepository->FindCourrierRecu());
 
         /* 
+            DOUGHNUT CHART
+            Ce graphique réparti les différents nombres des derniers statuts des courriers
+        */
+        $courrierStatutsChart = ($chartBuilderInterface->createChart(Chart::TYPE_DOUGHNUT))
+            ->setData([
+                'labels' => ["en attente", "pris en charge", "avisé", "mis en instance", "NPAI", "non réclamé"],
+                'datasets' => [
+                    [
+                        'data' => [
+                            count($statutCourrierRepository->findCourriersByLastStatut(1)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(2)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(3)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(4)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(6)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(7))
+                        ],
+                        'backgroundColor' => [
+                            'rgb(255, 204, 64)',
+                            'rgb(43, 222, 211)',
+                            'rgb(16, 36, 200)',
+                            'rgb(99, 67, 175)',
+                            'rgb(238, 155, 49)',
+                            'rgb(193, 52, 21)'
+                        ]
+                    ]
+                ]
+            ])
+
+            ->setOptions([
+                'plugins' => [
+                    'legend' => [
+                        'display' => false
+                    ]
+                ]
+            ]);
+
+        /* 
             BAR CHART TOP EXPEDITEUR
             Ce graphique affiche le top 10 des expéditeurs (clients) ayant envoyé le plus de courriers avec le nombre de courrier associés
         */
@@ -75,7 +112,8 @@ class StatistiqueController extends AbstractController
             'nbCourriersImpression' => $nbCourriersImpression,
             'nbCourriersEnvoi' => $nbCourriersEnvoi,
             'nbCourriersRecu' => $nbCourriersRecu,
-            'chart1' => $topExpediteurs
+            'chart1' => $courrierStatutsChart,
+            'chart2' => $topExpediteurs
         ]);
     }
 }
