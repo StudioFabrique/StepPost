@@ -120,7 +120,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->leftJoin('c.expediteur', 'e')
             ->groupBy('c.id')
             ->orderBy('date', $order)
-            ->where("MAX(s.date) > :dateMin and MAX(s.date) < :dateMax")
+            ->having("MAX(s.date) > :dateMin and MAX(s.date) < :dateMax")
             ->setParameter('dateMin', $dateMin)
             ->setParameter('dateMax', $dateMax)
             ->getQuery();

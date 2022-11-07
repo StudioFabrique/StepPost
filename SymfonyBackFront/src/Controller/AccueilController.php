@@ -7,6 +7,7 @@ use App\Repository\ExpediteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\StatutRepository;
 use DateTime;
+use DateTimeZone;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,8 +49,11 @@ class AccueilController extends AbstractController
         $rechercheCourrier = $request->get('recherche') ?? null;
         $currentPage = $request->get('currentPage') ?? 1;
 
+        $dateMin = $request->get('dateMin') != null ? date_create($request->get('dateMin')) : null;
+        $dateMax = $request->get('dateMax') != null ? date_create($request->get('dateMax')) : null;
+
         if ($rechercheCourrier == null) {
-            $data = $statutCourrierRepo->findCourriers($order);
+            $data = $statutCourrierRepo->findCourriers($order, $dateMin ?? null, $dateMax ?? null);
         } else {
             is_numeric($rechercheCourrier) ? $data = $statutCourrierRepo->findCourriersByBordereau($rechercheCourrier)
                 : (is_string($rechercheCourrier) ? $data = $statutCourrierRepo->findCourriersByNomPrenom($rechercheCourrier)
@@ -78,16 +82,19 @@ class AccueilController extends AbstractController
             'nbCourriersTotal' => count($data),
             'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
             'errorMessage' => $request->get('errorMessage') ?? null,
-            'DateMin' => $request->get('DateMin') ?? null,
-            'DateMax' => $request->get('DateMax') ?? null
+            'dateMin' => $request->get('dateMin') ?? null,
+            'dateMax' => $request->get('dateMax') ?? null
         ]);
     }
 
     #[Route('/exportCsv', name: 'export_csv')]
     public function exportCsv(Request $request, StatutCourrierRepository $statutCourrierRepository)
     {
-        $data = $statutCourrierRepository->findCourriers($request->get('order'), $request->get('dateMin') ?? null, $request->get('dateMax'));
-        $path = $_ENV('CSV_EXPORT_PATH') . '/courriers-' . date_format(new DateTime('now'), 'h-i') . '.csv';
+        $dateMin = $request->get('dateMin') != null ? date_create($request->get('dateMin')) : null;
+        $dateMax = $request->get('dateMax') != null ? date_create($request->get('dateMax')) : null;
+
+        $data = $statutCourrierRepository->findCourriers($request->get('order'), $dateMin ?? null, $dateMax ?? null);
+        $path = $_ENV['CSV_EXPORT_PATH'] . '/courriers-' . date_format(new DateTime('now'), 'h-i') . '.csv';
         $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
         $i = 1;
         foreach ($data as $courrier) {
