@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ExpediteurRepository;
 use App\Repository\StatutCourrierRepository;
+use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -124,12 +125,14 @@ class StatistiqueController extends AbstractController
     }
 
     #[Route(name: 'statistiques_facteur', path: 'statistiques/facteur')]
-    public function ShowFacteur(Request $request, ExpediteurRepository $expediteurRepository, ChartBuilderInterface $chartBuilder): Response
+    public function ShowFacteur(Request $request, ExpediteurRepository $expediteurRepository, StatutCourrierRepository $statutCourrierRepository, ChartBuilderInterface $chartBuilder): Response
     {
         $nomFacteur = $request->get('facteur') ?? null;
         if ($nomFacteur == null) {
             return $this->redirectToRoute('app_statistiques');
         }
+
+        var_dump($statutCourrierRepository->countCourriersByFacteur('facteur bob', date_create('2007-01-01'), date_create('now')));
 
         $chartLine = ($chartBuilder->createChart(Chart::TYPE_LINE))
             ->setData([]);

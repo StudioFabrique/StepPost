@@ -295,6 +295,24 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
+    public function countCourriersByFacteur(string $nom, DateTime $dateMin, DateTime $dateMax)
+    {
+        $qb = $this->_em->createQueryBuilder('s')
+            ->select('
+                count(distinct s.courrier) as nbCourrier
+            ')
+            ->from('App\Entity\StatutCourrier', 's')
+            ->join('s.facteur', 'f')
+            ->where('f.nom LIKE :nom and s.date > :dateMin and s.date < :dateMax')
+            ->setParameter('dateMin', $dateMin, '')
+            ->setParameter('dateMax', $dateMax)
+            ->setParameter('nom', '%' . $nom . '%')
+            ->getQuery();
+
+        return $qb->getResult();
+    }
+
+
     public function findTopExpediteurs()
     {
 
