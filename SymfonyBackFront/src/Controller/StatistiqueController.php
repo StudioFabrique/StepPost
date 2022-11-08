@@ -23,6 +23,12 @@ class StatistiqueController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        $searchBar = $request->get('search') ?? null;
+
+        if ($searchBar != null) {
+            return $this->redirectToRoute('app_statistiques_facteur', ['facteur' => $searchBar]);
+        }
+
         $nbHours = $request->get('nbHours') ?? 24;
         // Le nombre d'expéditeurs inscrits et actifs ces dernières x heures
         $nbCourriersImpression = count($statutCourrierRepository->FindCourrierImpression()); // Le nombre de bordereaux des courriers/colis imprimé ces dernières x heures
@@ -114,6 +120,25 @@ class StatistiqueController extends AbstractController
             'nbCourriersRecu' => $nbCourriersRecu,
             'chart1' => $courrierStatutsChart,
             'chart2' => $topExpediteurs
+        ]);
+    }
+
+    #[Route(name: 'statistiques_facteur', path: 'statistiques/facteur')]
+    public function ShowFacteur(Request $request, ExpediteurRepository $expediteurRepository, ChartBuilderInterface $chartBuilder): Response
+    {
+        $nomFacteur = $request->get('facteur') ?? null;
+        if ($nomFacteur == null) {
+            return $this->redirectToRoute('app_statistiques');
+        }
+
+        $chartLine = ($chartBuilder->createChart(Chart::TYPE_LINE))
+            ->setData([]);
+
+        return $this->render('statistique/facteur.html.twig', [
+            'errorMessage' => null,
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'facteurInfo' => 'infos',
+            'chart1' => 'chart'
         ]);
     }
 }

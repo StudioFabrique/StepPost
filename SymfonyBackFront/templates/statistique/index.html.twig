@@ -1,75 +1,75 @@
 {% extends 'base.html.twig' %}
 
 {% block javascripts %}
-{{ parent() }}
+	{{ parent() }}
 {% endblock %}
 
-{% block title %}Statistiques{% endblock %}
+{% block title %}
+	Statistiques
+{% endblock %}
 
 {% block javascript %}
-    {{ parent() }}
-    <script src="/libs/chart.js/chart.min.js"></script>
+	{{ parent() }}
+	<script src="/libs/chart.js/chart.min.js"></script>
 {% endblock %}
 
 {% block body %}
-<main class="w-[95%] m-auto" data-controller="chart" >
-    <section class="mt-10">
-        <div class="flex justify-between">
-            {# <div>
-                <p class="text-2xl text-[#140A82] mb-5">Ces dernières <span class="text-white bg-[#140A82] p-1.5 rounded-lg">24 H</span></p>
-            </div> #}
-            <div></div>
-            <div>
-                <button class="text-white bg-[#24A640] hover:bg-[#0d4118] p-1.5 rounded" href="">Statistiques facteurs</button>
-                <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
-            </div>
-        </div>
-        <div class="flex justify-between text-gray-600 my-10">
-            <div>
-                <p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpression }}</p> 
-                <p>{{ nbCourriersImpression > 1 ? 'bordereaux ont été générés' : 'bordereau a été généré' }}</p>
-            </div>
-            <div>
-                <p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersEnvoi }}</p> 
-                <p>{{ nbCourriersImpression > 1 ? 'courriers/colis ont été pris en charges' : 'courrier/coli a été pris en charge' }}</p>
-            </div>
-            <div>
-                <p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersRecu }}</p> 
-                <p>{{ nbCourriersImpression > 1 ? 'courriers/colis ont été distribués' : 'courrier/coli a été distribué' }}</p>
-            </div>
-            <div>
-                <p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurs }}</p> 
-                <p>nombre d'expéditeurs</p>
-            </div>
-        </div>
-        <div>
-        </div>
-    </section>
-    <hr class="border-y-1 my-10 border-gray-400">
-    <section>
-        <div class="flex justify-between m-10">
-            <div class="w-80">
-                <p class="text-center m-5 text-xl my-10">Statuts actuels des courriers</p>
-                <p>{{ render_chart(chart1) }}</p>
-            </div>
-            <div class="w-[50%]">
-                <p class="text-center text-xl my-10">Classement des expéditeurs</p>
-                <p>{{ render_chart(chart2) }}</p>
-            </div>
-        </div>
-    </section>
-    <div id="elementBox" class="flex justify-center fixed bg-[#66666673] w-full h-full left-0 top-0 invisible">
-        <div class="mt-[5%]">
-            <form action="get">
-                <input class="shadow-md rounded-lg p-2 text-2xl text-center" type="search" placeholder="prénom/nom du facteur..." name="facteurSearch">
-            </form>
-            <div class="m-2">
-                <p>proposition facteurs :</p>
-                <div class="flex justify-center text-[#140A82]">
-                    <a href="">facteur bob</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
+	<main class="w-[95%] m-auto" data-controller="chart">
+		<section class="mt-10">
+			<div class="flex justify-between">
+				<div></div>
+				<div>
+					<button id='button' class="text-white bg-[#24A640] hover:bg-[#0d4118] p-1.5 rounded" href="">Statistiques facteurs</button>
+					<a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
+				</div>
+			</div>
+			<div class="flex justify-between text-gray-600 my-10">
+				<div>
+					<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpression }}</p>
+					<p>{{ nbCourriersImpression > 1 ? 'bordereaux ont été générés' : 'bordereau a été généré' }}</p>
+				</div>
+				<div>
+					<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersEnvoi }}</p>
+					<p>{{ nbCourriersImpression > 1 ? 'courriers/colis ont été pris en charges' : 'courrier/coli a été pris en charge' }}</p>
+				</div>
+				<div>
+					<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersRecu }}</p>
+					<p>{{ nbCourriersImpression > 1 ? 'courriers/colis ont été distribués' : 'courrier/coli a été distribué' }}</p>
+				</div>
+				<div>
+					<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurs }}</p>
+					<p>nombre d'expéditeurs</p>
+				</div>
+			</div>
+			<div></div>
+		</section>
+		<hr class="border-y-1 my-10 border-gray-400">
+		<section>
+			<div class="flex justify-between m-10">
+				<div class="w-80">
+					<p class="text-center m-5 text-xl my-10">Statuts actuels des courriers</p>
+					<p>{{ render_chart(chart1) }}</p>
+				</div>
+				<div class="w-[50%]">
+					<p class="text-center text-xl my-10">Classement des expéditeurs</p>
+					<p>{{ render_chart(chart2) }}</p>
+				</div>
+			</div>
+		</section>
+		<div id="elementBox" class="flex justify-center fixed bg-[#66666673] w-full h-full left-0 top-0 invisible">
+			<div class="mt-[5%]">
+				<form method="get" id='searchBar'>
+					<input name="search" class="shadow-md rounded-lg p-2 text-2xl text-center" type="search" placeholder="nom du facteur..." name="facteurSearch">
+				</form>
+				<div class="flex flex-col justify-center bg-[#ffffffbe] text-center rounded-b-lg pt-2 -mt-1">
+					<div>
+						<p>proposition facteurs :</p>
+					</div>
+					<div class="text-[#140A82]">
+						<a href="">facteur bob</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
 {% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+	{{ parent() }}
+{% endblock %}
+
+{% block title %}
+	Statistiques Facteur
+{% endblock %}
+
+{% block javascript %}
+	{{ parent() }}
+	<script src="/libs/chart.js/chart.min.js"></script>
+{% endblock %}
+
+{% block body %}
+	<main class="w-[95%] m-auto"></main>
+{% endblock %}
