@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\VarDumper\VarDumper;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
@@ -150,7 +151,7 @@ class StatistiqueController extends AbstractController
         $dateMax->modify('+1 month');
 
         for ($month = 1; $month < 13; $month++) {
-            $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax);
+            $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax)[0]["nbCourrier"];
             $dateMin->modify('+1 month');
             $dateMax->modify('+1 month');
         }
@@ -160,7 +161,9 @@ class StatistiqueController extends AbstractController
             ->setData(
                 [
                     'datasets' => [
-                        'data' => $data
+                        [
+                            'data' => $data
+                        ]
                     ]
                 ]
             );
