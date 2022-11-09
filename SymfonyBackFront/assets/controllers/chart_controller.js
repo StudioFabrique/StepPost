@@ -27,22 +27,30 @@ export default class extends Controller {
 
         const content = document.getElementById('elementBox');
         const button = document.getElementById('button');
-        const searchBar = document.getElementById('searchBar');
+        const facteurContent = document.getElementById('facteurContent');
+        facteurContent.style.transformOrigin = "top";
         let hideContent = true;
         let clickCounter = 0;
 
         button.addEventListener('click', () => {
             hideContent = false;
-        })
+            facteurContent.animate([
+                {transform: "scaleY(0)"},
+                {transform: "scaleY(1)"}
+                ] , {
+                duration: 400
+                }
+            );
+        });
         content.addEventListener('click', () => {
             hideContent = clickCounter >= 1 ? true : false;
             clickCounter++;
-        })
+        });
         setInterval(() => {
             content.style.visibility = hideContent ? "hidden" : "visible";
             if (hideContent) {
                 clickCounter = 0;
             }
-        }, 1000);
+        }, 10);
     }
 }

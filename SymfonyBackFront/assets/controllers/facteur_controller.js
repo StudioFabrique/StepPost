@@ -13,6 +13,9 @@ export default class extends Controller {
             const email = inputs[0].value;
             const nom = inputs[1].value;
             const password = inputs[2].value;
+            const hash = bcrypt.hash(password, 10, function(err, hash) {
+                // Store hash in your password DB.
+            });
 
             const checkEmail = mailRegex.test(email);
             const checkPassword = password.length === 4;
@@ -21,21 +24,21 @@ export default class extends Controller {
                 const fd = new FormData();
                 fd.append("email", email);
                 fd.append("nom", nom);
-                fd.append("password", password);
+                fd.append("password", hash);
     
                 
-                fetch(newFacteurEndpoint,
-                     {/* headers: `Authorisation: Bearer ${}`  ,
-                     */method: 'POST', body: fd})
+                fetch('/api/newFacteur',
+                     {method: 'POST', body: fd})
                      .then((response) =>
                         response.json()
                             .then((result) => {
                                 console.log(response);
                                 console.log(result);
                                 if (result) {
-                                console.log("Facteur créé");
+                                    console.log("Facteur créé");
+                                    window.location = '/facteurs';
                                 } else {
-                                console.log("Problème serveur");
+                                    console.log("Problème serveur");
                                 }
                         })
                     );

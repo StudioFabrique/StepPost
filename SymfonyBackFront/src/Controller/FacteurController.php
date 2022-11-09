@@ -67,6 +67,14 @@ class FacteurController extends AbstractController
         ]);
     }
 
+    /* #[Route(path: '/api/newFacteur', name: 'api_newFacteur')]
+    public function newFacteurApi(Request $request): Response
+    {
+        $request->request->get(''); // requête post
+        if (true) {
+        }
+    } */
+
     #[Route('/modifierFacteur', 'editFacteur')]
     public function editFacteur(FacteurRepository $facteurRepo, Request $request, EntityManagerInterface $em, ExpediteurRepository $expediteurRepository): Response
     {

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\ExpediteurRepository;
+use App\Repository\FacteurRepository;
 use App\Repository\StatutCourrierRepository;
 use DateTime;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,8 +19,12 @@ use Symfony\UX\Chartjs\Model\Chart;
 class StatistiqueController extends AbstractController
 {
     #[Route('/', name: 'statistiques')]
-    public function index(Request $request, ExpediteurRepository $expediteurRepository, ChartBuilderInterface $chartBuilderInterface, StatutCourrierRepository $statutCourrierRepository): Response
-    {
+    public function index(
+        Request $request,
+        ExpediteurRepository $expediteurRepository,
+        ChartBuilderInterface $chartBuilderInterface,
+        StatutCourrierRepository $statutCourrierRepository
+    ): Response {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
@@ -113,7 +118,8 @@ class StatistiqueController extends AbstractController
             ]);
 
         return $this->render('statistique/index.html.twig', [
-            'errorMessage' => null,
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? null,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'nbExpediteurs' => count($expediteurRepository->findAll()),
             'nbCourriersImpression' => $nbCourriersImpression,
@@ -125,23 +131,46 @@ class StatistiqueController extends AbstractController
     }
 
     #[Route(name: 'statistiques_facteur', path: 'statistiques/facteur')]
-    public function ShowFacteur(Request $request, ExpediteurRepository $expediteurRepository, StatutCourrierRepository $statutCourrierRepository, ChartBuilderInterface $chartBuilder): Response
-    {
+    public function ShowFacteur(
+        Request $request,
+        ExpediteurRepository $expediteurRepository,
+        StatutCourrierRepository $statutCourrierRepository,
+        ChartBuilderInterface $chartBuilder,
+        FacteurRepository $facteurRepository
+    ): Response {
         $nomFacteur = $request->get('facteur') ?? null;
-        if ($nomFacteur == null) {
-            return $this->redirectToRoute('app_statistiques');
+        $facteur = $facteurRepository->findOneBy(['nom' => $nomFacteur]);
+        if ($nomFacteur == null || $facteur == null) {
+            return $this->redirectToRoute('app_statistiques', ['errorMessage' => 'Le nom du facteur saisi est incorrect', 'isError' => true]);
         }
 
-        var_dump($statutCourrierRepository->countCourriersByFacteur('facteur bob', date_create('2007-01-01'), date_create('now')));
+        $data = array();
+        $dateMin = date_modify(date_create(), '-1 year');
+        $dateMax = date_modify(date_create(), '-1 year');
+        $dateMax->modify('+1 month');
 
-        $chartLine = ($chartBuilder->createChart(Chart::TYPE_LINE))
-            ->setData([]);
+        for ($month = 1; $month < 13; $month++) {
+            $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax);
+            $dateMin->modify('+1 month');
+            $dateMax->modify('+1 month');
+        }
+        var_dump($data);
+
+        $chartFacteur = ($chartBuilder->createChart(Chart::TYPE_LINE))
+            ->setData(
+                [
+                    'datasets' => [
+                        'data' => $data
+                    ]
+                ]
+            );
 
         return $this->render('statistique/facteur.html.twig', [
             'errorMessage' => null,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'facteurInfo' => 'infos',
-            'chart1' => 'chart'
+            'chart' => $chartFacteur,
+            'facteur' => $facteur
         ]);
     }
 }

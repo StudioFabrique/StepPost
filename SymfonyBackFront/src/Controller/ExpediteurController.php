@@ -114,7 +114,7 @@ class ExpediteurController extends AbstractController
             $expInHtml = $nbHeureExp == 1 ? " heure </p>" : " heures </p>";
             $body = "
             <p> Bonjour" . ($form->get('prenom')->getData() != null ? " " . $form->get('prenom')->getData() . ",</p>" : ",</p>") . "<p>veuillez confirmer la création de votre compte client associé à l'email " . $form->get('email')->getData() . " avec le bouton se trouvant ci-dessous. </p>
-            <p><a href='http://localhost:4200/profil/validation-nouveau-compte?token=" . $token . "'> Confirmer la création de mon compte client </a></p>
+            <p><a href='https://main.d2o3rptynqut3f.amplifyapp.com/profil/validation-nouveau-compte?token=" . $token . "'> Confirmer la création de mon compte client </a></p>
             <p> La confirmation va expirer dans " . $nbHeureExp . $expInHtml;
 
 

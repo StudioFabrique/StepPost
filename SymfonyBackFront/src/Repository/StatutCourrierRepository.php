@@ -303,10 +303,10 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ')
             ->from('App\Entity\StatutCourrier', 's')
             ->join('s.facteur', 'f')
-            ->where('f.nom LIKE :nom and s.date > :dateMin and s.date < :dateMax')
+            ->where('f.nom = :nom and s.date >= :dateMin and s.date <= :dateMax')
             ->setParameter('dateMin', $dateMin, '')
             ->setParameter('dateMax', $dateMax)
-            ->setParameter('nom', '%' . $nom . '%')
+            ->setParameter('nom', $nom)
             ->getQuery();
 
         return $qb->getResult();
