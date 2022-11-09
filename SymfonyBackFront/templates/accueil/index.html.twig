@@ -43,7 +43,7 @@
                 <input type="date" class="px-4" name="dateMin">
                 <label for="date" class="text-[#140A82]">Maximum</label>
                 <input type="date" class="px-4" name="dateMax">
-                <input type="submit" class="text-white bg-[#140A82] hover:bg-[#010a14] p-1 rounded my-1" value="Rechercher">
+                <input type="submit" class="text-white bg-[#140A82] hover:bg-[#010a14] p-1 px-2 rounded my-1" value="Rechercher">
                 <div></div>
                 <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded" href="{{ path('app_export_csv', {order: order == 'ASC' ? 'DESC' : 'ASC', dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Exporter la selection en csv</a>
             </div>
