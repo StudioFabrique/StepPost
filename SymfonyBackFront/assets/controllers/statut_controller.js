@@ -4,6 +4,7 @@ export default class extends Controller {
     connect() {
         const button = document.querySelector("#button");
         const boxContent = document.querySelector("#boxContent");
+        boxContent.style.transformOrigin = "top";
         boxContent.hidden = true;
 
         button.addEventListener("click", () => { this.openBoxContent(boxContent) })

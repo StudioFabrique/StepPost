@@ -88,7 +88,7 @@ class ExpediteurType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Expediteur::class,
+            'data_class' => Expediteur::class
         ]);
     }
 }

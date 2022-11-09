@@ -47,10 +47,13 @@
                         Statut du compte
                     </th>
                     <th>
-                        Modifier
+                        
                     </th>
                     <th>
-                        Supprimer
+                        
+                    </th>
+                    <th>
+
                     </th>
                 </tr>
             </thead>
@@ -85,6 +88,11 @@
                             <button id="hideButton" class="bg-red-100 border-2 border-black rounded-lg p-0.5 mx-10 text-red-800">Annuler</button>
                             <a href="{{ path('app_deleteFacteur', {id: facteur.id}) }}" class="bg-red-700 border-2 border-black rounded-lg p-1 mx-4 text-white whitespace-nowrap">Confirmer</a>
                         </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <a class="text-green-800 bg-green-300 p-2 rounded" href="{{ path('app_statistiques_facteur', {facteur: facteur.nom}) }}">
+                            Statistiques
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}

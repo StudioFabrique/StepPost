@@ -103,7 +103,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'admin_edit')]
-    public function edit(Request $request, UserRepository $adminRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
+    public function edit(Request $request, UserRepository $adminRepository, ExpediteurRepository $expediteurRepository): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -120,12 +120,6 @@ class AdminController extends AbstractController
         $messageErreur = $messages["Messages Erreurs"]["Administrateur"]["Modification"];
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $pass = $form->get('password')->getData();
-            $hashedPassword = $passwordHasher->hashPassword(
-                $admin,
-                $pass
-            );
-            $admin->setPassword($hashedPassword);
             $admin->setRoles($isSuperAdmin ? ['ROLE_ADMIN', 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN']);
             $admin->setUpdatedAt(new DateTime('now'));
 
@@ -146,6 +140,46 @@ class AdminController extends AbstractController
         ]);
     }
 
+    #[Route(name: 'edit_password', path: '/scsnjbh55565')]
+    public function editPassword(Request $request, UserRepository $adminRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $adminId = $request->get('id');
+        $admin = $adminRepository->find($adminId);
+
+        $form = $this->createForm(UserType::class, $admin, ['editPassword' => true]);
+        $form->handleRequest($request);
+
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Administrateur"]["Modification"];
+        $messageErreur = $messages["Messages Erreurs"]["Administrateur"]["Modification"];
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $pass = $form->get('password')->getData();
+            $hashedPassword = $passwordHasher->hashPassword(
+                $admin,
+                $pass
+            );
+            $admin->setPassword($hashedPassword);
+            try {
+                $adminRepository->add($admin);
+                return $this->redirectToRoute('app_admin', ['errorMessage' => str_replace('[nom]', $admin->getNom(), $message)], Response::HTTP_SEE_OTHER);
+            } catch (Exception) {
+                return $this->redirectToRoute('app_admin', ['errorMessage' => str_replace('[nom]', $admin->getNom(), $messageErreur), 'isError' => true], Response::HTTP_SEE_OTHER);
+            }
+        }
+
+        return $this->renderForm('admin/edit.html.twig', [
+            'user_step' => $admin,
+            'form' => $form,
+            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
+            'errorMessage' => $request->get('errorMessage') ?? null,
+            'isError' => $request->get('isError') ?? false
+        ]);
+    }
 
     #[Route('/delete/{id}', name: 'admin_delete')]
     public function delete(User $admin, UserRepository $adminRepository): Response

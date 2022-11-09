@@ -18,8 +18,7 @@ class CheckAdminType extends AbstractType
             ->add('fonction')
             ->add('nom')
             ->add('createdAt')
-            ->add('updatedAt')
-        ;
+            ->add('updatedAt');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -32,10 +32,13 @@
                         Nom
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Modifier
+                        
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Supprimer
+                        
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        
                     </th>
                 </tr>
             </thead>
@@ -60,6 +63,12 @@
                         <a class="text-blue-800 bg-blue-100 p-2 rounded"
                             href="{{ path('app_admin_edit', {id: user.id}) }}">
                             Modifier
+                        </a>
+                    </td>
+                    <td class="px-6 py-4">
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                            href="{{ path('app_edit_password', {id: user.id}) }}">
+                            Modifier le mot de passe
                         </a>
                     </td>
                     <td class="px-6 py-4">
