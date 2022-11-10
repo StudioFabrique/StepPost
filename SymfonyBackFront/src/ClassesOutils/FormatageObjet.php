@@ -2,6 +2,7 @@
 
 namespace App\ClassesOutils;
 
+use DateTime;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -35,5 +36,41 @@ class FormatageObjet
         }
 
         return !$isArrayOut ? $serializer->denormalize($newArray, $objectClass, null, [ObjectNormalizer::OBJECT_TO_POPULATE => $object]) : $newArray;
+    }
+
+    public function getStringFromDatetimeArray(array $datetimeArray): string
+    {
+        $monthList = [
+            'janvier',
+            'février',
+            'mars',
+            'avril',
+            'mai',
+            'juin',
+            'juillet',
+            'août',
+            'septembre',
+            'octobre',
+            'novembre',
+            'decembre'
+        ];
+
+        $array = array();
+        $index = 0;
+        foreach ($datetimeArray as $date) {
+            $array[$index] = date_format($date, 'm');
+            $index++;
+        }
+
+        $array = array_unique($array);
+        $string = '';
+        $index = 0;
+        foreach ($array as $month) {
+            $string = $index >= 1 ? $string . '-' : $string . '';
+            $string = $string . $monthList[$month - 1];
+            $index++;
+        }
+
+        return $string;
     }
 }

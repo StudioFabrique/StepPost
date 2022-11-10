@@ -2,16 +2,15 @@
 
 namespace App\Controller;
 
+use App\ClassesOutils\FormatageObjet;
 use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
 use App\Repository\StatutCourrierRepository;
-use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\VarDumper\VarDumper;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
@@ -150,23 +149,36 @@ class StatistiqueController extends AbstractController
         $dateMax = date_modify(date_create(), '-1 year');
         $dateMax->modify('+1 month');
 
-        for ($month = 1; $month < 13; $month++) {
+        $formatter = new FormatageObjet();
+        $labelsMonth = array();
+        for ($month = 0; $month < 12; $month++) {
             $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax)[0]["nbCourrier"];
+            $labelsMonth[$month] = $formatter->getStringFromDatetimeArray([$dateMin, $dateMax]);
             $dateMin->modify('+1 month');
             $dateMax->modify('+1 month');
+            var_dump('dateMin ' . $month . ' ' . date_format($dateMin, 'm'));
+            var_dump('dateMax ' . $month . ' ' . date_format($dateMax, 'm'));
         }
-        var_dump($data);
 
         $chartFacteur = ($chartBuilder->createChart(Chart::TYPE_LINE))
             ->setData(
                 [
+                    'labels' => $labelsMonth,
                     'datasets' => [
                         [
                             'data' => $data
                         ]
+                    ],
+
+                ]
+            )
+            ->setOptions([
+                'plugins' => [
+                    'legend' => [
+                        'display' => false
                     ]
                 ]
-            );
+            ]);
 
         return $this->render('statistique/facteur.html.twig', [
             'errorMessage' => null,

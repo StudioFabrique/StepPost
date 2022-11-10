@@ -14,15 +14,12 @@
 {% endblock %}
 
 {% block body %}
-	<main class="w-[95%] m-auto">
-		<div class="flex flex-col justify-between">
-			<div>
-				{{ facteur.nom }}
-			</div>
-			<div>
-				<p class="text-center m-5 text-xl my-10">Statuts actuels des courriers</p>
-				<p>{{ render_chart(chart) }}</p>
-			</div>
+	<main class="flex justify-center w-[95%] m-auto">
+		<div class="fixed w-[70%] p-10">
+			<p class="text-center m-5 text-xl my-10">
+				Nombre de courriers envoyés sur une période de 1 an par <span class="text-[#140A82]">{{ facteur.nom }}</span>
+			</p>
+			<p>{{ render_chart(chart) }}</p>
 		</div>
 	</main>
 {% endblock %}
