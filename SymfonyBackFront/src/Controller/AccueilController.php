@@ -113,8 +113,6 @@ class AccueilController extends AbstractController
             $i++;
         }
 
-        var_dump($csvCourriers[1]);
-
         try {
             $writer = Writer::createFromPath($path, 'w');
             $writer->insertAll($csvCourriers);

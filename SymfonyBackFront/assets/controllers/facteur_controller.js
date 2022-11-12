@@ -2,6 +2,8 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     connect() {
+        const bcrypt = require('bcryptjs');
+
         const newFacteurEndpoint = this.element.dataset.newFacteurEndpoint;
         const btn = document.getElementById("facteur_submit");
         const mailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -13,36 +15,38 @@ export default class extends Controller {
             const email = inputs[0].value;
             const nom = inputs[1].value;
             const password = inputs[2].value;
-            const hash = bcrypt.hash(password, 10, function(err, hash) {
-                // Store hash in your password DB.
+            let hashedPassword = '';
+            bcrypt.hash(password, 10, function (err, hash) {
+                hashedPassword = hash;
             });
 
+            console.log(password + ' ' + hashedPassword);
+
             const checkEmail = mailRegex.test(email);
-            const checkPassword = password.length === 4;
+            // const checkPassword = numberRegex.test(password);
             const checkNom = nameRegex.test(nom);
-            if (checkPassword && checkNom && checkEmail) {
+            if (checkNom && checkEmail && password.length === 4) {
                 const fd = new FormData();
                 fd.append("email", email);
                 fd.append("nom", nom);
-                fd.append("password", hash);
-    
-                
-                fetch('/api/newFacteur',
-                     {method: 'POST', body: fd})
-                     .then((response) =>
+                fd.append("password", hashedPassword);
+
+                fetch('http://localhost:8000/api/newFacteur',
+                    { method: 'POST', body: fd })
+                    .then((response) =>
                         response.json()
                             .then((result) => {
                                 console.log(response);
                                 console.log(result);
                                 if (result) {
-                                    console.log("Facteur créé");
-                                    window.location = '/facteurs';
+                                    // window.location = '/facteurs';
                                 } else {
                                     console.log("Problème serveur");
                                 }
-                        })
+                            })
                     );
             } else {
+                console.log("Erreur de saisie");
                 // generate error alert
             }
         });

@@ -156,8 +156,6 @@ class StatistiqueController extends AbstractController
             $labelsMonth[$month] = $formatter->getStringFromDatetimeArray([$dateMin, $dateMax]);
             $dateMin->modify('+1 month');
             $dateMax->modify('+1 month');
-            var_dump('dateMin ' . $month . ' ' . date_format($dateMin, 'm'));
-            var_dump('dateMax ' . $month . ' ' . date_format($dateMax, 'm'));
         }
 
         $chartFacteur = ($chartBuilder->createChart(Chart::TYPE_LINE))

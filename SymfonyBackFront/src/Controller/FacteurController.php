@@ -13,12 +13,13 @@ use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/', name: 'app_')]
-#[IsGranted('ROLE_ADMIN')]
+// #[IsGranted('ROLE_ADMIN')]
 class FacteurController extends AbstractController
 {
     #[Route('/facteurs', name: 'facteur')]
@@ -67,13 +68,23 @@ class FacteurController extends AbstractController
         ]);
     }
 
-    /* #[Route(path: '/api/newFacteur', name: 'api_newFacteur')]
-    public function newFacteurApi(Request $request): Response
+    #[Route(path: '/api/newFacteur', name: 'api_newFacteur')]
+    public function newFacteurApi(Request $request, FacteurRepository $facteurRepository): JsonResponse
     {
-        $request->request->get(''); // requête post
-        if (true) {
+        $facteur = (new Facteur())
+            ->setEmail($request->request->get('email'))
+            ->setNom($request->request->get('nom'))
+            ->setPassword($request->request->get('password'))
+            ->setCreatedAt(new DateTime())
+            ->setUpdatedAt(new DateTime())
+            ->setRoles(['ROLE_INACTIF']);
+        try {
+            $facteurRepository->add($facteur, true);
+            return new JsonResponse('facteur créé');
+        } catch (Exception $e) {
+            return new JsonResponse('erreur');
         }
-    } */
+    }
 
     #[Route('/modifierFacteur', 'editFacteur')]
     public function editFacteur(FacteurRepository $facteurRepo, Request $request, EntityManagerInterface $em, ExpediteurRepository $expediteurRepository): Response
@@ -102,8 +113,7 @@ class FacteurController extends AbstractController
             $facteur
                 ->setRoles($ancienFacteur->getRoles())
                 ->setCreatedAt($ancienFacteur->getCreatedAt())
-                ->setUpdatedAt(new DateTime())
-                ->setPassword($ancienFacteur->getPassword());
+                ->setUpdatedAt(new DateTime());
 
             foreach ($ancienFacteur->getStatutsCourrier() as $statut) {
                 $facteur->addStatutsCourrier($statut);
@@ -112,9 +122,9 @@ class FacteurController extends AbstractController
             try {
                 $em->persist($facteur);
                 $em->flush();
-                return $this->redirectToRoute('app_facteur', ['errorMessage' => 'Le facteur ' . $facteur->getNom() . ' a été modifié']);
+                return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $message) . ' a été modifié']);
             } catch (Exception) {
-                return $this->redirectToRoute('app_editFacteur', ['errorMessage' => "La modification a échoué, l'adresse mail saisie est déjà associée à un autre facteur", 'isError' => true]);
+                return $this->redirectToRoute('app_editFacteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $messageErreur), 'isError' => true]);
             }
         }
 
