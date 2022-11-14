@@ -153,7 +153,7 @@ class StatistiqueController extends AbstractController
         $labelsMonth = array();
         for ($month = 0; $month < 12; $month++) {
             $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax)[0]["nbCourrier"];
-            $labelsMonth[$month] = $formatter->getStringFromDatetimeArray([$dateMin, $dateMax]);
+            $labelsMonth[$month] = $formatter->getStringFromDatetimeArray([$dateMin]);
             $dateMin->modify('+1 month');
             $dateMax->modify('+1 month');
         }

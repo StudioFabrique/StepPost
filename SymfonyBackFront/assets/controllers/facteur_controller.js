@@ -15,10 +15,7 @@ export default class extends Controller {
             const email = inputs[0].value;
             const nom = inputs[1].value;
             const password = inputs[2].value;
-            let hashedPassword = '';
-            bcrypt.hash(password, 10, function (err, hash) {
-                hashedPassword = hash;
-            });
+            var hashedPassword = bcrypt.hashSync(password, 10);
 
             console.log(password + ' ' + hashedPassword);
 
@@ -31,7 +28,7 @@ export default class extends Controller {
                 fd.append("nom", nom);
                 fd.append("password", hashedPassword);
 
-                fetch('http://localhost:8000/api/newFacteur',
+                fetch('api/newFacteur',
                     { method: 'POST', body: fd })
                     .then((response) =>
                         response.json()
@@ -39,7 +36,7 @@ export default class extends Controller {
                                 console.log(response);
                                 console.log(result);
                                 if (result) {
-                                    // window.location = '/facteurs';
+                                    window.location = '/facteurs';
                                 } else {
                                     console.log("Problème serveur");
                                 }

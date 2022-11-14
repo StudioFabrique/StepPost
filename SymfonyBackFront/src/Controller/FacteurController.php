@@ -77,7 +77,7 @@ class FacteurController extends AbstractController
             ->setPassword($request->request->get('password'))
             ->setCreatedAt(new DateTime())
             ->setUpdatedAt(new DateTime())
-            ->setRoles(['ROLE_INACTIF']);
+            ->setRoles(['ROLE_FACTEUR']);
         try {
             $facteurRepository->add($facteur, true);
             return new JsonResponse('facteur créé');
