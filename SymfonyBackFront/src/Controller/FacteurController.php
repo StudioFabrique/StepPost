@@ -64,7 +64,8 @@ class FacteurController extends AbstractController
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
-            'newFacteurEndpoint' => $_ENV["ENDPOINT_NEWFACTEUR"]
+            'newFacteurEndpoint' => $_ENV["ENDPOINT_NEWFACTEUR"],
+            'isAdding' => $request->get('isAdding')
         ]);
     }
 
@@ -97,25 +98,16 @@ class FacteurController extends AbstractController
         $message = $messages["Messages Informations"]["Facteur"]["Modification"];
         $messageErreur = $messages["Messages Erreurs"]["Facteur"]["Modification"];
 
-        $ancienFacteur = $facteurRepo->find($request->get('id'));
-        $form = $this->createForm(FacteurType::class, $ancienFacteur)->handleRequest($request);
+        $facteur = $facteurRepo->find($request->get('id'));
+        $form = $this->createForm(FacteurType::class, $facteur)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-
-            $facteur = (new FormatageObjet)->stringToLowerObject(
-                $formData,
-                Facteur::class,
-                array('createdAt', 'updatedAt'),
-                false
-            );
-
             $facteur
-                ->setRoles($ancienFacteur->getRoles())
-                ->setCreatedAt($ancienFacteur->getCreatedAt())
+                ->setRoles($facteur->getRoles())
+                ->setCreatedAt($facteur->getCreatedAt())
                 ->setUpdatedAt(new DateTime());
 
-            foreach ($ancienFacteur->getStatutsCourrier() as $statut) {
+            foreach ($facteur->getStatutsCourrier() as $statut) {
                 $facteur->addStatutsCourrier($statut);
             }
 
@@ -133,7 +125,8 @@ class FacteurController extends AbstractController
             'title' => 'Modifier le facteur',
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false
+            'isError' => $request->get('isError') ?? false,
+            'isAdding' => $request->get('isAdding')
         ]);
     }
 

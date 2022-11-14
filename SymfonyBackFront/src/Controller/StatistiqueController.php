@@ -23,7 +23,8 @@ class StatistiqueController extends AbstractController
         Request $request,
         ExpediteurRepository $expediteurRepository,
         ChartBuilderInterface $chartBuilderInterface,
-        StatutCourrierRepository $statutCourrierRepository
+        StatutCourrierRepository $statutCourrierRepository,
+        FacteurRepository $facteurRepository
     ): Response {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -126,7 +127,8 @@ class StatistiqueController extends AbstractController
             'nbCourriersEnvoi' => $nbCourriersEnvoi,
             'nbCourriersRecu' => $nbCourriersRecu,
             'chart1' => $courrierStatutsChart,
-            'chart2' => $topExpediteurs
+            'chart2' => $topExpediteurs,
+            'listeFacteurs' => $facteurRepository->findAll()
         ]);
     }
 
@@ -144,16 +146,35 @@ class StatistiqueController extends AbstractController
             return $this->redirectToRoute('app_statistiques', ['errorMessage' => 'Le nom du facteur saisi est incorrect', 'isError' => true]);
         }
 
+        /* 
+            LINE CHART 
+            Nombre de courriers envoyés par le facteur par mois depuis sa date de création
+        */
+
         $data = array();
-        $dateMin = date_modify(date_create(), '-1 year');
-        $dateMax = date_modify(date_create(), '-1 year');
+        $dateMin = date_modify($facteur->getCreatedAt(), 'now');
+        $dateMax = date_modify($facteur->getCreatedAt(), 'now');
         $dateMax->modify('+1 month');
 
-        $formatter = new FormatageObjet();
         $labelsMonth = array();
+        $monthList = [
+            'janvier',
+            'février',
+            'mars',
+            'avril',
+            'mai',
+            'juin',
+            'juillet',
+            'août',
+            'septembre',
+            'octobre',
+            'novembre',
+            'decembre'
+        ];
+
         for ($month = 0; $month < 12; $month++) {
             $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax)[0]["nbCourrier"];
-            $labelsMonth[$month] = $formatter->getStringFromDatetimeArray([$dateMin]);
+            $labelsMonth[$month] = $monthList[$month];
             $dateMin->modify('+1 month');
             $dateMax->modify('+1 month');
         }
@@ -178,11 +199,51 @@ class StatistiqueController extends AbstractController
                 ]
             ]);
 
+        /* 
+            DOUGHNUT CHART
+            Statuts actules des courriers pris en charge par le facteur
+        */
+
+        $facteurId = $facteur->getId();
+        $courrierStatutsChart = ($chartBuilder->createChart(Chart::TYPE_DOUGHNUT))
+            ->setData([
+                'labels' => ["en attente", "pris en charge", "avisé", "mis en instance", "NPAI", "non réclamé"],
+                'datasets' => [
+                    [
+                        'data' => [
+                            count($statutCourrierRepository->findCourriersByLastStatut(1, $facteurId)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(2, $facteurId)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(3, $facteurId)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(4, $facteurId)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(6, $facteurId)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(7, $facteurId))
+                        ],
+                        'backgroundColor' => [
+                            'rgb(255, 204, 64)',
+                            'rgb(43, 222, 211)',
+                            'rgb(16, 36, 200)',
+                            'rgb(99, 67, 175)',
+                            'rgb(238, 155, 49)',
+                            'rgb(193, 52, 21)'
+                        ]
+                    ]
+                ]
+            ])
+
+            ->setOptions([
+                'plugins' => [
+                    'legend' => [
+                        'display' => false
+                    ]
+                ]
+            ]);
+
         return $this->render('statistique/facteur.html.twig', [
             'errorMessage' => null,
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'facteurInfo' => 'infos',
-            'chart' => $chartFacteur,
+            'chart1' => $chartFacteur,
+            'chart2' => $courrierStatutsChart,
             'facteur' => $facteur
         ]);
     }

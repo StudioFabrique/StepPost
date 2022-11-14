@@ -65,9 +65,11 @@
 					<div>
 						<p>suggestion facteurs :</p>
 					</div>
-					<div class="text-[#140A82]">
-						<a href="">facteur bob</a>
-					</div>
+					{% for facteur in listeFacteurs %}
+						<div class="text-[#140A82]">
+							<a href="{{ path('app_statistiques', { search: facteur.nom }) }}">{{ facteur.nom }}</a>
+						</div>
+					{% endfor %}
 				</div>
 			</div>
 		</div>

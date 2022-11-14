@@ -7,19 +7,31 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-<main class="w-[95%] m-auto" data-controller="facteur" data-new-facteur-endpoint="{{ newFacteurEndpoint }}">
-    <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
-    <div class="flex justify-between items-center">
-        <div></div>
-        <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
-    </div>
-    <p> Les champs obligatoires sont marqués par un * </p>
-        <label for="email">Email</label>
-        <input id="email" name="email" type="text" class = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'>
-        <label for="nom">Nom</label>
-        <input id="nom" name="nom" type="text" class = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" class = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'>
-        <button id="facteur_submit" class="text-white bg-[#24A640] p-2 rounded">Sauvegarder</button>
-</main>
+{% if isAdding == true %}
+    <main class="w-[95%] m-auto" data-controller="facteur">
+        <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
+        <div class="flex justify-between items-center">
+            <div></div>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
+        </div>
+        <p> Les champs obligatoires sont marqués par un * </p>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="text" class = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'>
+            <label for="nom">Nom</label>
+            <input id="nom" name="nom" type="text" class = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" class = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'>
+            <button id="facteur_submit" class="text-white bg-[#24A640] p-2 rounded">Sauvegarder</button>
+    </main>
+{% else %}
+    <main class="w-[95%] m-auto" data-controller="facteur">
+        <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
+        <div class="flex justify-between items-center">
+            <div></div>
+            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
+        </div>
+        {{ form(form) }}
+    </main>
+{% endif %}
+
 {% endblock %}
