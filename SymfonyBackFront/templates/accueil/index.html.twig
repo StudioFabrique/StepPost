@@ -27,6 +27,7 @@
             {% endif %}
         </div>
     </div>
+    {% if courriers|length > 0 %}
     <section class="flex justify-between items-center mt-5">
         <form class="" action="" method="get">
             <div class="mb-5 xl:w-50">
@@ -49,7 +50,6 @@
             </div>
         </form>
     </section>
-    {% if courriers|length > 0 %}
     <section class="overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left text-gray-500 table-fixed">
             <thead class="text-xs text-white uppercase bg-[#140A82]">

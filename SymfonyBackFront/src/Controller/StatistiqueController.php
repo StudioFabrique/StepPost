@@ -173,12 +173,10 @@ class StatistiqueController extends AbstractController
             'decembre'
         ];
 
-        $remainingMonth = intval(date_diff($dateMin, new DateTime('now'))->format('%m'));
         $remainingYear = intval(date_diff($dateMin, new DateTime('now'))->format('%y'));
 
-        for ($year = 0; $year < $remainingYear; $year++) {
-            date_format($dateMin, 'y');
-            for ($month = 0; $month < $remainingMonth; $month++) {
+        for ($year = 0; $year < $remainingYear + 1; $year++) {
+            for ($month = 0; $month < 12; $month++) {
                 $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax)[0]["nbCourrier"];
                 $labelsMonth[$month] = date_format($dateMin, 'y') . '-' . $monthList[date_format($dateMin, 'm') - 1];
                 $dateMin->modify('+1 month');

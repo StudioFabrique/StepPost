@@ -61,16 +61,24 @@
 				<form method="get">
 					<input name="search" class="shadow-md rounded-lg p-2 text-2xl text-center" type="search" placeholder="nom du facteur..." name="facteurSearch">
 				</form>
-				<div id="facteurContent" class="flex flex-col justify-center bg-[#ffffffbe] text-center rounded-b-lg pt-2 -mt-1">
-					<div>
-						<p>suggestion facteurs :</p>
-					</div>
-					{% for facteur in listeFacteurs %}
-						<div class="text-[#140A82]">
-							<a href="{{ path('app_statistiques', { search: facteur.nom }) }}">{{ facteur.nom }}</a>
+				{% if listeFacteurs|length > 0 %}
+					<div id="facteurContent" class="flex flex-col justify-center bg-[#ffffffbe] text-center rounded-b-lg pt-2 -mt-1">
+						<div>
+							<p>suggestion facteurs :</p>
 						</div>
-					{% endfor %}
-				</div>
+						{% for facteur in listeFacteurs %}
+							<div class="text-[#140A82]">
+								<a href="{{ path('app_statistiques', { search: facteur.nom }) }}">{{ facteur.nom }}</a>
+							</div>
+						{% endfor %}
+					</div>
+				{% else %}
+					<div id="facteurContent" class="flex flex-col justify-center bg-[#ffffffbe] text-center rounded-b-lg pt-2 -mt-1">
+						<div>
+							<p>Aucun facteurs inscrits</p>
+						</div>
+					</div>
+				{% endif %}
 			</div>
 		</div>
 	</main>

@@ -82,9 +82,9 @@ class Courrier
         return $this->bordereau;
     }
 
-    public function setBordereau(int $borderau): self
+    public function setBordereau(int $bordereau): self
     {
-        $this->borderau = $borderau;
+        $this->bordereau = $bordereau;
 
         return $this;
     }
@@ -108,7 +108,7 @@ class Courrier
 
     public function setCivilite(string $civilite): self
     {
-        $this->civiliter = $civilite;
+        $this->civilite = $civilite;
 
         return $this;
     }
@@ -132,7 +132,7 @@ class Courrier
 
     public function setAdresse(string $adresse): self
     {
-        $this->adress = $adresse;
+        $this->adresse = $adresse;
 
         return $this;
     }
