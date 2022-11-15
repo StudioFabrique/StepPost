@@ -90,15 +90,15 @@ class SuiviDetailController extends AbstractController
 
         $lastStatutId = 0;
         foreach ($statuts as $statut) {
-            $lastStatutId = $statut->getStatut()->getId() <= $lastStatutId ? $lastStatutId : $statut->getStatut()->getId();
+            $lastStatutId = $statut->getStatut()->getStatutCode() <= $lastStatutId ? $lastStatutId : $statut->getStatut()->getId();
             $facteur = $statut->getFacteur();
         }
 
-        if ($lastStatutId + 1 <= 7) {
-            $statut = $statutRepository->find($lastStatutId + 1);
-        } else {
-            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => 'Le statut ne peut plus être mis à jour', 'isError' => true], Response::HTTP_SEE_OTHER);
-        }
+        // if ($lastStatutId + 1 <= 7) {
+        //     $statut = $statutRepository->find($lastStatutId + 1);
+        // } else {
+        //     return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => 'Le statut ne peut plus être mis à jour', 'isError' => true], Response::HTTP_SEE_OTHER);
+        // }
 
         $statutCourrier = new StatutCourrier();
         $statutCourrier

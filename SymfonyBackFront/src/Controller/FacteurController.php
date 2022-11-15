@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\ClassesOutils\FormatageObjet;
 use App\Entity\Facteur;
 use App\Form\FacteurType;
 use App\Repository\ExpediteurRepository;
@@ -19,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/', name: 'app_')]
-// #[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_ADMIN')]
 class FacteurController extends AbstractController
 {
     #[Route('/facteurs', name: 'facteur')]

@@ -21,8 +21,8 @@ class Statut
     #[ORM\OneToMany(mappedBy: 'statut', targetEntity: StatutCourrier::class)]
     private Collection $statutsCourrier;
 
-    /* #[ORM\Column(nullable: true)]
-    private ?int $statutCode = null; */
+    #[ORM\Column(name: 'statutCode', nullable: false)]
+    private ?int $statutCode = null;
 
     public function __construct()
     {
@@ -81,7 +81,7 @@ class Statut
         return $this;
     }
 
-    /* public function getStatutCode(): ?int
+    public function getStatutCode(): ?int
     {
         return $this->statutCode;
     }
@@ -91,5 +91,5 @@ class Statut
         $this->statutCode = $statutCode;
 
         return $this;
-    } */
+    }
 }

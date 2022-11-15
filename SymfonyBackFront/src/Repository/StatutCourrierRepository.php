@@ -72,7 +72,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->select(
                 'c.id AS courrier,
                 MAX(s.date) AS date,
-                MAX(d.id) AS statut,
+                MAX(d.statutCode) AS statut,
                 d.etat AS etat,
                 c.nom,
                 c.prenom,
@@ -100,7 +100,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->select(
                 'c.id AS courrier,
                 MAX(s.date) AS date,
-                MAX(d.id) AS statut,
+                MAX(d.statutCode) AS statut,
                 d.etat AS etat,
                 c.nom,
                 c.prenom,
@@ -229,23 +229,25 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function findCourrierImpression($nbMonth = null)
+    public function findCourrierImpression(DateTime $date = null)
     {
-        $dateToSearch = $nbMonth != null ? (new DateTime('now'))->modify('-' . $nbMonth . ' hours') : null;
-        $qb = $this->_em->createQueryBuilder('s')
+        $qb = $this->_em
+            ->createQueryBuilder('s')
             ->select('
-                s.date,
-                c.id
-            ')
+                        s.date,
+                        c.id
+                    ')
             ->from('App\Entity\StatutCourrier', 's')
-            ->where($nbMonth == null ? 'st.id = 1' : 's.date >= :dateToSearch and st.id = 1')
+            ->where($date == null ? 'st.id = 1' : 's.date >= :dateMin and s.date <= :dateMax and st.id = 1')
             ->groupBy('c.id')
             ->join('s.courrier', 'c')
             ->join('s.statut', 'st')
             ->getQuery();
 
-        if ($nbMonth != null) {
-            $qb->setParameter('dateToSearch', $dateToSearch);
+        if ($date != null) {
+            $qb
+                ->setParameter('dateMin', $date)
+                ->setParameter('dateMax', date_modify($date, '+1 month'));
         }
         return $qb->getResult();
     }

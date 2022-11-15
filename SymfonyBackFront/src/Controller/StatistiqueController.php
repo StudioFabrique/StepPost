@@ -6,6 +6,7 @@ use App\ClassesOutils\FormatageObjet;
 use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
 use App\Repository\StatutCourrierRepository;
+use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -172,12 +173,19 @@ class StatistiqueController extends AbstractController
             'decembre'
         ];
 
-        for ($month = 0; $month < 12; $month++) {
-            $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax)[0]["nbCourrier"];
-            $labelsMonth[$month] = $monthList[$month];
-            $dateMin->modify('+1 month');
-            $dateMax->modify('+1 month');
+        $remainingMonth = intval(date_diff($dateMin, new DateTime('now'))->format('%m'));
+        $remainingYear = intval(date_diff($dateMin, new DateTime('now'))->format('%y'));
+
+        for ($year = 0; $year < $remainingYear; $year++) {
+            date_format($dateMin, 'y');
+            for ($month = 0; $month < $remainingMonth; $month++) {
+                $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax)[0]["nbCourrier"];
+                $labelsMonth[$month] = date_format($dateMin, 'y') . '-' . $monthList[date_format($dateMin, 'm') - 1];
+                $dateMin->modify('+1 month');
+                $dateMax->modify('+1 month');
+            }
         }
+
 
         $chartFacteur = ($chartBuilder->createChart(Chart::TYPE_LINE))
             ->setData(

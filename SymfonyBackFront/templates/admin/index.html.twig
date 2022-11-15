@@ -65,13 +65,13 @@
                             Modifier
                         </a>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="mr-10 py-4">
                         <a class="text-blue-800 bg-blue-100 p-2 rounded"
                             href="{{ path('app_edit_password', {id: user.id}) }}">
                             Modifier le mot de passe
                         </a>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="">
                         {% if app.user.id != user.id %}
                             <button id="showButton" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
                             <div id="confirmBox" class="fixed -ml-32 bg-[#140A82] rounded-lg p-2">

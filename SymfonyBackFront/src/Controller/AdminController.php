@@ -24,6 +24,7 @@ Seul le super admin a les droits d'accès aux différentes méthodes de cette cl
 
 #[Route('/admin', name: 'app_')]
 #[IsGranted('ROLE_SUPERADMIN')]
+
 class AdminController extends AbstractController
 {
 
@@ -68,7 +69,7 @@ class AdminController extends AbstractController
         }
 
         $admin = new User();
-        $form = $this->createForm(UserType::class, $admin);
+        $form = $this->createForm(UserType::class, $admin, ['addUser' => true]);
         $form->handleRequest($request);
 
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);

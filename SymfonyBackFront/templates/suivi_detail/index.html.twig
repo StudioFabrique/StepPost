@@ -8,7 +8,7 @@
 
 {% set statutsTermine = false %}
 {% for statut in statutsCourrier %}
-    {% if statut.statut.id == 5 %} {% set statutsTermine = true %} {% endif %}
+    {% if statut.statut.statutCode == 5 %} {% set statutsTermine = true %} {% endif %}
 {% endfor %}
 
 {% set showUpdateButton = statutsCourrier|length >= 7 or statutsTermine ? false : true %}
@@ -24,7 +24,6 @@
 {% endif %}
 
 <main class="w-[95%] m-auto">
-    
     
     <div class="flex justify-between right-0 my-10" data-controller="statut">
             <div>
