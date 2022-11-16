@@ -153,9 +153,8 @@ class StatistiqueController extends AbstractController
         */
 
         $data = array();
-        $dateMin = date_modify($facteur->getCreatedAt(), 'now');
-        $dateMax = date_modify($facteur->getCreatedAt(), 'now');
-        $dateMax->modify('+1 month');
+        $dateMin = date_create(date_format($facteur->getCreatedAt(), "Y-m-d"));
+        $dateMax = date_create(date_format($facteur->getCreatedAt(), "Y-m-d"))->modify('+1 month');
 
         $labelsMonth = array();
         $monthList = [
@@ -173,17 +172,15 @@ class StatistiqueController extends AbstractController
             'decembre'
         ];
 
-        $remainingYear = intval(date_diff($dateMin, new DateTime('now'))->format('%y'));
 
-        for ($year = 0; $year < $remainingYear + 1; $year++) {
-            for ($month = 0; $month < 12; $month++) {
-                $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax)[0]["nbCourrier"];
-                $labelsMonth[$month] = date_format($dateMin, 'y') . '-' . $monthList[date_format($dateMin, 'm') - 1];
-                $dateMin->modify('+1 month');
-                $dateMax->modify('+1 month');
-            }
+        $dateDiff = date_diff(new DateTime('now'), $facteur->getCreatedAt());
+        $monthDiff = intval($dateDiff->format('%m')) + 12 * intval($dateDiff->format('%y'));
+        for ($month = 0; $month < $monthDiff; $month++) {
+            $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax)[0]["nbCourrier"];
+            $labelsMonth[$month] = date_format($dateMin, 'Y') . '-' . $monthList[date_format($dateMin, 'm') - 1];
+            $dateMin->modify('+1 month');
+            $dateMax->modify('+1 month');
         }
-
 
         $chartFacteur = ($chartBuilder->createChart(Chart::TYPE_LINE))
             ->setData(
@@ -194,7 +191,6 @@ class StatistiqueController extends AbstractController
                             'data' => $data
                         ]
                     ],
-
                 ]
             )
             ->setOptions([

@@ -144,7 +144,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->select(
                 'c.id AS courrier,
                 MAX(s.date) AS date,
-                MAX(d.id) AS statut,
+                MAX(d.statutCode) AS statut,
                 c.nom,
                 c.prenom,
                 c.adresse,
@@ -184,7 +184,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->select(
                 'c.id AS courrier,
                 MAX(s.date) AS date,
-                MAX(d.id) AS statut,
+                MAX(d.statutCode) AS statut,
                 c.nom,
                 c.prenom,
                 c.adresse,
@@ -214,13 +214,14 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->select(
                 '
                 MAX(s.date),
-                MAX(s.statut),
+                MAX(d.statutCode),
                 f.id
                 '
             )
             ->join('s.facteur', 'f')
+            ->join('s.statut', 'd')
             ->groupBy('s.courrier')
-            ->having($facteurId == null ? ("MAX(s.statut) = :statutid") : ("MAX(s.statut) = :statutid and f.id = :facteurid"))
+            ->having($facteurId == null ? ("MAX(d.statutCode) = :statutid") : ("MAX(d.statutCode) = :statutid and f.id = :facteurid"))
             ->setParameter('statutid', $statutId)
             ->getQuery();
         if ($facteurId != null) {
@@ -238,7 +239,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                         c.id
                     ')
             ->from('App\Entity\StatutCourrier', 's')
-            ->where($date == null ? 'st.id = 1' : 's.date >= :dateMin and s.date <= :dateMax and st.id = 1')
+            ->where($date == null ? 'st.statutCode = 1' : 's.date >= :dateMin and s.date <= :dateMax and st.statutCode = 1')
             ->groupBy('c.id')
             ->join('s.courrier', 'c')
             ->join('s.statut', 'st')
@@ -261,7 +262,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.id
             ')
             ->from('App\Entity\StatutCourrier', 's')
-            ->where($nbMonth == null ? 'st.id = 2' : 's.date >= :dateToSearch and st.id = 2')
+            ->where($nbMonth == null ? 'st.statutCode = 2' : 's.date >= :dateToSearch and st.statutCode = 2')
             ->groupBy('c.id')
             ->join('s.courrier', 'c')
             ->join('s.statut', 'st')
@@ -281,7 +282,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.id
             ')
             ->from('App\Entity\StatutCourrier', 's')
-            ->where($nbMonth == null ? 'st.id = 5' : 's.date >= :dateToSearch and st.id = 5')
+            ->where($nbMonth == null ? 'st.statutCode = 5' : 's.date >= :dateToSearch and st.statutCode = 5')
             ->groupBy('c.id')
             ->join('s.courrier', 'c')
             ->join('s.statut', 'st')
@@ -302,7 +303,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->from('App\Entity\StatutCourrier', 's')
             ->join('s.facteur', 'f')
             ->where('f.nom = :nom and s.date >= :dateMin and s.date <= :dateMax')
-            ->setParameter('dateMin', $dateMin, '')
+            ->setParameter('dateMin', $dateMin)
             ->setParameter('dateMax', $dateMax)
             ->setParameter('nom', $nom)
             ->getQuery();
