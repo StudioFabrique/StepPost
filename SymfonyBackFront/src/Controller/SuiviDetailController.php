@@ -105,7 +105,7 @@ class SuiviDetailController extends AbstractController
             ->setCourrier($courrierRepository->find($courrierId))
             ->setStatut($statutRepository->find($statutId))
             ->setDate(new DateTime('now'))
-            ->setFacteur($facteur);
+            ->setFacteur($facteur ?? null);
         try {
             $statutCourrierRepository->add($statutCourrier, true);
             return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => $message], Response::HTTP_SEE_OTHER);

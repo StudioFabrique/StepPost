@@ -26,6 +26,30 @@ class TestFixtures extends Fixture
             ->setStatutCode(2)
             ->setEtat('pris en charge');
         $manager->persist($statut2);
+        $statut3 = (new Statut())
+            ->setStatutCode(3)
+            ->setEtat('avisé');
+        $manager->persist($statut3);
+        $statut4 = (new Statut())
+            ->setStatutCode(4)
+            ->setEtat('mis en instance');
+        $manager->persist($statut4);
+        $statut5 = (new Statut())
+            ->setStatutCode(5)
+            ->setEtat('distribué');
+        $manager->persist($statut1);
+        $statut6 = (new Statut())
+            ->setStatutCode(6)
+            ->setEtat('NPAI');
+        $manager->persist($statut6);
+        $statut7 = (new Statut())
+            ->setStatutCode(7)
+            ->setEtat('non réclamé');
+        $manager->persist($statut7);
+        $statut8 = (new Statut())
+            ->setStatutCode(8)
+            ->setEtat('erreur de libellé');
+        $manager->persist($statut8);
 
         // Génération de l'administrateur (ROLE_SUPERADMIN) :
         $admin = (new User())
@@ -66,16 +90,19 @@ class TestFixtures extends Fixture
 
         // création des courriers + création des statuts :
 
-        $date = new DateTime('2018-01-01');
         for ($courrierActuel = 1; $courrierActuel < 100; $courrierActuel++) {
+            $date1 = new DateTime('2018-01-01');
+            $date2 = new DateTime('2018-01-02');
             $statutCourrier1 = (new StatutCourrier)
                 ->setStatut($statut1)
-                ->setDate($date)
+                ->setDate($date1)
                 ->setFacteur($facteur);
+            $manager->persist($statutCourrier1);
             $statutCourrier2 = (new StatutCourrier)
                 ->setStatut($statut2)
-                ->setDate(date_modify($date, '+1 day'))
+                ->setDate($date2)
                 ->setFacteur($facteur);
+            $manager->persist($statutCourrier2);
             $courrier = (new Courrier())
                 ->setType(0)
                 ->setBordereau(10 . $courrierActuel)
@@ -89,8 +116,6 @@ class TestFixtures extends Fixture
                 ->setExpediteur($expediteur)
                 ->addStatutsCourrier($statutCourrier1)
                 ->addStatutsCourrier($statutCourrier2);
-            $manager->persist($statutCourrier1);
-            $manager->persist($statutCourrier2);
             $manager->persist($courrier);
         }
 

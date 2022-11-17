@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\ClassesOutils\FormatageObjet;
 use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
 use App\Repository\StatutCourrierRepository;
@@ -37,11 +36,64 @@ class StatistiqueController extends AbstractController
             return $this->redirectToRoute('app_statistiques_facteur', ['facteur' => $searchBar]);
         }
 
-        $nbHours = $request->get('nbHours') ?? 24;
+        $date1 = $request->get('date1') != null ? new DateTime($request->get('date1')) : null;
+        $date2 = $request->get('date2') != null ? new DateTime($request->get('date2')) : null;
+        $dateArray = array();
+        if ($date1 != null) {
+            array_push($dateArray, $date1);
+        }
+        if ($date2 != null) {
+            array_push($dateArray, $date2);
+        }
+
         // Le nombre d'expéditeurs inscrits et actifs ces dernières x heures
-        $nbCourriersImpression = count($statutCourrierRepository->FindCourrierImpression()); // Le nombre de bordereaux des courriers/colis imprimé ces dernières x heures
-        $nbCourriersEnvoi = count($statutCourrierRepository->FindCourrierEnvoi()); // Le nombre de courriers/colis envoyés ces dernières x heures
-        $nbCourriersRecu =  count($statutCourrierRepository->FindCourrierRecu());
+        $nbCourriersImpression = count($statutCourrierRepository->FindCourrierImpression()); // Le nombre de bordereaux des courriers/colis imprimés
+        $nbCourriersEnvoi = count($statutCourrierRepository->FindCourrierEnvoi()); // Le nombre de courriers/colis envoyés
+        $nbCourriersRecu = count($statutCourrierRepository->FindCourrierRecu());
+
+        if ($date1 != null || $date2 != null) {
+            $i = 0;
+            $dateLabels = array();
+            $dataBordereaux = array();
+            $dataEnvoi = array();
+            $dataRecu = array();
+
+            foreach ($dateArray as $date) {
+                $dateLabels[$i] = date_format($date, 'M Y');
+                $dataBordereaux[$i] = count($statutCourrierRepository->FindCourrierImpression($date));
+                $dataEnvoi[$i] = count($statutCourrierRepository->findCourrierEnvoi($date));
+                $dataRecu[$i] = count($statutCourrierRepository->findCourrierRecu($date));
+                $i++;
+            }
+
+            $chartByDate = $chartBuilderInterface->createChart(Chart::TYPE_BAR)
+                ->setData(
+                    [
+                        'labels' => $dateLabels,
+                        'datasets' => [
+                            [
+                                'label' => 'bordereaux générés',
+                                'data' => $dataBordereaux
+                            ],
+                            [
+                                'label' => 'courriers/colis pris en charges',
+                                'data' => $dataEnvoi
+                            ],
+                            [
+                                'label' => 'courriers/colis distribués',
+                                'data' => $dataRecu
+                            ]
+                        ]
+                    ]
+                )
+                ->setOptions([
+                    'plugins' => [
+                        'legend' => [
+                            'display' => false
+                        ]
+                    ]
+                ]);
+        }
 
         /* 
             DOUGHNUT CHART
@@ -129,11 +181,12 @@ class StatistiqueController extends AbstractController
             'nbCourriersRecu' => $nbCourriersRecu,
             'chart1' => $courrierStatutsChart,
             'chart2' => $topExpediteurs,
+            'chartByDate' => $chartByDate ?? null,
             'listeFacteurs' => $facteurRepository->findAll()
         ]);
     }
 
-    #[Route(name: 'statistiques_facteur', path: 'statistiques/facteur')]
+    #[Route(name: 'statistiques_facteur', path: '/facteur')]
     public function ShowFacteur(
         Request $request,
         ExpediteurRepository $expediteurRepository,

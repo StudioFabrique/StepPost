@@ -17,42 +17,59 @@
 	<main class="w-[95%] m-auto" data-controller="chart">
 		<section class="mt-10">
 			<div class="flex justify-between">
+				<div>
+					<form action="" method="get">
+						<label for="date1">Mois 1 :</label>
+						<input type="date" name="date1" id="date1">
+						<label for="periode2">Mois 2 :</label>
+						<input type="date" name="date2" id="date2">
+						<input type="submit" value="Comparer par périodes" class="text-white bg-[#24A640] hover:bg-[#0d4118] p-1.5 rounded">
+					</form>
+				</div>
 				<div></div>
 				<div>
-					<button id='button' class="text-white bg-[#24A640] hover:bg-[#0d4118] p-1.5 rounded" href="">Statistiques facteurs</button>
+					<button id='button' class="text-white bg-[#24A640] hover:bg-[#0d4118] p-1.5 rounded">Statistiques facteurs</button>
 					<a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
 				</div>
 			</div>
-			<div class="flex justify-between text-gray-600 my-10">
-				<div>
-					<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpression }}</p>
-					<p>{{ nbCourriersImpression > 1 ? 'bordereaux ont été générés' : 'bordereau a été généré' }}</p>
+			{% if chartByDate == null %}
+			
+				<div class="flex justify-between text-gray-600 my-10">
+					<div>
+						<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpression }}</p>
+						<p>{{ nbCourriersImpression > 1 ? 'bordereaux ont été générés' : 'bordereau a été généré' }}</p>
+					</div>
+					<div>
+						<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersEnvoi }}</p>
+						<p>{{ nbCourriersImpression > 1 ? 'courriers/colis ont été pris en charges' : 'courrier/coli a été pris en charge' }}</p>
+					</div>
+					<div>
+						<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersRecu }}</p>
+						<p>{{ nbCourriersImpression > 1 ? 'courriers/colis ont été distribués' : 'courrier/coli a été distribué' }}</p>
+					</div>
+					<div>
+						<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurs }}</p>
+						<p>nombre d'<a class="text-black underline" href="{{ path('app_expediteur') }}">expéditeurs</a></p>
+					</div>
 				</div>
-				<div>
-					<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersEnvoi }}</p>
-					<p>{{ nbCourriersImpression > 1 ? 'courriers/colis ont été pris en charges' : 'courrier/coli a été pris en charge' }}</p>
-				</div>
-				<div>
-					<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersRecu }}</p>
-					<p>{{ nbCourriersImpression > 1 ? 'courriers/colis ont été distribués' : 'courrier/coli a été distribué' }}</p>
-				</div>
-				<div>
-					<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurs }}</p>
-					<p>nombre d'<a class="text-black underline" href="{{ path('app_expediteur') }}">expéditeurs</a></p>
-				</div>
-			</div>
-			<div></div>
+			{% else %}
+				<div class="my-10"></div>
+					<div class="w-[50%]">
+						{{ render_chart(chartByDate) }}
+					</div>
+				</div>	
+			{% endif %}
 		</section>
 		<hr class="border-y-1 my-10 border-gray-400">
 		<section>
 			<div class="flex justify-between m-10">
 				<div class="w-80">
 					<p class="text-center m-5 text-xl my-10">Statuts actuels des courriers</p>
-					<p>{{ render_chart(chart1) }}</p>
+					{{ render_chart(chart1) }}
 				</div>
 				<div class="w-[50%]">
 					<p class="text-center text-xl my-10">Classement des expéditeurs</p>
-					<p>{{ render_chart(chart2) }}</p>
+					{{ render_chart(chart2) }}
 				</div>
 			</div>
 		</section>

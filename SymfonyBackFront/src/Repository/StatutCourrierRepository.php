@@ -253,43 +253,48 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function findCourrierEnvoi($nbMonth = null)
+    public function findCourrierEnvoi(DateTime $date = null)
     {
-        $dateToSearch = $nbMonth != null ? (new DateTime('now'))->modify('-' . $nbMonth . ' hours') : null;
-        $qb = $this->_em->createQueryBuilder('s')
+        $qb = $this->_em
+            ->createQueryBuilder('s')
             ->select('
-                s.date,
-                c.id
-            ')
+                        s.date,
+                        c.id
+                    ')
             ->from('App\Entity\StatutCourrier', 's')
-            ->where($nbMonth == null ? 'st.statutCode = 2' : 's.date >= :dateToSearch and st.statutCode = 2')
+            ->where($date == null ? 'st.statutCode = 2' : 's.date >= :dateMin and s.date <= :dateMax and st.statutCode = 2')
             ->groupBy('c.id')
             ->join('s.courrier', 'c')
             ->join('s.statut', 'st')
             ->getQuery();
-        if ($nbMonth != null) {
-            $qb->setParameter('dateToSearch', $dateToSearch);
+
+        if ($date != null) {
+            $qb
+                ->setParameter('dateMin', $date)
+                ->setParameter('dateMax', date_modify($date, '+1 month'));
         }
         return $qb->getResult();
     }
 
-    public function findCourrierRecu($nbMonth = null)
+    public function findCourrierRecu(DateTime $date = null)
     {
-        $dateToSearch = $nbMonth != null ? (new DateTime('now'))->modify('-' . $nbMonth . ' hours') : null;
-        $qb = $this->_em->createQueryBuilder('s')
+        $qb = $this->_em
+            ->createQueryBuilder('s')
             ->select('
-                s.date,
-                c.id
-            ')
+                        s.date,
+                        c.id
+                    ')
             ->from('App\Entity\StatutCourrier', 's')
-            ->where($nbMonth == null ? 'st.statutCode = 5' : 's.date >= :dateToSearch and st.statutCode = 5')
+            ->where($date == null ? 'st.statutCode = 5' : 's.date >= :dateMin and s.date <= :dateMax and st.statutCode = 5')
             ->groupBy('c.id')
             ->join('s.courrier', 'c')
             ->join('s.statut', 'st')
             ->getQuery();
 
-        if ($nbMonth != null) {
-            $qb->setParameter('dateToSearch', $dateToSearch);
+        if ($date != null) {
+            $qb
+                ->setParameter('dateMin', $date)
+                ->setParameter('dateMax', date_modify($date, '+1 month'));
         }
         return $qb->getResult();
     }

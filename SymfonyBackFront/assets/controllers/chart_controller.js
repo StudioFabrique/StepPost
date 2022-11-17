@@ -35,11 +35,11 @@ export default class extends Controller {
         button.addEventListener('click', () => {
             hideContent = false;
             facteurContent.animate([
-                {transform: "scaleY(0)"},
-                {transform: "scaleY(1)"}
-                ] , {
+                { transform: "scaleY(0)" },
+                { transform: "scaleY(1)" }
+            ], {
                 duration: 400
-                }
+            }
             );
         });
         content.addEventListener('click', () => {
