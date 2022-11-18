@@ -148,14 +148,18 @@ class FacteurController extends AbstractController
     #[Route(path: '/api/newFacteur', name: 'api_newFacteur')]
     public function newFacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
     {
-        if (!$this->getUser()) {
+        $email = $request->request->get('email');
+        $nom = $request->request->get('nom');
+        $password = $request->request->get('password');
+
+        if (!$this->getUser() || $email == null || $nom == null || $password == null) {
             return new JsonResponse("Authentification échoué");
         }
 
         $facteur = (new Facteur())
-            ->setEmail($request->request->get('email'))
-            ->setNom($request->request->get('nom'))
-            ->setPassword($request->request->get('password'))
+            ->setEmail($email)
+            ->setNom($nom)
+            ->setPassword($password)
             ->setCreatedAt(new DateTime())
             ->setUpdatedAt(new DateTime())
             ->setRoles(['ROLE_FACTEUR']);

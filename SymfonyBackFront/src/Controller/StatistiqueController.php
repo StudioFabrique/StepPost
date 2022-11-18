@@ -18,6 +18,9 @@ use Symfony\UX\Chartjs\Model\Chart;
 #[IsGranted('ROLE_ADMIN')]
 class StatistiqueController extends AbstractController
 {
+    /* 
+        Statistiques globales concernant les courriers et les expéditeurs
+    */
     #[Route('/', name: 'statistiques')]
     public function index(
         Request $request,
@@ -46,10 +49,9 @@ class StatistiqueController extends AbstractController
             array_push($dateArray, $date2);
         }
 
-        // Le nombre d'expéditeurs inscrits et actifs ces dernières x heures
         $nbCourriersImpression = count($statutCourrierRepository->FindCourrierImpression()); // Le nombre de bordereaux des courriers/colis imprimés
         $nbCourriersEnvoi = count($statutCourrierRepository->FindCourrierEnvoi()); // Le nombre de courriers/colis envoyés
-        $nbCourriersRecu = count($statutCourrierRepository->FindCourrierRecu());
+        $nbCourriersRecu = count($statutCourrierRepository->FindCourrierRecu()); // Le nombre de courrier/colis distribués
 
         if ($date1 != null || $date2 != null) {
             $i = 0;
@@ -75,15 +77,24 @@ class StatistiqueController extends AbstractController
                         'datasets' => [
                             [
                                 'label' => 'bordereaux générés',
-                                'data' => $dataBordereaux
+                                'data' => $dataBordereaux,
+                                'backgroundColor' => [
+                                    'rgb(255, 204, 64)'
+                                ]
                             ],
                             [
                                 'label' => 'courriers/colis pris en charges',
-                                'data' => $dataEnvoi
+                                'data' => $dataEnvoi,
+                                'backgroundColor' => [
+                                    'rgb(43, 222, 211)'
+                                ]
                             ],
                             [
                                 'label' => 'courriers/colis distribués',
-                                'data' => $dataRecu
+                                'data' => $dataRecu,
+                                'backgroundColor' => [
+                                    'rgb(16, 36, 200)'
+                                ]
                             ]
                         ]
                     ]
@@ -146,7 +157,6 @@ class StatistiqueController extends AbstractController
             array_push($data, $expediteur["nombre_courriers"]);
         }
 
-
         $topExpediteurs = $chartBuilderInterface->createChart(Chart::TYPE_BAR)
             ->setData([
                 'labels' => $labels,
@@ -188,6 +198,9 @@ class StatistiqueController extends AbstractController
         ]);
     }
 
+    /* 
+        Statistiques pour les facteurs
+    */
     #[Route(name: 'statistiques_facteur', path: '/facteur')]
     public function ShowFacteur(
         Request $request,

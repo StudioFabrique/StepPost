@@ -57,12 +57,12 @@
                 <p>{{ facteur }}</p>
             {% endif %}
         </div>
-        <div>
-            {% if showSignature %}
-                <p class="text-xl text-gray-500">signature :</p>
-                <img class="border-2 border-gray-200 shadow-md" src="{{ signature }}" alt="">
-            {% endif %}
+        {% if showSignature %}
+        <div class="w-[30%]">
+            <p class="text-xl text-gray-500">signature :</p>
+            <img class="border-2 border-gray-200 shadow-md" src="{{ signature }}" alt="">
         </div>
+        {% endif %}
     </div>
     
 </main>

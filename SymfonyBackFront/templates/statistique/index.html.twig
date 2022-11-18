@@ -21,19 +21,32 @@
 					<form action="" method="get">
 						<label for="date1">Mois 1 :</label>
 						<input class="ml-2" type="month" name="date1" id="date1">
-						<label for="periode2">Mois 2 :</label>
+						<label for="date2">Mois 2 :</label>
 						<input class="ml-2" type="month" name="date2" id="date2">
-						<input type="submit" value="Comparer par périodes" class="text-white bg-[#24A640] hover:bg-[#0d4118] ml-2 p-1.5 rounded">
+						<input type="submit" value="Comparer" class="text-white bg-[#24A640] hover:bg-[#0d4118] ml-2 p-1.5 rounded">
 					</form>
+
+					<details>
+						<summary>
+							<b>Comparaison par années</b>
+						</summary>
+						<form action="" method="get">
+							<label for="annee1">Année 1 :</label>
+							<input class="ml-2 w-10" max="9999" type="number" step="1" name="annee1" id="annee1" value="2021">
+							<label for="annee2">Année 2 :</label>
+							<input class="ml-2 w-10" max="9999" type="number" step="1" name="annee2" id="annee2" value="2022">
+							<input type="submit" value="Comparer" class="text-white bg-[#24A640] hover:bg-[#0d4118] ml-2 p-1.5 rounded">
+						</form>
+					</details>
 				</div>
 				<div></div>
 				<div>
 					<button id='button' class="text-white bg-[#24A640] hover:bg-[#0d4118] p-1.5 rounded">Statistiques facteurs</button>
-					<a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour à l'accueil</a>
+					<button class="text-white bg-red-500 hover:bg-red-700 p-1.5 rounded" onclick="window.location = '/accueil'">Retour à l'accueil</button>
 				</div>
 			</div>
 			{% if chartByDate == null %}
-			
+
 				<div class="flex justify-between text-gray-600 my-10">
 					<div>
 						<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpression }}</p>
@@ -49,55 +62,92 @@
 					</div>
 					<div>
 						<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurs }}</p>
-						<p>nombre d'<a class="text-black underline" href="{{ path('app_expediteur') }}">expéditeurs</a></p>
+						<p>nombre d'<a class="text-black underline" href="{{ path('app_expediteur') }}">expéditeurs</a>
+						</p>
 					</div>
 				</div>
 			{% else %}
 				<div class="my-10"></div>
-					<a href="{{ path('app_statistiques') }}" class="text-red-600">Retour</a>
-					<div>
+				<a href="{{ path('app_statistiques') }}" class="text-red-600">Fermer</a>
+				<div class="flex justify-center">
+					<div class="w-[60%]">
 						{{ render_chart(chartByDate) }}
 					</div>
-				</div>	
-			{% endif %}
-		</section>
-		<hr class="border-y-1 my-10 border-gray-400">
-		<section>
-			<div class="flex justify-between m-10">
-				<div class="w-80">
-					<p class="text-center m-5 text-xl my-10">Statuts actuels des courriers</p>
-					{{ render_chart(chart1) }}
+					<div class="flex flex-col justify-center gap-y-10 ml-10">
+						<div>
+							<p class="text-gray-500">légende :</p>
+						</div>
+						<div class="bg-[#ffcc40] w-100 h-5 mt-4 pr-1 rounded-r-md">
+							<p class="text-[#856a21] text-right mt-5">bordereaux générés</p>
+						</div>
+						<div class="bg-[#2bded3] w-100 h-5 mt-4 pr-1 rounded-r-md">
+							<p class="text-[#14635d] text-right mt-5">courriers/colis pris en charges</p>
+						</div>
+						<div class="bg-[#1024c8] w-100 h-5 mt-4 pr-1 rounded-r-md">
+							<p class="text-[#151c57] text-right mt-5">courriers/colis distribués</p>
+						</div>
+					</div>
 				</div>
-				<div class="w-[50%]">
-					<p class="text-center text-xl my-10">Classement des expéditeurs</p>
-					{{ render_chart(chart2) }}
+
+			</div>
+		{% endif %}
+	</section>
+	<hr class="border-y-1 my-10 border-gray-400">
+	<section>
+		<div class="flex justify-between gap-x-1 m-10">
+			<div class="w-80">
+				<p class="text-center m-5 text-xl my-10">Statuts actuels des courriers</p>
+				{{ render_chart(chart1) }}
+			</div>
+			<div class="flex flex-col justify-center gap-y-10 ml-10">
+				<div class="bg-[rgb(255,204,64)] w-100 h-5 mt-4 pr-1 rounded-r-md">
+					<p class="text-[rgb(128,84,27)] text-right mt-5">en attente</p>
+				</div>
+				<div class="bg-[#2bded3] w-100 h-5 mt-4 pr-1 rounded-r-md">
+					<p class="text-[#14635d] text-right mt-5">pris en charge</p>
+				</div>
+				<div class="bg-[#1024c8] w-100 h-5 mt-4 pr-1 rounded-r-md">
+					<p class="text-[#151c57] text-right mt-5">avisé</p>
+				</div>
+				<div class="bg-[rgb(99,67,175)] w-100 h-5 mt-4 pr-1 rounded-r-md">
+					<p class="text-[rgb(53,35,94)] text-right mt-5">mis en instance</p>
+				</div>
+				<div class="bg-[rgb(69,126,23)] w-100 h-5 mt-4 pr-1 rounded-r-md">
+					<p class="text-[rgb(42,68,21)] text-right mt-5">NPAI</p>
+				</div>
+				<div class="bg-[rgb(193,52,21)] w-100 h-5 mt-4 pr-1 rounded-r-md">
+					<p class="text-[rgb(75,30,21)] text-right mt-5">non réclamé</p>
 				</div>
 			</div>
-		</section>
-		<div id="elementBox" class="flex justify-center fixed bg-[#66666673] w-full h-full left-0 top-0 invisible">
-			<div class="mt-[5%]">
-				<form method="get">
-					<input name="search" class="shadow-md rounded-lg p-2 text-2xl text-center" type="search" placeholder="nom du facteur..." name="facteurSearch">
-				</form>
-				{% if listeFacteurs|length > 0 %}
-					<div id="facteurContent" class="flex flex-col justify-center bg-[#ffffffbe] text-center rounded-b-lg pt-2 -mt-1">
-						<div>
-							<p>suggestion facteurs :</p>
-						</div>
-						{% for facteur in listeFacteurs %}
-							<div class="text-[#140A82]">
-								<a href="{{ path('app_statistiques', { search: facteur.nom }) }}">{{ facteur.nom }}</a>
-							</div>
-						{% endfor %}
-					</div>
-				{% else %}
-					<div id="facteurContent" class="flex flex-col justify-center bg-[#ffffffbe] text-center rounded-b-lg pt-2 -mt-1">
-						<div>
-							<p>Aucun facteurs inscrits</p>
-						</div>
-					</div>
-				{% endif %}
+			<div class="w-[50%]">
+				<p class="text-center text-xl my-10">Classement des expéditeurs</p>
+				{{ render_chart(chart2) }}
 			</div>
 		</div>
-	</main>
-{% endblock %}
+	</section>
+	<div id="elementBox" class="flex justify-center fixed bg-[#66666673] w-full h-full left-0 top-0 invisible">
+		<div class="mt-[5%]">
+			<form method="get">
+				<input name="search" class="shadow-md rounded-lg p-2 text-2xl text-center" type="search" placeholder="nom du facteur..." name="facteurSearch">
+			</form>
+			{% if listeFacteurs|length > 0 %}
+				<div id="facteurContent" class="flex flex-col justify-center bg-[#ffffffbe] text-center rounded-b-lg pt-2 -mt-1">
+					<div>
+						<p>suggestion facteurs :</p>
+					</div>
+					{% for facteur in listeFacteurs %}
+						<div class="text-[#140A82]">
+							<a href="{{ path('app_statistiques', { search: facteur.nom }) }}">{{ facteur.nom }}</a>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<div id="facteurContent" class="flex flex-col justify-center bg-[#ffffffbe] text-center rounded-b-lg pt-2 -mt-1">
+					<div>
+						<p>Aucun facteurs inscrits</p>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</main>{% endblock %}
