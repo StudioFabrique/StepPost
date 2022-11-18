@@ -22,6 +22,9 @@ use Symfony\Component\HttpFoundation\Request;
 #[IsGranted('ROLE_ADMIN')]
 class RaisonSocialeController extends AbstractController
 {
+    /* 
+        La méthode ShowRaisonsSociales affiche la liste de toutes les raisons sociales
+    */
     #[Route('/', name: 'raisonSociale')]
     public function ShowRaisonsSociales(PaginatorInterface $paginator, ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository, Request $request): Response
     {

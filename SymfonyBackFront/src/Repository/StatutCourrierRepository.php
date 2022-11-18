@@ -246,9 +246,11 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->getQuery();
 
         if ($date != null) {
+            $dateMin = $date;
+            $dateMax = date_modify(new DateTime($date->format('Y-m-d')), '+1 month');
             $qb
-                ->setParameter('dateMin', $date)
-                ->setParameter('dateMax', date_modify($date, '+1 month'));
+                ->setParameter('dateMin', $dateMin)
+                ->setParameter('dateMax', $dateMax);
         }
         return $qb->getResult();
     }
@@ -269,9 +271,11 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->getQuery();
 
         if ($date != null) {
+            $dateMin = $date;
+            $dateMax = date_modify(new DateTime($date->format('Y-m-d')), '+1 month');
             $qb
-                ->setParameter('dateMin', $date)
-                ->setParameter('dateMax', date_modify($date, '+1 month'));
+                ->setParameter('dateMin', $dateMin)
+                ->setParameter('dateMax', $dateMax);
         }
         return $qb->getResult();
     }
@@ -292,9 +296,11 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ->getQuery();
 
         if ($date != null) {
+            $dateMin = $date;
+            $dateMax = date_modify(new DateTime($date->format('Y-m-d')), '+1 month');
             $qb
-                ->setParameter('dateMin', $date)
-                ->setParameter('dateMax', date_modify($date, '+1 month'));
+                ->setParameter('dateMin', $dateMin)
+                ->setParameter('dateMax', $dateMax);
         }
         return $qb->getResult();
     }

@@ -61,6 +61,9 @@ class AdminController extends AbstractController
         ]);
     }
 
+    /* 
+        La méthode new permet de créer un administrateur ayant comme rôle ROLE_ADMIN
+    */
     #[Route('/ajouter', name: 'admin_add')]
     public function new(Request $request, UserRepository $adminRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
     {
@@ -103,6 +106,9 @@ class AdminController extends AbstractController
         ]);
     }
 
+    /* 
+        La méthode edit permet de modifier les informations d'un administrateur
+    */
     #[Route('/edit/{id}', name: 'admin_edit')]
     public function edit(Request $request, UserRepository $adminRepository, ExpediteurRepository $expediteurRepository): Response
     {
@@ -141,6 +147,9 @@ class AdminController extends AbstractController
         ]);
     }
 
+    /* 
+        La méthode edit permet de modifier le mot de passe d'un administrateur
+    */
     #[Route(name: 'edit_password', path: '/scsnjbh55565')]
     public function editPassword(Request $request, UserRepository $adminRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
     {
@@ -182,6 +191,9 @@ class AdminController extends AbstractController
         ]);
     }
 
+    /* 
+        La méthode delete permet de supprimer un administrateur
+    */
     #[Route('/delete/{id}', name: 'admin_delete')]
     public function delete(User $admin, UserRepository $adminRepository): Response
     {

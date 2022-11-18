@@ -60,11 +60,13 @@ class StatistiqueController extends AbstractController
 
             foreach ($dateArray as $date) {
                 $dateLabels[$i] = date_format($date, 'M Y');
-                $dataBordereaux[$i] = count($statutCourrierRepository->FindCourrierImpression($date));
+                $dataBordereaux[$i] = count($statutCourrierRepository->findCourrierImpression($date));
                 $dataEnvoi[$i] = count($statutCourrierRepository->findCourrierEnvoi($date));
                 $dataRecu[$i] = count($statutCourrierRepository->findCourrierRecu($date));
                 $i++;
             }
+
+
 
             $chartByDate = $chartBuilderInterface->createChart(Chart::TYPE_BAR)
                 ->setData(
@@ -228,7 +230,7 @@ class StatistiqueController extends AbstractController
 
         $dateDiff = date_diff(new DateTime('now'), $facteur->getCreatedAt());
         $monthDiff = intval($dateDiff->format('%m')) + 12 * intval($dateDiff->format('%y'));
-        for ($month = 0; $month < $monthDiff; $month++) {
+        for ($month = 0; $month < $monthDiff + 1; $month++) {
             $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax)[0]["nbCourrier"];
             $labelsMonth[$month] = date_format($dateMin, 'Y') . '-' . $monthList[date_format($dateMin, 'm') - 1];
             $dateMin->modify('+1 month');

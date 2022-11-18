@@ -21,6 +21,10 @@ use Symfony\Component\Routing\Annotation\Route;
 #[IsGranted('ROLE_ADMIN')]
 class FacteurController extends AbstractController
 {
+
+    /* 
+        La méthode showFacteurs affiche tous les facteurs
+    */
     #[Route('/facteurs', name: 'facteur')]
     public function showFacteurs(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, Request $request, ExpediteurRepository $expediteurRepository): Response
     {
@@ -46,8 +50,12 @@ class FacteurController extends AbstractController
         ]);
     }
 
+
+    /* 
+        La méthode newFacteur affiche la page de création de facteur
+    */
     #[Route('/nouveauFacteur', 'newFacteur')]
-    public function newFacteur(Request $request, ExpediteurRepository $expediteurRepository): Response
+    public function showNewFacteur(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -63,27 +71,8 @@ class FacteurController extends AbstractController
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
-            'newFacteurEndpoint' => $_ENV["ENDPOINT_NEWFACTEUR"],
             'isAdding' => $request->get('isAdding')
         ]);
-    }
-
-    #[Route(path: '/api/newFacteur', name: 'api_newFacteur')]
-    public function newFacteurApi(Request $request, FacteurRepository $facteurRepository): JsonResponse
-    {
-        $facteur = (new Facteur())
-            ->setEmail($request->request->get('email'))
-            ->setNom($request->request->get('nom'))
-            ->setPassword($request->request->get('password'))
-            ->setCreatedAt(new DateTime())
-            ->setUpdatedAt(new DateTime())
-            ->setRoles(['ROLE_FACTEUR']);
-        try {
-            $facteurRepository->add($facteur, true);
-            return new JsonResponse('facteur créé');
-        } catch (Exception $e) {
-            return new JsonResponse('erreur');
-        }
     }
 
     #[Route('/modifierFacteur', 'editFacteur')]
@@ -148,6 +137,33 @@ class FacteurController extends AbstractController
             return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $message)]);
         } catch (Exception) {
             return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $messageErreur), 'isError' => true]);
+        }
+    }
+
+    /* 
+        newFacteur est une api qui permet de créer un facteur.
+        La méthode est en POST et récupère les requêtes suivantes :
+        email, nom, password
+    */
+    #[Route(path: '/api/newFacteur', name: 'api_newFacteur')]
+    public function newFacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
+    {
+        if (!$this->getUser()) {
+            return new JsonResponse("Authentification échoué");
+        }
+
+        $facteur = (new Facteur())
+            ->setEmail($request->request->get('email'))
+            ->setNom($request->request->get('nom'))
+            ->setPassword($request->request->get('password'))
+            ->setCreatedAt(new DateTime())
+            ->setUpdatedAt(new DateTime())
+            ->setRoles(['ROLE_FACTEUR']);
+        try {
+            $facteurRepository->add($facteur, true);
+            return new JsonResponse('facteur créé');
+        } catch (Exception $e) {
+            return new JsonResponse('erreur');
         }
     }
 }

@@ -33,6 +33,9 @@ Cette classe donne la possibilité de créer, modifier, activer et supprimer un 
 #[IsGranted('ROLE_ADMIN')]
 class ExpediteurController extends AbstractController
 {
+    /* 
+        La méthode index affiche la liste de tous les expéditeurs
+    */
     #[Route('/expediteurs', name: 'expediteur')]
     public function index(
         ExpediteurRepository $expediteurs,
@@ -77,7 +80,9 @@ class ExpediteurController extends AbstractController
     }
 
 
-
+    /* 
+        La méthode ajouter permet de créer un expéditeur inactif et de lui envoyer un lien de confirmation par mail fin de configurer son mot de passe.
+    */
     #[Route('/ajouter', name: 'addExpediteur')]
     public function new(Request $request, MailerInterface $mailer, ExpediteurRepository $expediteurRepo): Response
     {
@@ -156,6 +161,10 @@ class ExpediteurController extends AbstractController
         ]);
     }
 
+
+    /* 
+        La méthode edit permet de modifier les informations d'un expéditeur
+    */
     #[Route('/edit/{id}', name: 'editExpediteur')]
     public function edit(Request $request, Expediteur $ancienExpediteur, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em): Response
     {
@@ -195,7 +204,9 @@ class ExpediteurController extends AbstractController
         ]);
     }
 
-
+    /* 
+        La méthode Delete permet de supprimer un Expéditeur
+    */
     #[Route('/delete/{id}', name: 'deleteExpediteur')]
     public function Delete(Expediteur $expediteur, ExpediteurRepository $expediteurRepository): Response
     {
@@ -215,6 +226,10 @@ class ExpediteurController extends AbstractController
         }
     }
 
+
+    /* 
+        La méthode Details récupère et affiche tous les détails d'un expéditeur
+    */
     #[Route('/detailsExpediteur', name: 'detailsExpediteur')]
     public function Details(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
@@ -230,6 +245,9 @@ class ExpediteurController extends AbstractController
         ]);
     }
 
+    /* 
+        Cette méthode change le rôle d'un expéditeur à ROLE_CLIENT
+    */
     #[Route('/activer', name: 'activateExpediteur')]
     public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em, MailerInterface $mailer): RedirectResponse
     {

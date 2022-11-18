@@ -87,6 +87,10 @@ class AccueilController extends AbstractController
         ]);
     }
 
+    /* 
+        Cette méthode permet d'exporter les données passés en requêtes en format csv (microsoft excel)
+    */
+
     #[Route('/exportCsv', name: 'export_csv')]
     public function exportCsv(Request $request, StatutCourrierRepository $statutCourrierRepository)
     {

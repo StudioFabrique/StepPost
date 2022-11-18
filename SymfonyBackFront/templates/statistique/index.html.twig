@@ -20,10 +20,10 @@
 				<div>
 					<form action="" method="get">
 						<label for="date1">Mois 1 :</label>
-						<input type="date" name="date1" id="date1">
+						<input class="ml-2" type="month" name="date1" id="date1">
 						<label for="periode2">Mois 2 :</label>
-						<input type="date" name="date2" id="date2">
-						<input type="submit" value="Comparer par périodes" class="text-white bg-[#24A640] hover:bg-[#0d4118] p-1.5 rounded">
+						<input class="ml-2" type="month" name="date2" id="date2">
+						<input type="submit" value="Comparer par périodes" class="text-white bg-[#24A640] hover:bg-[#0d4118] ml-2 p-1.5 rounded">
 					</form>
 				</div>
 				<div></div>
@@ -54,7 +54,8 @@
 				</div>
 			{% else %}
 				<div class="my-10"></div>
-					<div class="w-[50%]">
+					<a href="{{ path('app_statistiques') }}" class="text-red-600">Retour</a>
+					<div>
 						{{ render_chart(chartByDate) }}
 					</div>
 				</div>	

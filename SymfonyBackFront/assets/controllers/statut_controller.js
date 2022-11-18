@@ -1,6 +1,9 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
+    /* 
+        Pour afficher le contenu des statut avec une animation après le clic sur un bouton.
+    */
     connect() {
         const button = document.querySelector("#button");
         const boxContent = document.querySelector("#boxContent");

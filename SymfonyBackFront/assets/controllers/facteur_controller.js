@@ -1,6 +1,12 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
+    /* 
+        Quand le bouton est appuyé par l'utilisateur, la méthode vérifie que les valeurs rentrés
+        sont bien correctes (email, mot de passe à 4 chiffres).
+        Puis un fetch est effetué vers l'api de création du facteur.
+
+    */
     connect() {
         const bcrypt = require('bcryptjs');
 

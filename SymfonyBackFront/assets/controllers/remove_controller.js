@@ -1,8 +1,9 @@
-// classe stimulus pour controller les confirmations de supprimer dans les pages de gestions afin de rendre le code plus maintenable
-
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
+    /* 
+        Pour controller les confirmation Box de suppression
+    */
     connect() {
         const showButtons = document.querySelectorAll("#showButton");
         const hideButtons = document.querySelectorAll("#hideButton");
@@ -17,6 +18,10 @@ export default class extends Controller {
             hideButtons[i].addEventListener("click",() => { this.HideConfirmation(confirmBoxes[i])});
         }
     }
+
+    /* 
+        Méthode pour afficher une box de confirmation
+    */
 
     ShowConfirmation(confirmBoxes ,confirmBox) {
         confirmBoxes.forEach(element => {
@@ -33,6 +38,10 @@ export default class extends Controller {
         );
     }
     
+    /* 
+        Méthode pour cacher une box de confirmation
+    */
+
     HideConfirmation(confirmBox) {
         confirmBox.hidden = true;
     }

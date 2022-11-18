@@ -37,7 +37,7 @@ class TestFixtures extends Fixture
         $statut5 = (new Statut())
             ->setStatutCode(5)
             ->setEtat('distribué');
-        $manager->persist($statut1);
+        $manager->persist($statut5);
         $statut6 = (new Statut())
             ->setStatutCode(6)
             ->setEtat('NPAI');
