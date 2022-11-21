@@ -21,6 +21,7 @@ class StatistiqueController extends AbstractController
     /* 
         Statistiques globales concernant les courriers et les expéditeurs
     */
+
     #[Route('/', name: 'statistiques')]
     public function index(
         Request $request,
@@ -39,8 +40,23 @@ class StatistiqueController extends AbstractController
             return $this->redirectToRoute('app_statistiques_facteur', ['facteur' => $searchBar]);
         }
 
+        $nbCourriersImpression = count($statutCourrierRepository->FindCourrierImpression()); // Le nombre de bordereaux des courriers/colis imprimés
+        $nbCourriersEnvoi = count($statutCourrierRepository->FindCourrierEnvoi()); // Le nombre de courriers/colis envoyés
+        $nbCourriersRecu = count($statutCourrierRepository->FindCourrierRecu()); // Le nombre de courrier/colis distribués
+
+        /* 
+            BAR CHART
+            Ce graphique réparti les différents nombres des derniers statuts des courriers par mois.
+            Si deux dates sont sélectionnées, alors les deux périodes sont affichés dans le même graphique.
+        */
+
         $date1 = $request->get('date1') != null ? new DateTime($request->get('date1')) : null;
         $date2 = $request->get('date2') != null ? new DateTime($request->get('date2')) : null;
+        $year1 = $request->get('annee1') != null ? new DateTime($request->get('annee1')) : null;
+        $year2 = $request->get('annee2') != null ? new DateTime($request->get('annee2')) : null;
+        var_dump($request->get('annee1'));
+        var_dump($year1);
+
         $dateArray = array();
         if ($date1 != null) {
             array_push($dateArray, $date1);
@@ -48,12 +64,14 @@ class StatistiqueController extends AbstractController
         if ($date2 != null) {
             array_push($dateArray, $date2);
         }
+        if ($year1 != null) {
+            array_push($dateArray, $year1);
+        }
+        if ($year2 != null) {
+            array_push($dateArray, $year2);
+        }
 
-        $nbCourriersImpression = count($statutCourrierRepository->FindCourrierImpression()); // Le nombre de bordereaux des courriers/colis imprimés
-        $nbCourriersEnvoi = count($statutCourrierRepository->FindCourrierEnvoi()); // Le nombre de courriers/colis envoyés
-        $nbCourriersRecu = count($statutCourrierRepository->FindCourrierRecu()); // Le nombre de courrier/colis distribués
-
-        if ($date1 != null || $date2 != null) {
+        if ($date1 != null || $date2 != null || $year1 != null || $year2 != null) {
             $i = 0;
             $dateLabels = array();
             $dataBordereaux = array();
@@ -61,14 +79,12 @@ class StatistiqueController extends AbstractController
             $dataRecu = array();
 
             foreach ($dateArray as $date) {
-                $dateLabels[$i] = date_format($date, 'M Y');
-                $dataBordereaux[$i] = count($statutCourrierRepository->findCourrierImpression($date));
-                $dataEnvoi[$i] = count($statutCourrierRepository->findCourrierEnvoi($date));
-                $dataRecu[$i] = count($statutCourrierRepository->findCourrierRecu($date));
+                $dateLabels[$i] = $year1 != null || $year2 != null ? date_format($date, 'Y') : date_format($date, 'M Y');
+                $dataBordereaux[$i] = count($statutCourrierRepository->findCourrierImpression($date, $year1 != null || $year2 != null ? true : false));
+                $dataEnvoi[$i] = count($statutCourrierRepository->findCourrierEnvoi($date, $year1 != null || $year2 != null ? true : false));
+                $dataRecu[$i] = count($statutCourrierRepository->findCourrierRecu($date, $year1 != null || $year2 != null ? true : false));
                 $i++;
             }
-
-
 
             $chartByDate = $chartBuilderInterface->createChart(Chart::TYPE_BAR)
                 ->setData(
