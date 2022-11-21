@@ -47,31 +47,23 @@ class StatistiqueController extends AbstractController
         /* 
             BAR CHART
             Ce graphique réparti les différents nombres des derniers statuts des courriers par mois.
-            Si deux dates sont sélectionnées, alors les deux périodes sont affichés dans le même graphique.
         */
 
         $date1 = $request->get('date1') != null ? new DateTime($request->get('date1')) : null;
         $date2 = $request->get('date2') != null ? new DateTime($request->get('date2')) : null;
-        $year1 = $request->get('annee1') != null ? new DateTime($request->get('annee1')) : null;
-        $year2 = $request->get('annee2') != null ? new DateTime($request->get('annee2')) : null;
-        var_dump($request->get('annee1'));
-        var_dump($year1);
+        $year1 = $request->get('annee1') != null ? new DateTime($request->get('annee1') . "-01-01") : null;
+        $year2 = $request->get('annee2') != null ? new DateTime($request->get('annee2') . "-01-01") : null;
 
-        $dateArray = array();
-        if ($date1 != null) {
-            array_push($dateArray, $date1);
-        }
-        if ($date2 != null) {
-            array_push($dateArray, $date2);
-        }
-        if ($year1 != null) {
-            array_push($dateArray, $year1);
-        }
-        if ($year2 != null) {
-            array_push($dateArray, $year2);
-        }
+        if (($date1 != null || $date2 != null) && ($year1 == null && $year2 == null)) {
 
-        if ($date1 != null || $date2 != null || $year1 != null || $year2 != null) {
+            $dateArray = array();
+            if ($date1 != null) {
+                array_push($dateArray, $date1);
+            }
+            if ($date2 != null) {
+                array_push($dateArray, $date2);
+            }
+
             $i = 0;
             $dateLabels = array();
             $dataBordereaux = array();
@@ -79,10 +71,10 @@ class StatistiqueController extends AbstractController
             $dataRecu = array();
 
             foreach ($dateArray as $date) {
-                $dateLabels[$i] = $year1 != null || $year2 != null ? date_format($date, 'Y') : date_format($date, 'M Y');
-                $dataBordereaux[$i] = count($statutCourrierRepository->findCourrierImpression($date, $year1 != null || $year2 != null ? true : false));
-                $dataEnvoi[$i] = count($statutCourrierRepository->findCourrierEnvoi($date, $year1 != null || $year2 != null ? true : false));
-                $dataRecu[$i] = count($statutCourrierRepository->findCourrierRecu($date, $year1 != null || $year2 != null ? true : false));
+                $dateLabels[$i] = date_format($date, 'M Y');
+                $dataBordereaux[$i] = count($statutCourrierRepository->findCourrierImpression($date));
+                $dataEnvoi[$i] = count($statutCourrierRepository->findCourrierEnvoi($date));
+                $dataRecu[$i] = count($statutCourrierRepository->findCourrierRecu($date));
                 $i++;
             }
 
@@ -122,12 +114,78 @@ class StatistiqueController extends AbstractController
                         ]
                     ]
                 ]);
+        } else if (($date1 == null || $date2 == null) && ($year1 != null || $year2 != null)) {
+
+            /* 
+            LINE CHART
+            Si deux dates sont sélectionnées, alors les deux périodes sont affichés dans le même graphique.
+            */
+
+            $data1 = array();
+            $data2 = array();
+            $i = 0;
+            for ($month = 1; $month < 13; $month++) {
+                $datetime1 = $year1 != null ? new DateTime($year1->format('Y') . (count_chars($month) < 2 ? '-0' . $month : '-' . $month) . '-01') : null;
+                $datetime2 = $year2 != null ? new DateTime($year2->format('Y') . (count_chars($month) < 2 ? '-0' . $month : '-' . $month) . '-01') : null;
+                $data1[$i] = count($statutCourrierRepository->findCourrierRecu($datetime1));
+                $data2[$i] = count($statutCourrierRepository->findCourrierRecu($datetime2));
+                $i++;
+            }
+            $monthList = [
+                'janvier',
+                'février',
+                'mars',
+                'avril',
+                'mai',
+                'juin',
+                'juillet',
+                'août',
+                'septembre',
+                'octobre',
+                'novembre',
+                'decembre'
+            ];
+
+            $chartByYear = ($chartBuilderInterface->createChart(Chart::TYPE_LINE))
+                ->setData(
+                    [
+                        'labels' => $monthList,
+                        'datasets' => [
+                            [
+                                'label' => $year1 != null ? "nombre de courriers/colis distribués pour l'année " . $year1->format('Y') : null,
+                                'data' => $year1 != null ? $data1 : null,
+                                'borderColor' => [
+                                    'rgb(255, 204, 64)'
+                                ]
+                            ],
+                            [
+                                'label' => $year2 != null ? "nombre de courriers/colis distribués pour l'année " . $year2->format('Y') : null,
+                                'data' => $year2 != null ? $data2 : null,
+                                'borderColor' => [
+                                    'rgb(43, 222, 211)'
+                                ]
+                            ]
+                        ],
+                    ]
+                )
+                ->setOptions([
+                    'plugins' => [
+                        'legend' => [
+                            'display' => false
+                        ]
+                    ]
+                ]);
         }
+
+
+
+
 
         /* 
             DOUGHNUT CHART
             Ce graphique réparti les différents nombres des derniers statuts des courriers
         */
+
         $courrierStatutsChart = ($chartBuilderInterface->createChart(Chart::TYPE_DOUGHNUT))
             ->setData([
                 'labels' => ["en attente", "pris en charge", "avisé", "mis en instance", "NPAI", "non réclamé"],
@@ -210,7 +268,10 @@ class StatistiqueController extends AbstractController
             'chart1' => $courrierStatutsChart,
             'chart2' => $topExpediteurs,
             'chartByDate' => $chartByDate ?? null,
-            'listeFacteurs' => $facteurRepository->findAll()
+            'chartByYear' => $chartByYear ?? null,
+            'listeFacteurs' => $facteurRepository->findAll(),
+            'year1' => $year1 != null ? $year1->format('Y') : null,
+            'year2' => $year2 != null ? $year2->format('Y') : null
         ]);
     }
 

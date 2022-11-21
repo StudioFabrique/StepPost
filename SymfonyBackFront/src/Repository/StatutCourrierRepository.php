@@ -230,7 +230,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function findCourrierImpression(DateTime $date = null, bool $isYear = false)
+    public function findCourrierImpression(DateTime $date = null)
     {
         $qb = $this->_em
             ->createQueryBuilder('s')
@@ -247,7 +247,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
 
         if ($date != null) {
             $dateMin = $date;
-            $dateMax = date_modify(new DateTime($date->format('Y-m-d')), !$isYear ? '+1 month' : '+1 year');
+            $dateMax = date_modify(new DateTime($date->format('Y-m-d')), '+1 month');
             $qb
                 ->setParameter('dateMin', $dateMin)
                 ->setParameter('dateMax', $dateMax);
@@ -255,7 +255,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function findCourrierEnvoi(DateTime $date = null, bool $isYear = false)
+    public function findCourrierEnvoi(DateTime $date = null)
     {
         $qb = $this->_em
             ->createQueryBuilder('s')
@@ -272,7 +272,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
 
         if ($date != null) {
             $dateMin = $date;
-            $dateMax = date_modify(new DateTime($date->format('Y-m-d')), !$isYear ? '+1 month' : '+1 year');
+            $dateMax = date_modify(new DateTime($date->format('Y-m-d')), '+1 month');
             $qb
                 ->setParameter('dateMin', $dateMin)
                 ->setParameter('dateMax', $dateMax);
@@ -280,7 +280,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function findCourrierRecu(DateTime $date = null, bool $isYear = false)
+    public function findCourrierRecu(DateTime $date = null)
     {
         $qb = $this->_em
             ->createQueryBuilder('s')
@@ -297,7 +297,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
 
         if ($date != null) {
             $dateMin = $date;
-            $dateMax = date_modify(new DateTime($date->format('Y-m-d')), !$isYear ? '+1 month' : '+1 year');
+            $dateMax = date_modify(new DateTime($date->format('Y-m-d')), '+1 month');
             $qb
                 ->setParameter('dateMin', $dateMin)
                 ->setParameter('dateMax', $dateMax);
