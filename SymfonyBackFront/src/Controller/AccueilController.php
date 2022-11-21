@@ -71,6 +71,8 @@ class AccueilController extends AbstractController
             $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
 
+        var_dump($statutCourrierRepo->findExpediteurToRemove(new DateTime('now')));
+
         return $this->render('accueil/index.html.twig', [
 
             'isError' => $request->get('isError') ?? false,
