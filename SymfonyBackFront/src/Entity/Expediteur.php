@@ -44,23 +44,23 @@ class Expediteur implements UserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $telephone;
 
-    #[ORM\OneToMany(mappedBy: 'expediteur', targetEntity: Destinataire::class)]
-    private $destinataires;
-
-    #[ORM\OneToMany(mappedBy: 'expediteur', targetEntity: Courrier::class)]
-    private $courriers;
-
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $password;
-
-    #[ORM\ManyToOne(inversedBy: 'expediteurs')]
-    private ?Client $client = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, name: 'updatedAt')]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, name: 'createdAt')]
     private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'expediteur', targetEntity: Destinataire::class)]
+    private $destinataires;
+
+    #[ORM\OneToMany(mappedBy: 'expediteur', targetEntity: Courrier::class)]
+    private $courriers;
+
+    #[ORM\ManyToOne(inversedBy: 'expediteurs')]
+    private ?Client $client = null;
 
     public function __construct()
     {

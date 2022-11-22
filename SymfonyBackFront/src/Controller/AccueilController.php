@@ -7,7 +7,6 @@ use App\Repository\ExpediteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\StatutRepository;
 use DateTime;
-use DateTimeZone;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,8 +69,6 @@ class AccueilController extends AbstractController
             $data,
             $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
-
-        var_dump($statutCourrierRepo->findExpediteurToRemove(new DateTime('now')));
 
         return $this->render('accueil/index.html.twig', [
 

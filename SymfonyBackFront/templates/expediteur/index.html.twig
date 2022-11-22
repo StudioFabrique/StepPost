@@ -99,7 +99,7 @@
     {% if isSearch != null ? true : false %}
     <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
     {% endif %}
-    <section id="inactif-box" class="flex justify-between items-center m-2">
+    <section class="flex justify-between items-center m-2">
         <form class="flex">
             <div class="mb-3 xl:w-50">
                 <div class="input-group relative flex flex-wrap items-stretch w-full mb-4 ">
@@ -116,6 +116,9 @@
         </form>
         <div>
             <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" href="{{ path('app_addExpediteur') }}">Ajouter</a>
+            {% if suppressionMultiple %}
+                <a class="text-white bg-yellow-500 hover:bg-yellow-700 p-2 rounded" href="{{ path('app_deleteMultipleExpediteur') }}">Suppression multiple</a>
+            {% endif %}
             <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
         </div>
     </section>

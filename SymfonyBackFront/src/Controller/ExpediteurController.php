@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\ClassesOutils\FormatageObjet;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
-use App\Repository\CourrierRepository;
 use App\Repository\ExpediteurRepository;
+use App\Repository\StatutCourrierRepository;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,7 +40,8 @@ class ExpediteurController extends AbstractController
     public function index(
         ExpediteurRepository $expediteurs,
         Request $request,
-        PaginatorInterface $paginator
+        PaginatorInterface $paginator,
+        StatutCourrierRepository $statutCourrierRepository,
     ): Response {
 
         if (!$this->getUser()) {
@@ -51,6 +52,12 @@ class ExpediteurController extends AbstractController
         $isCheckBoxExact = $request->get('checkBoxExact');
         $openDetails = $request->get('openDetails') ?? false;
         $currentPage = $request->get('currentPage') ?? 1;
+
+        $expediteursToRemove = 0;
+        $expediteursToKeep = $statutCourrierRepository->findExpediteurToKeep(new DateTime('now'));
+        foreach ($expediteurs->findAll() as $expediteur) {
+            $expediteursToRemove = in_array($expediteur->getId(), $expediteursToKeep[0] ?? [null]) ? $expediteursToRemove : $expediteursToRemove + 1;
+        }
 
         if ($rechercheExpediteur != null && strval($rechercheExpediteur)) {
             $isCheckBoxExact ? $data = $expediteurs->findBy(['nom' => $rechercheExpediteur])
@@ -64,18 +71,17 @@ class ExpediteurController extends AbstractController
             $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
 
-        $expediteursInactifs = $expediteurs->findAllInactive(); // faire une requête perso SQL pour selectionner tous les expediteurs inactifs
-
         return $this->render('expediteur/index.html.twig', [
             'expediteurs' => $expediteur,
-            'expediteursInactifs' => $expediteursInactifs,
+            'expediteursInactifs' => $expediteurs->findAllInactive(),
             'isSearch' => $rechercheExpediteur,
             'openDetails' => $openDetails,
             'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
             'nbExpediteursTotal' => count($data),
-            'checkBoxExact' => $isCheckBoxExact ?? false
+            'checkBoxExact' => $isCheckBoxExact ?? false,
+            'suppressionMultiple' => $expediteursToRemove > 0 ? true : false
         ]);
     }
 
@@ -220,6 +226,33 @@ class ExpediteurController extends AbstractController
 
         try {
             $expediteurRepository->remove($expediteur);
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message), Response::HTTP_SEE_OTHER]);
+        } catch (Exception) {
+            return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur), 'isError' => true], Response::HTTP_SEE_OTHER);
+        }
+    }
+
+    /* 
+        La méthode Delete permet de supprimer un Expéditeur
+    */
+    #[Route('/delete', name: 'deleteMultipleExpediteur')]
+    public function MultipleDelete(ExpediteurRepository $expediteurRepository, StatutCourrierRepository $statutCourrierRepository, EntityManagerInterface $manager): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Expéditeur"]["Suppression"];
+        $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Suppression"];
+
+        $expediteursToKeep = $statutCourrierRepository->findExpediteurToKeep(new DateTime('now'));
+        foreach ($expediteurRepository->findAll() as $expediteur) {
+            in_array($expediteur->getId(), $expediteursToKeep[0] ?? [null]) ? NULL : $expediteurRepository->remove($expediteur, false);
+        }
+
+        try {
+            $manager->flush();
             return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message), Response::HTTP_SEE_OTHER]);
         } catch (Exception) {
             return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur), 'isError' => true], Response::HTTP_SEE_OTHER);

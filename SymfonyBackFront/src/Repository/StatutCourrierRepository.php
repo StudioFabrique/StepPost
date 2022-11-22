@@ -349,17 +349,16 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function findExpediteurToRemove(DateTime $date)
+    public function findExpediteurToKeep(DateTime $date)
     {
         $qb = $this->_em->createQueryBuilder('sc')
             ->select('
-                distinct e.id,
-                sc.date
+                e.id as expediteur
             ')
             ->from('App\Entity\StatutCourrier', 'sc')
             ->join('sc.courrier', 'c')
             ->join('c.expediteur', 'e')
-            ->having('sc.date >= :dateMin AND sc.date <= :dateMax')
+            ->where('sc.date >= :dateMin AND sc.date <= :dateMax')
             ->groupBy('e.id')
             ->setParameter('dateMin', date_modify(new DateTime($date->format('Y-m-d')), '-6 month'))
             ->setParameter('dateMax', $date)
