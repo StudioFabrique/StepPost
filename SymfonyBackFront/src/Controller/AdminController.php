@@ -148,9 +148,9 @@ class AdminController extends AbstractController
     }
 
     /* 
-        La méthode edit permet de modifier le mot de passe d'un administrateur
+        La méthode editPassword permet de modifier le mot de passe d'un administrateur
     */
-    #[Route(name: 'edit_password', path: '/scsnjbh55565')]
+    #[Route(name: 'edit_password', path: '/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlZ2ciOiJlYXN0ZXIgZWdnICEifQ.0kqIIgtJjrvMtQn8TI9kkxNJ4P_27h67z5rsmv_Wsws')]
     public function editPassword(Request $request, UserRepository $adminRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
     {
         if (!$this->getUser()) {
