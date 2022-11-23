@@ -97,7 +97,7 @@
     {% endif %}
     {% endif %}
     {% if isSearch != null ? true : false %}
-    <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
+        <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
     {% endif %}
     <section class="flex justify-between items-center m-2">
         <form class="flex">
@@ -116,13 +116,24 @@
         </form>
         <div>
             <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" href="{{ path('app_addExpediteur') }}">Ajouter</a>
-            {% if suppressionMultiple %}
-                <a class="text-white bg-yellow-500 hover:bg-yellow-700 p-2 rounded" href="{{ path('app_deleteMultipleExpediteur') }}">Suppression multiple</a>
+            {% if expediteursToRemove|length > 0 %}
+                <a data-controller="expediteur" id="expediteurButton" class="text-white bg-yellow-500 hover:bg-yellow-700 p-2 rounded cursor-pointer" >Suppression multiple</a>
+                <div class="fixed flex flex-col gap-y-2 bg-[#140A82] text-white rounded-lg p-3 m-1 shadow-xl invisible" id="elementBox">
+                    <div>
+                        <p>Les expéditeurs suivants vont être supprimés</p>
+                    {% for expediteur in expediteursToRemove %}
+                        <p>- {{ expediteur }}</p>
+                    {% endfor %}
+                    </div>
+                    <div class="mx-auto">
+                        <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_deleteMultipleExpediteur') }}">Confirmer</a>
+                    </div>
+                </div>
             {% endif %}
             <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
         </div>
     </section>
-    <section class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <section class="overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left text-gray-500 table-fixed">
             <thead class="text-xs text-white uppercase bg-[#140A82]">
                 <tr>

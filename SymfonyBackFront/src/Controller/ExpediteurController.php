@@ -40,8 +40,7 @@ class ExpediteurController extends AbstractController
     public function index(
         ExpediteurRepository $expediteurs,
         Request $request,
-        PaginatorInterface $paginator,
-        StatutCourrierRepository $statutCourrierRepository,
+        PaginatorInterface $paginator
     ): Response {
 
         if (!$this->getUser()) {
@@ -53,10 +52,12 @@ class ExpediteurController extends AbstractController
         $openDetails = $request->get('openDetails') ?? false;
         $currentPage = $request->get('currentPage') ?? 1;
 
-        $expediteursToRemove = 0;
-        $expediteursToKeep = $statutCourrierRepository->findExpediteurToKeep(new DateTime('now'));
+        $expediteursToRemove = array();
+        $expediteursToKeep = $expediteurs->findExpediteurToKeep(new DateTime('now'));
+        $i = 0;
         foreach ($expediteurs->findAll() as $expediteur) {
-            $expediteursToRemove = in_array($expediteur->getId(), $expediteursToKeep[0] ?? [null]) ? $expediteursToRemove : $expediteursToRemove + 1;
+            in_array($expediteur->getId(), $expediteursToKeep[$i] ?? [null]) ? NULL : array_push($expediteursToRemove, $expediteur->getNom() . ' ' . $expediteur->getPrenom());
+            $i++;
         }
 
         if ($rechercheExpediteur != null && strval($rechercheExpediteur)) {
@@ -81,7 +82,7 @@ class ExpediteurController extends AbstractController
             'isError' => $request->get('isError') ?? false,
             'nbExpediteursTotal' => count($data),
             'checkBoxExact' => $isCheckBoxExact ?? false,
-            'suppressionMultiple' => $expediteursToRemove > 0 ? true : false
+            'expediteursToRemove' => $expediteursToRemove
         ]);
     }
 
@@ -233,10 +234,10 @@ class ExpediteurController extends AbstractController
     }
 
     /* 
-        La méthode Delete permet de supprimer un Expéditeur
+        La méthode MultipleDelete permet de supprimer un Expéditeur
     */
     #[Route('/delete', name: 'deleteMultipleExpediteur')]
-    public function MultipleDelete(ExpediteurRepository $expediteurRepository, StatutCourrierRepository $statutCourrierRepository, EntityManagerInterface $manager): Response
+    public function MultipleDelete(ExpediteurRepository $expediteurRepository, EntityManagerInterface $manager): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -246,9 +247,11 @@ class ExpediteurController extends AbstractController
         $message = $messages["Messages Informations"]["Expéditeur"]["Suppression"];
         $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Suppression"];
 
-        $expediteursToKeep = $statutCourrierRepository->findExpediteurToKeep(new DateTime('now'));
+        $expediteursToKeep = $expediteurRepository->findExpediteurToKeep(new DateTime('now'));
+        $i = 0;
         foreach ($expediteurRepository->findAll() as $expediteur) {
-            in_array($expediteur->getId(), $expediteursToKeep[0] ?? [null]) ? NULL : $expediteurRepository->remove($expediteur, false);
+            in_array($expediteur->getId(), $expediteursToKeep[$i] ?? [null]) ? NULL : $expediteurRepository->remove($expediteur, false);
+            $i++;
         }
 
         try {

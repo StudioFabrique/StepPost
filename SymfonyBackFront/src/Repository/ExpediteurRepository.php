@@ -147,4 +147,22 @@ class ExpediteurRepository extends ServiceEntityRepository
             ->getQuery();
         return $qb->getResult();
     }
+
+    public function findExpediteurToKeep(DateTime $date)
+    {
+        $qb = $this->_em->createQueryBuilder('e')
+            ->select('
+                e.id as expediteurId
+            ')
+            ->from('App\Entity\Expediteur', 'e')
+            ->leftJoin('e.courriers', 'c')
+            ->leftJoin('c.statutsCourrier', 'sc')
+            ->where('(sc.date >= :dateMin AND sc.date <= :dateMax) OR e.createdAt >= :dateMin')
+            ->groupBy('e.id')
+            ->setParameter('dateMin', date_modify(new DateTime($date->format('Y-m-d')), '-6 month'))
+            ->setParameter('dateMax', $date)
+            ->getQuery();
+
+        return $qb->getResult();
+    }
 }

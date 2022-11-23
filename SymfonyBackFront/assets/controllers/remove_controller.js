@@ -38,7 +38,7 @@ export default class extends Controller {
         );
     }
     
-    /* 
+    /*
         Méthode pour cacher une box de confirmation
     */
 
