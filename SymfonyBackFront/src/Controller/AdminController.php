@@ -29,7 +29,7 @@ class AdminController extends AbstractController
 {
 
     /* 
-    La méthode index affiche la liste des admins avec une pagination.
+    Retourne un template twig avec la liste des admins avec une pagination.
     */
     #[Route('/', name: 'admin')]
     public function index(

@@ -23,7 +23,7 @@ class FacteurController extends AbstractController
 {
 
     /* 
-        La méthode showFacteurs affiche tous les facteurs
+        Retourne un template twig avec la liste de tous les facteurs
     */
     #[Route('/facteurs', name: 'facteur')]
     public function showFacteurs(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, Request $request, ExpediteurRepository $expediteurRepository): Response

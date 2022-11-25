@@ -27,6 +27,9 @@
             {% endif %}
         </div>
     </div>
+    {% if isSearching != null ? true : false %}
+        <a href="{{ path('app_accueil') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
+    {% endif %}
     {% if courriers|length > 0 %}
     <section class="flex justify-between items-center mt-5">
         <form class="" action="" method="get">
@@ -44,7 +47,7 @@
                 <input type="date" class="px-4" name="dateMin">
                 <label for="date" class="text-[#140A82]">Maximum</label>
                 <input type="date" class="px-4" name="dateMax">
-                <input type="submit" class="text-white bg-[#140A82] hover:bg-[#010a14] p-1 px-2 rounded my-1" value="Rechercher">
+                <input type="submit" class="text-white bg-[#140A82] hover:bg-[#010a14] p-1 px-2 rounded my-1 cursor-pointer" value="Rechercher">
                 <div></div>
                 <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded" href="{{ path('app_export_csv', {order: order == 'ASC' ? 'DESC' : 'ASC', dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Exporter la selection en csv</a>
             </div>
@@ -157,7 +160,9 @@
         {% endif %}
     </div>
         {% else %}
+        <div class="mt-5">
             <p>Aucun courriers</p>
+        </div>
         {% endif %}
 </main>
 {% endblock %}

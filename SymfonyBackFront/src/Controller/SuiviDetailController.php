@@ -22,7 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class SuiviDetailController extends AbstractController
 {
     /*
-    La fonction indexbyid affiche les différents statuts d'un courrier dans un template.
+    Retourne un template twig avec les différents statuts d'un courrier dans un template avec la possibiliter d'en ajouter ou en supprimer.
     */
 
     #[Route('/suivi/{id}', name: 'suiviId')]

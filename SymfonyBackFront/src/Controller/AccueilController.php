@@ -28,7 +28,7 @@ courriers présents dans la base données.
 class AccueilController extends AbstractController
 {
     /*
-    Cette méthode affiche tous les courriers avec une pagination.
+    Retourne un template twig avec tous les courriers avec une pagination.
     */
     #[Route('/', name: 'accueil')]
     public function index(

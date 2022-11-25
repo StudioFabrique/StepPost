@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 class RaisonSocialeController extends AbstractController
 {
     /* 
-        La méthode ShowRaisonsSociales affiche la liste de toutes les raisons sociales
+        Retourne un template twig avec la liste de toutes les raisons sociales
     */
     #[Route('/', name: 'raisonSociale')]
     public function ShowRaisonsSociales(PaginatorInterface $paginator, ClientRepository $clientRepository, ExpediteurRepository $expediteurRepository, Request $request): Response

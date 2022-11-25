@@ -19,7 +19,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 class StatistiqueController extends AbstractController
 {
     /* 
-        Statistiques globales concernant les courriers et les expéditeurs
+        Retourne un template twig avec des statistiques globales concernant les courriers et les expéditeurs
     */
 
     #[Route('/', name: 'statistiques')]
@@ -276,7 +276,7 @@ class StatistiqueController extends AbstractController
     }
 
     /* 
-        Statistiques pour les facteurs
+        Retourne un template twig avec des statistiques concernant un facteur
     */
     #[Route(name: 'statistiques_facteur', path: '/facteur')]
     public function ShowFacteur(

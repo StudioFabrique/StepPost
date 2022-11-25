@@ -33,8 +33,8 @@ Cette classe donne la possibilité de créer, modifier, activer et supprimer un 
 #[IsGranted('ROLE_ADMIN')]
 class ExpediteurController extends AbstractController
 {
-    /* 
-        La méthode index affiche la liste de tous les expéditeurs
+    /*
+        Retourne un template twig avec la liste de tous les expéditeurs
     */
     #[Route('/expediteurs', name: 'expediteur')]
     public function index(
@@ -85,7 +85,6 @@ class ExpediteurController extends AbstractController
             'expediteursToRemove' => $expediteursToRemove
         ]);
     }
-
 
     /* 
         La méthode ajouter permet de créer un expéditeur inactif et de lui envoyer un lien de confirmation par mail fin de configurer son mot de passe.
