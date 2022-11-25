@@ -107,6 +107,22 @@ class ExpediteurController extends AbstractController
         $messageErreurBis = $messages["Messages Erreurs"]["Expéditeur"]["CréationBis"];
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // vérification du code postal et numéro téléphone
+            try {
+                if (strlen(intval($form->get('codePostal')->getData())) != 5) {
+                    throw new Exception("Le code postal est incorrect");
+                }
+                if (strlen(intval($form->get('telephone')->getData())) < 9) {
+                    throw new Exception("Le numéro de téléphone est incorrect");
+                }
+            } catch (Exception $e) {
+                return $this->redirectToRoute('app_addExpediteur', [
+                    'errorMessage' => $e->getMessage(),
+                    'isError' => true
+                ]);
+            }
+
             $expediteur = $form->getData();
             $expediteur->setClient(null);
             $expediteurArray = (new FormatageObjet)
@@ -182,6 +198,21 @@ class ExpediteurController extends AbstractController
         $form = $this->createForm(ExpediteurType::class, $ancienExpediteur);
         $form->handleRequest($request);
 
+        try {
+            if (strlen(intval($form->get('codePostal')->getData())) != 5) {
+                throw new Exception("Le code postal est incorrect");
+            }
+            if (strlen(intval($form->get('telephone')->getData())) < 9) {
+                throw new Exception("Le numéro de téléphone est incorrect");
+            }
+        } catch (Exception $e) {
+            return $this->redirectToRoute('app_editExpediteur', [
+                'errorMessage' => $e->getMessage(),
+                'isError' => true,
+                'id' => $ancienExpediteur->getId()
+            ]);
+        }
+
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
         $message = $messages["Messages Informations"]["Expéditeur"]["Modification"];
         $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Modification"];
@@ -198,7 +229,7 @@ class ExpediteurController extends AbstractController
                 $em->flush();
                 return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)], Response::HTTP_SEE_OTHER);
             } catch (Exception $e) {
-                return $this->redirectToRoute('app_editExpediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur), 'isError' => true], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_editExpediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur), 'isError' => true, 'id' => $ancienExpediteur->getId()], Response::HTTP_SEE_OTHER);
             }
         }
 
