@@ -297,7 +297,8 @@ class StatistiqueController extends AbstractController
             Nombre de courriers envoyés par le facteur par mois depuis sa date de création
         */
 
-        $data = array();
+        $data1 = array(); // pris en charge
+        $data2 = array(); // distribué
         $dateMin = date_create(date_format($facteur->getCreatedAt(), "Y-m-d"));
         $dateMax = date_create(date_format($facteur->getCreatedAt(), "Y-m-d"))->modify('+1 month');
 
@@ -321,7 +322,8 @@ class StatistiqueController extends AbstractController
         $dateDiff = date_diff(new DateTime('now'), $facteur->getCreatedAt());
         $monthDiff = intval($dateDiff->format('%m')) + 12 * intval($dateDiff->format('%y'));
         for ($month = 0; $month < $monthDiff + 1; $month++) {
-            $data[$month] = $statutCourrierRepository->countCourriersByFacteur($nomFacteur, $dateMin, $dateMax)[0]["nbCourrier"];
+            $data1[$month] = $statutCourrierRepository->countCourriersByFacteurAndStatut($nomFacteur, 2, $dateMin, $dateMax)[0]["nbCourrier"];
+            $data2[$month] = $statutCourrierRepository->countCourriersByFacteurAndStatut($nomFacteur, 5, $dateMin, $dateMax)[0]["nbCourrier"];
             $labelsMonth[$month] = date_format($dateMin, 'Y') . '-' . $monthList[date_format($dateMin, 'm') - 1];
             $dateMin->modify('+1 month');
             $dateMax->modify('+1 month');
@@ -333,9 +335,20 @@ class StatistiqueController extends AbstractController
                     'labels' => $labelsMonth,
                     'datasets' => [
                         [
-                            'data' => $data
+                            'label' => 'pris en charge',
+                            'data' => $data1,
+                            'borderColor' => [
+                                'rgb(255, 204, 64)'
+                            ]
+                        ],
+                        [
+                            'label' => 'distribués',
+                            'data' => $data2,
+                            'borderColor' => [
+                                'rgb(43, 222, 211)'
+                            ]
                         ]
-                    ],
+                    ]
                 ]
             )
             ->setOptions([
@@ -354,7 +367,7 @@ class StatistiqueController extends AbstractController
         $facteurId = $facteur->getId();
         $courrierStatutsChart = ($chartBuilder->createChart(Chart::TYPE_DOUGHNUT))
             ->setData([
-                'labels' => ["en attente", "pris en charge", "avisé", "mis en instance", "NPAI", "non réclamé"],
+                'labels' => ["en attente", "pris en charge", "avisé", "mis en instance", "distribué", "NPAI", "non réclamé"],
                 'datasets' => [
                     [
                         'data' => [
@@ -362,6 +375,7 @@ class StatistiqueController extends AbstractController
                             count($statutCourrierRepository->findCourriersByLastStatut(2, $facteurId)),
                             count($statutCourrierRepository->findCourriersByLastStatut(3, $facteurId)),
                             count($statutCourrierRepository->findCourriersByLastStatut(4, $facteurId)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(5, $facteurId)),
                             count($statutCourrierRepository->findCourriersByLastStatut(6, $facteurId)),
                             count($statutCourrierRepository->findCourriersByLastStatut(7, $facteurId))
                         ],

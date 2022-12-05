@@ -305,7 +305,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
-    public function countCourriersByFacteur(string $nom, DateTime $dateMin, DateTime $dateMax)
+    public function countCourriersByFacteurAndStatut(string $nom, int $statut, DateTime $dateMin, DateTime $dateMax)
     {
         $qb = $this->_em->createQueryBuilder('s')
             ->select('
@@ -313,9 +313,11 @@ class StatutCourrierRepository extends ServiceEntityRepository
             ')
             ->from('App\Entity\StatutCourrier', 's')
             ->join('s.facteur', 'f')
-            ->where('f.nom = :nom and s.date >= :dateMin and s.date <= :dateMax')
+            ->join('s.statut', 'st')
+            ->where('f.nom = :nom and s.date >= :dateMin and s.date <= :dateMax and st.statutCode = :statut')
             ->setParameter('dateMin', $dateMin)
             ->setParameter('dateMax', $dateMax)
+            ->setParameter('statut', $statut)
             ->setParameter('nom', $nom)
             ->getQuery();
 

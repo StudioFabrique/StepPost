@@ -265,8 +265,9 @@ class ExpediteurController extends AbstractController
 
     /* 
         La méthode MultipleDelete permet de supprimer un Expéditeur
+        ...Mis en suspens...
     */
-    #[Route('/delete', name: 'deleteMultipleExpediteur')]
+    /* #[Route('/delete', name: 'deleteMultipleExpediteur')]
     public function MultipleDelete(ExpediteurRepository $expediteurRepository, EntityManagerInterface $manager): Response
     {
         if (!$this->getUser()) {
@@ -290,7 +291,7 @@ class ExpediteurController extends AbstractController
         } catch (Exception) {
             return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur), 'isError' => true], Response::HTTP_SEE_OTHER);
         }
-    }
+    } */
 
 
     /* 

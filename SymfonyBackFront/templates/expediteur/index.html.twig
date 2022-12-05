@@ -116,7 +116,7 @@
         </form>
         <div>
             <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" href="{{ path('app_addExpediteur') }}">Ajouter</a>
-            {% if expediteursToRemove|length > 0 %}
+            {# {% if expediteursToRemove|length > 0 %}
                 <a data-controller="expediteur" id="expediteurButton" class="text-white bg-yellow-500 hover:bg-yellow-700 p-2 rounded cursor-pointer" >Suppression multiple</a>
                 <div class="fixed flex flex-col gap-y-2 bg-[#140A82] text-white rounded-lg p-3 m-1 shadow-xl invisible" id="elementBox">
                     <div>
@@ -129,7 +129,7 @@
                         <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_deleteMultipleExpediteur') }}">Confirmer</a>
                     </div>
                 </div>
-            {% endif %}
+            {% endif %} #}
             <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
         </div>
     </section>
