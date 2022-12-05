@@ -47,7 +47,7 @@
 			</div>
 			{% if chartByDate == null and chartByYear == null %}
 
-				<div class="flex justify-between text-gray-600 my-10">
+				<div class="flex justify-between text-gray-600 mt-20 my-10">
 					<div>
 						<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpression }}</p>
 						<p>{{ nbCourriersImpression > 1 ? 'bordereaux ont été générés' : 'bordereau a été généré' }}</p>
@@ -67,38 +67,37 @@
 					</div>
 				</div>
 			{% elseif chartByDate != null and chartByYear == null %}
-				<a href="{{ path('app_statistiques') }}" class="text-red-600">Fermer</a>
-				<div class="flex justify-center">
-					<div class="w-[60%]">
-						{{ render_chart(chartByDate) }}
+			<div class="flex justify-center bg-gray-200 py-10">
+				<div class="w-[60%]">
+					{{ render_chart(chartByDate) }}
+				</div>
+				<div class="flex flex-col justify-center gap-y-10 ml-10">
+					<div>
+						<p class="text-gray-500">légende :</p>
 					</div>
-					<div class="flex flex-col justify-center gap-y-10 ml-10">
-						<div>
-							<p class="text-gray-500">légende :</p>
-						</div>
-						<div class="bg-[#ffcc40] w-100 h-5 mt-4 pr-1 rounded-r-md">
-							<p class="text-[#856a21] text-right mt-5">bordereaux générés</p>
-						</div>
-						<div class="bg-[#2bded3] w-100 h-5 mt-4 pr-1 rounded-r-md">
-							<p class="text-[#14635d] text-right mt-5">courriers/colis pris en charges</p>
-						</div>
-						<div class="bg-[#1024c8] w-100 h-5 mt-4 pr-1 rounded-r-md">
-							<p class="text-[#151c57] text-right mt-5">courriers/colis distribués</p>
-						</div>
+					<div class="bg-[#ffcc40] w-100 h-5 mt-4 pr-1 rounded-r-md">
+						<p class="text-[#856a21] text-right mt-5">bordereaux générés</p>
+					</div>
+					<div class="bg-[#2bded3] w-100 h-5 mt-4 pr-1 rounded-r-md">
+						<p class="text-[#14635d] text-right mt-5">courriers/colis pris en charges</p>
+					</div>
+					<div class="bg-[#1024c8] w-100 h-5 mt-4 pr-1 rounded-r-md">
+						<p class="text-[#151c57] text-right mt-5">courriers/colis distribués</p>
 					</div>
 				</div>
+			</div>
+			<a href="{{ path('app_statistiques') }}" class="text-red-600">Fermer</a>
 			{% else %}
-				<a href="{{ path('app_statistiques') }}" class="text-red-600">Fermer</a>
-				<div class="flex justify-center">
-					<div class="w-[60%]">
-						{{ render_chart(chartByYear) }}
+			<div class="flex justify-center bg-gray-200 py-10">
+				<div class="w-[60%]">
+					{{ render_chart(chartByYear) }}
+				</div>
+				<div class="flex flex-col justify-center gap-y-10 ml-10">
+					<div>
+						<p class="text-gray-500">légende :</p>
 					</div>
-					<div class="flex flex-col justify-center gap-y-10 ml-10">
-						<div>
-							<p class="text-gray-500">légende :</p>
-						</div>
 						{% if year1 != null %}
-							<div class="bg-[#ffcc40] w-100 h-5 mt-4 pr-1 rounded-r-md">
+						<div class="bg-[#ffcc40] w-100 h-5 mt-4 pr-1 rounded-r-md">
 								<p class="text-[#856a21] text-right mt-5">nombre de courriers/colis distribués en {{year1}}</p>
 							</div>
 						{% endif %}
@@ -106,9 +105,10 @@
 							<div class="bg-[#2bded3] w-100 h-5 mt-4 pr-1 rounded-r-md">
 								<p class="text-[#14635d] text-right mt-5">nombre de courriers/colis distribués en {{year2}}</p>
 							</div>
-						{% endif %}
+							{% endif %}
+						</div>
 					</div>
-				</div>
+					<a href="{{ path('app_statistiques') }}" class="text-red-600">Fermer</a>
 			</div>	
 			{% endif %}
 	</section>

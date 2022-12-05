@@ -188,7 +188,7 @@ class StatistiqueController extends AbstractController
 
         $courrierStatutsChart = ($chartBuilderInterface->createChart(Chart::TYPE_DOUGHNUT))
             ->setData([
-                'labels' => ["en attente", "pris en charge", "avisé", "mis en instance", "NPAI", "non réclamé"],
+                'labels' => ["en attente", "pris en charge", "avisé", "mis en instance", "distribué", "NPAI", "non réclamé"],
                 'datasets' => [
                     [
                         'data' => [
@@ -196,6 +196,7 @@ class StatistiqueController extends AbstractController
                             count($statutCourrierRepository->findCourriersByLastStatut(2)),
                             count($statutCourrierRepository->findCourriersByLastStatut(3)),
                             count($statutCourrierRepository->findCourriersByLastStatut(4)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(5)),
                             count($statutCourrierRepository->findCourriersByLastStatut(6)),
                             count($statutCourrierRepository->findCourriersByLastStatut(7))
                         ],
