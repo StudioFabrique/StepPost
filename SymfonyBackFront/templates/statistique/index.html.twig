@@ -67,7 +67,7 @@
 					</div>
 				</div>
 			{% elseif chartByDate != null and chartByYear == null %}
-			<div class="flex justify-center bg-gray-200 py-10">
+			<div class="flex justify-center bg-gray-200 py-10 my-2">
 				<div class="w-[60%]">
 					{{ render_chart(chartByDate) }}
 				</div>
@@ -88,7 +88,7 @@
 			</div>
 			<a href="{{ path('app_statistiques') }}" class="text-red-600">Fermer</a>
 			{% else %}
-			<div class="flex justify-center bg-gray-200 py-10">
+			<div class="flex justify-center bg-gray-200 py-10 my-2">
 				<div class="w-[60%]">
 					{{ render_chart(chartByYear) }}
 				</div>
@@ -108,8 +108,8 @@
 							{% endif %}
 						</div>
 					</div>
-					<a href="{{ path('app_statistiques') }}" class="text-red-600">Fermer</a>
 			</div>	
+			<a href="{{ path('app_statistiques') }}" class="bg-red-600 text-white p-1">Fermer</a>
 			{% endif %}
 	</section>
 	<hr class="border-y-1 my-10 border-gray-400">
