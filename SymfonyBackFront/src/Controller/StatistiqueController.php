@@ -339,14 +339,14 @@ class StatistiqueController extends AbstractController
                             'label' => 'pris en charge',
                             'data' => $data1,
                             'borderColor' => [
-                                'rgb(255, 204, 64)'
+                                'rgb(43, 222, 211)'
                             ]
                         ],
                         [
                             'label' => 'distribués',
                             'data' => $data2,
                             'borderColor' => [
-                                'rgb(43, 222, 211)'
+                                'rgb(255, 204, 64)'
                             ]
                         ]
                     ]
@@ -368,7 +368,7 @@ class StatistiqueController extends AbstractController
         $facteurId = $facteur->getId();
         $courrierStatutsChart = ($chartBuilder->createChart(Chart::TYPE_DOUGHNUT))
             ->setData([
-                'labels' => ["en attente", "pris en charge", "avisé", "mis en instance", "distribué", "NPAI", "non réclamé"],
+                'labels' => ["en attente", "pris en charge", "avisé", "mis en instance", "distribué", "NPAI", "non réclamé", "erreur de libellé"],
                 'datasets' => [
                     [
                         'data' => [
@@ -378,15 +378,18 @@ class StatistiqueController extends AbstractController
                             count($statutCourrierRepository->findCourriersByLastStatut(4, $facteurId)),
                             count($statutCourrierRepository->findCourriersByLastStatut(5, $facteurId)),
                             count($statutCourrierRepository->findCourriersByLastStatut(6, $facteurId)),
-                            count($statutCourrierRepository->findCourriersByLastStatut(7, $facteurId))
+                            count($statutCourrierRepository->findCourriersByLastStatut(7, $facteurId)),
+                            count($statutCourrierRepository->findCourriersByLastStatut(8, $facteurId))
                         ],
                         'backgroundColor' => [
-                            'rgb(255, 204, 64)',
+                            'rgb(50, 204, 64)',
                             'rgb(43, 222, 211)',
                             'rgb(16, 36, 200)',
                             'rgb(99, 67, 175)',
                             'rgb(238, 155, 49)',
-                            'rgb(193, 52, 21)'
+                            'rgb(193, 52, 21)',
+                            'rgb(192, 196, 198)',
+                            'rgb(100, 120, 52)'
                         ]
                     ]
                 ]
