@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\ClassesOutils\FormatageObjet;
+use App\Services\FormatageObjet;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
