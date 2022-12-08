@@ -7,6 +7,7 @@ use App\Form\FacteurType;
 use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
 use DateTime;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
@@ -82,6 +83,8 @@ class FacteurController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        $timezone = new DateTimeZone('UTC');
+
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
         $message = $messages["Messages Informations"]["Facteur"]["Modification"];
         $messageErreur = $messages["Messages Erreurs"]["Facteur"]["Modification"];
@@ -93,7 +96,7 @@ class FacteurController extends AbstractController
             $facteur
                 ->setRoles($facteur->getRoles())
                 ->setCreatedAt($facteur->getCreatedAt())
-                ->setUpdatedAt(new DateTime());
+                ->setUpdatedAt(new DateTime(), $timezone);
 
             foreach ($facteur->getStatutsCourrier() as $statut) {
                 $facteur->addStatutsCourrier($statut);
@@ -148,6 +151,8 @@ class FacteurController extends AbstractController
     #[Route(path: '/api/newFacteur', name: 'api_newFacteur')]
     public function newFacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
     {
+        $timezone = new DateTimeZone('UTC');
+
         $email = $request->request->get('email');
         $nom = $request->request->get('nom');
         $password = $request->request->get('password');
@@ -160,8 +165,8 @@ class FacteurController extends AbstractController
             ->setEmail($email)
             ->setNom($nom)
             ->setPassword($password)
-            ->setCreatedAt(new DateTime())
-            ->setUpdatedAt(new DateTime())
+            ->setCreatedAt(new DateTime(), $timezone)
+            ->setUpdatedAt(new DateTime(), $timezone)
             ->setRoles(['ROLE_FACTEUR']);
         try {
             $facteurRepository->add($facteur, true);

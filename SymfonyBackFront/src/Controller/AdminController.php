@@ -7,6 +7,7 @@ use App\Form\UserType;
 use App\Repository\ExpediteurRepository;
 use App\Repository\UserRepository;
 use DateTime;
+use DateTimeZone;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 /* 
 Cette classe donne la possiblité de créer, modifier, activer et supprimer un admin.
@@ -71,6 +71,8 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        $timezone = new DateTimeZone('UTC');
+
         $admin = new User();
         $form = $this->createForm(UserType::class, $admin, ['addUser' => true]);
         $form->handleRequest($request);
@@ -86,8 +88,8 @@ class AdminController extends AbstractController
                 $pass
             );
             $admin->setPassword($hashedPassword);
-            $admin->setCreatedAt(new DateTime('now'));
-            $admin->setUpdatedAt(new DateTime('now'));
+            $admin->setCreatedAt(new DateTime('now', $timezone));
+            $admin->setUpdatedAt(new DateTime('now', $timezone));
             $admin->setRoles(['ROLE_ADMIN']);
             try {
                 $adminRepository->add($admin);
@@ -116,6 +118,8 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        $timezone = new DateTimeZone('UTC');
+
         $adminId = $request->get('id');
         $admin = $adminRepository->find($adminId);
         $isSuperAdmin = in_array('ROLE_SUPERADMIN', $admin->getRoles()) ? true : false;
@@ -128,7 +132,7 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $admin->setRoles($isSuperAdmin ? ['ROLE_ADMIN', 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN']);
-            $admin->setUpdatedAt(new DateTime('now'));
+            $admin->setUpdatedAt(new DateTime('now', $timezone));
 
             try {
                 $adminRepository->add($admin);

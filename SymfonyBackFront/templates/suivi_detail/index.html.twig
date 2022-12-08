@@ -8,7 +8,7 @@
 
 {% set statutsTermine = false %}
 {% for statut in statutsCourrier %}
-    {% if statut.statut.statutCode == 5 %} {% set statutsTermine = true %} {% endif %}
+{% if statut.statut.statutCode == 5 %} {% set statutsTermine = true %} {% endif %}
 {% endfor %}
 
 {% set showUpdateButton = statutsCourrier|length >= 7 or statutsTermine ? false : true %}
@@ -18,34 +18,41 @@
 {% if showUpdateButton %}
 <div id="boxContent" class="flex-col  fixed bg-[#91c8cf] rounded-lg p-2 right-28 top-36">
     {% for statut in statutsRestants %}
-        <div><a class="m-1" href="{{ path('app_statut_add', { courrierId: courrierId, statutId: statut.id }) }}">{{ statut.etat }}</a></div>
+    <div><a class="m-1" href="{{ path('app_statut_add', { courrierId: courrierId, statutId: statut.id }) }}">{{
+            statut.etat }}</a></div>
     {% endfor %}
 </div>
 {% endif %}
 
 <main class="w-[95%] m-auto">
-    
+
     <div class="flex justify-between right-0 my-10" data-controller="statut">
-            <div>
-                <h1 class=" text-xl font-bold italic text-[#25BA00] mb-2">Le suivi n° {{ courrierId.bordereau }} en detail </h1>
-            </div>
-            <div class="flex gap-x-2">
-                {% if showUpdateButton %}<button id="button" class="text-white bg-green-500 hover:bg-green-700 p-2 rounded">Mettre à jour le statut</button>{% endif %}
-                <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
-            </div>
+        <div>
+            <h1 class=" text-xl font-bold italic text-[#25BA00] mb-2">Le suivi n° {{ courrierId.bordereau }} en detail
+            </h1>
         </div>
+        <div class="flex gap-x-2">
+            {% if showUpdateButton %}<button id="button"
+                class="text-white bg-green-500 hover:bg-green-700 p-2 rounded">Mettre à jour le statut</button>{% endif
+            %}
+            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
+        </div>
+    </div>
     <section>
         {% for statut in statutsCourrier %}
         <div class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 mb-4">
             <div class="flex justify-between">
-                <h5 class="mb-2 text-xl font-bold tracking-tight text-[#FF5E1A]">{{ statut.date | date('d-m-Y H:i:s') }}</h5>
+                <h5 class="mb-2 text-xl font-bold tracking-tight text-[#FF5E1A]">{{ statut.date | date('d-m-Y H:i:s',
+                    "Europe/Paris") }}</h5>
                 <p class="font-normal text-[#25BA00]">{{statut.statut ? statut.statut.etat }}</p>
             </div>
             <div class="flex justify-between">
                 <p>
-                    {{ statut.statut ? statut.statut.etat }} {{statut.facteur != null ? 'par'}} {{statut.facteur != null ? statut.facteur.nom}}
+                    {{ statut.statut ? statut.statut.etat }} {{statut.facteur != null ? 'par'}} {{statut.facteur != null
+                    ? statut.facteur.nom}}
                 </p>
-                <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded" href="{{ path('app_delete_statut', { courrierId: statut.courrier.id, statutId: statut.id }) }}">Supprimer</a>
+                <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded"
+                    href="{{ path('app_delete_statut', { courrierId: statut.courrier.id, statutId: statut.id }) }}">Supprimer</a>
             </div>
         </div>
         {% endfor %}
@@ -53,8 +60,8 @@
     <div class="flex justify-between my-10">
         <div>
             {% if facteur != null %}
-                <p class="text-gray-500">Facteur :</p>
-                <p>{{ facteur }}</p>
+            <p class="text-gray-500">Facteur :</p>
+            <p>{{ facteur }}</p>
             {% endif %}
         </div>
         {% if showSignature %}
@@ -64,7 +71,7 @@
         </div>
         {% endif %}
     </div>
-    
+
 </main>
 
 {% endblock %}

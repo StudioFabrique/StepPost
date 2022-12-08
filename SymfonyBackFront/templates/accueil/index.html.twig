@@ -15,11 +15,13 @@
     <div class="flex justify-between space-x-2">
         <div></div>
         <div>
-            <a class="text-white bg-[#1d71d0] hover:bg-[#042e5e] p-2 rounded" href="{{ path('app_expediteur') }}">Gestion
+            <a class="text-white bg-[#1d71d0] hover:bg-[#042e5e] p-2 rounded"
+                href="{{ path('app_expediteur') }}">Gestion
                 expéditeurs</a>
             <a class="text-white bg-[#939a16] hover:bg-[#545804] p-2 rounded" href="{{ path('app_facteur') }}">Gestion
                 facteurs</a>
-            <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded" href="{{ path('app_raisonSociale') }}">Gestion raisons
+            <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded"
+                href="{{ path('app_raisonSociale') }}">Gestion raisons
                 sociales</a>
             {% if 'ROLE_SUPERADMIN' in app.user.roles %}
             <a class="text-white bg-[#298b7a] hover:bg-[#0c5246] p-2 rounded" href="{{ path('app_admin') }}">Gestion
@@ -28,7 +30,7 @@
         </div>
     </div>
     {% if isSearching != null ? true : false %}
-        <a href="{{ path('app_accueil') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
+    <a href="{{ path('app_accueil') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
     {% endif %}
     {% if courriers|length > 0 %}
     <section class="flex justify-between items-center mt-5">
@@ -47,9 +49,13 @@
                 <input type="date" class="px-4" name="dateMin">
                 <label for="date" class="text-[#140A82]">Maximum</label>
                 <input type="date" class="px-4" name="dateMax">
-                <input type="submit" class="text-white bg-[#140A82] hover:bg-[#010a14] p-1 px-2 rounded my-1 cursor-pointer" value="Rechercher">
+                <input type="submit"
+                    class="text-white bg-[#140A82] hover:bg-[#010a14] p-1 px-2 rounded my-1 cursor-pointer"
+                    value="Rechercher">
                 <div></div>
-                <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded" href="{{ path('app_export_csv', {order: order == 'ASC' ? 'DESC' : 'ASC', dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Exporter la selection en csv</a>
+                <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded"
+                    href="{{ path('app_export_csv', {order: order == 'ASC' ? 'DESC' : 'ASC', dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Exporter
+                    la selection en csv</a>
             </div>
         </form>
     </section>
@@ -59,7 +65,8 @@
                 <tr class="align-text-bottom">
                     <th scope="col" class="px-6 py-3">
                         {% if isSearching %} Date {% else %} <a href="{{ path('app_accueil', {order: order} ) }}">Date
-                           <span class="text-2xl sticky ml-2"> {{ order == "ASC" ? '&uarr;' : '&darr;'}} {% endif %} </span> </a>
+                            <span class="text-2xl sticky ml-2"> {{ order == "ASC" ? '&uarr;' : '&darr;'}} {% endif %}
+                            </span> </a>
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Expediteur
@@ -94,21 +101,23 @@
                 {% for courrier in courriers %}
                 <tr class="bg-white border-b00">
                     <td class="px-6 py-4">
-                        {{courrier.date | date('d-m-Y H:i') }}
+                        {{courrier.date | date('d-m-Y H:i', "Europe/Paris") }}
                     </td>
                     <td class="px-6 py-4">
                         {{ courrier.nomExpediteur }}
                         <hr class="border-y-2 my-2 border-blue-300">
-                        <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white" href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur}) }}">
+                        <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white"
+                            href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur}) }}">
                             détails
                         </a>
                     </td>
                     <td class="px-6 py-4">
                         {% for statut in statuts %}
-                            {{ courrier.statut == statut.statutCode ? statut.etat : NULL }}
+                        {{ courrier.statut == statut.statutCode ? statut.etat : NULL }}
                         {% endfor %}
                         <hr class="border-y-2 my-2 border-blue-300">
-                        <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white" href="{{ path('app_suiviId', {id: courrier.courrier, courrierId: courrier.courrier}) }}">
+                        <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white"
+                            href="{{ path('app_suiviId', {id: courrier.courrier, courrierId: courrier.courrier}) }}">
                             détails
                         </a>
                     </td>
@@ -143,26 +152,28 @@
         {% set multi10 = '1' %}
         {% set letterNb = -1 %}
         {% for i in range(1, nbCourriersTotal|length) %}
-            {% set multi10 = multi10 ~ 0 %}
-            {% set letterNb = letterNb + 1 %}
+        {% set multi10 = multi10 ~ 0 %}
+        {% set letterNb = letterNb + 1 %}
         {% endfor %}
-        {% set maxPages = (nbCourriersTotal % 10) < 5 and (nbCourriersTotal % 10) != 0 ? (nbCourriersTotal / 10)|round + 1 : (nbCourriersTotal / 10)|round %}
-        {% if maxPages > 1 %}
+        {% set maxPages = (nbCourriersTotal % 10) < 5 and (nbCourriersTotal % 10) !=0 ? (nbCourriersTotal / 10)|round +
+            1 : (nbCourriersTotal / 10)|round %} {% if maxPages> 1 %}
             {% if currentPage != 1 %}
-                <a href="{{ path('app_accueil', {currentPage: 1, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            <a href="{{ path('app_accueil', {currentPage: 1, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}"
+                class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
             {% endif %}
             <div class="bg-[#140A82]">
-                {{ knp_pagination_render(courriers) }} 
+                {{ knp_pagination_render(courriers) }}
             </div>
             {% if currentPage != maxPages %}
-                <a href="{{ path('app_accueil', {currentPage: maxPages, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+            <a href="{{ path('app_accueil', {currentPage: maxPages, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}"
+                class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
             {% endif %}
-        {% endif %}
+            {% endif %}
     </div>
-        {% else %}
-        <div class="mt-5">
-            <p>Aucun courriers</p>
-        </div>
-        {% endif %}
+    {% else %}
+    <div class="mt-5">
+        <p>Aucun courriers</p>
+    </div>
+    {% endif %}
 </main>
 {% endblock %}

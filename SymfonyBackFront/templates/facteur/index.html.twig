@@ -17,40 +17,41 @@
                     <input name="recherche" type="search" class="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 
                         text-base font-normal text-gray-700 bg-white bg-clip-padding border 
                         border-solid border-gray-300 rounded transition ease-in-out m-0 
-                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                        placeholder="" aria-label="" aria-describedby="button-addon2">
+                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder=""
+                        aria-label="" aria-describedby="button-addon2">
                 </div>
             </div>
         </form>
-            <div>
-                <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" href="{{ path('app_newFacteur', { isAdding: true }) }}">Créer un facteur</a>
-                <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
-            </div>
+        <div>
+            <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded"
+                href="{{ path('app_newFacteur', { isAdding: true }) }}">Créer un facteur</a>
+            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
+        </div>
     </section>
     <section class="overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left text-gray-500 table-fixed">
             <thead class="text-xs text-white uppercase bg-[#140A82]">
                 <tr>
                     <th scope="col" class="px-6 py-3">
-                        email
+                        Email
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        nom
+                        Nom
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Date création du facteur
+                        Création
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Date mise à jour du facteur
+                        Mise à jour
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Statut du compte
                     </th>
                     <th>
-                        
+
                     </th>
                     <th>
-                        
+
                     </th>
                     <th>
 
@@ -59,7 +60,7 @@
             </thead>
             <tbody>
                 {% for facteur in facteurs %}
-                {% set role = 'ROLE_FACTEURINACTIF' in facteur.roles ? 'non activé' : 'activé'  %}
+                {% set role = 'ROLE_FACTEURINACTIF' in facteur.roles ? 'non activé' : 'activé' %}
                 <tr class="bg-white border-b00">
                     <td class="px-6 py-4">
                         {{facteur.email }}
@@ -68,16 +69,17 @@
                         {{facteur.nom }}
                     </td>
                     <td class="px-6 py-4">
-                        {{facteur.createdAt | date('d-m-Y H:i') }}
+                        {{facteur.createdAt | date('d-m-Y H:i', "Europe/Paris") }}
                     </td>
                     <td class="px-6 py-4">
-                        {{facteur.updatedAt | date('d-m-Y H:i') }}
+                        {{facteur.updatedAt | date('d-m-Y H:i', "Europe/Paris") }}
                     </td>
                     <td class="px-6 py-4">
                         {{ role }}
                     </td>
                     <td class="px-6 py-4">
-                        <a class="text-blue-800 bg-blue-100 p-2 rounded" href="{{ path('app_editFacteur', {id: facteur.id, isadding: false}) }}">
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                            href="{{ path('app_editFacteur', {id: facteur.id, isadding: false}) }}">
                             Modifier
                         </a>
                     </td>
@@ -85,12 +87,15 @@
                         <button id="showButton" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
                         <div id="confirmBox" class="fixed -ml-36 bg-[#140A82] rounded-lg p-2">
                             <p class="text-white">Êtes-vous sûr de vouloir supprimer ce facteur ? </p>
-                            <button id="hideButton" class="bg-red-100 border-2 border-black rounded-lg p-0.5 mx-10 text-red-800">Annuler</button>
-                            <a href="{{ path('app_deleteFacteur', {id: facteur.id}) }}" class="bg-red-700 border-2 border-black rounded-lg p-1 mx-4 text-white whitespace-nowrap">Confirmer</a>
+                            <button id="hideButton"
+                                class="bg-red-100 border-2 border-black rounded-lg p-0.5 mx-10 text-red-800">Annuler</button>
+                            <a href="{{ path('app_deleteFacteur', {id: facteur.id}) }}"
+                                class="bg-red-700 border-2 border-black rounded-lg p-1 mx-4 text-white whitespace-nowrap">Confirmer</a>
                         </div>
                     </td>
                     <td class="px-6 py-4">
-                        <a class="text-green-800 bg-green-300 p-2 rounded" href="{{ path('app_statistiques_facteur', {facteur: facteur.nom}) }}">
+                        <a class="text-green-800 bg-green-300 p-2 rounded"
+                            href="{{ path('app_statistiques_facteur', {facteur: facteur.nom}) }}">
                             Statistiques
                         </a>
                     </td>
@@ -103,19 +108,21 @@
         {% set multi10 = '1' %}
         {% set letterNb = -1 %}
         {% for i in range(1, nbFacteursTotal|length) %}
-            {% set multi10 = multi10 ~ 0 %}
-            {% set letterNb = letterNb + 1 %}
+        {% set multi10 = multi10 ~ 0 %}
+        {% set letterNb = letterNb + 1 %}
         {% endfor %}
-        {% set maxPages = (nbFacteursTotal % 10) < 5 and (nbFacteursTotal % 10) != 0 ? (nbFacteursTotal / 10)|round + 1 : (nbFacteursTotal / 10)|round %}
-        {% if maxPages > 1 %}
+        {% set maxPages = (nbFacteursTotal % 10) < 5 and (nbFacteursTotal % 10) !=0 ? (nbFacteursTotal / 10)|round + 1 :
+            (nbFacteursTotal / 10)|round %} {% if maxPages> 1 %}
             {% if currentPage != 1 %}
-                <a href="{{ path('app_facteur', {currentPage: 1}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+            <a href="{{ path('app_facteur', {currentPage: 1}) }}"
+                class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
             {% endif %}
             <div class="bg-[#140A82]">{{ knp_pagination_render(facteurs) }} </div>
             {% if currentPage != maxPages %}
-                <a href="{{ path('app_facteur', {currentPage: maxPages}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+            <a href="{{ path('app_facteur', {currentPage: maxPages}) }}"
+                class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
             {% endif %}
-        {% endif %}
+            {% endif %}
     </div>
     {{ facteurs|length == 0 ? 'Aucun facteurs'}}
 </main>

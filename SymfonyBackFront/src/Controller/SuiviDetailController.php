@@ -10,6 +10,7 @@ use App\Repository\ExpediteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\StatutRepository;
 use DateTime;
+use DateTimeZone;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,6 +80,8 @@ class SuiviDetailController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        $timezone = new DateTimeZone('UTC');
+
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
         $message = $messages["Messages Informations"]["Statut courrier"]["Mise à jour"];
         $messageErreur = $messages["Messages Erreurs"]["Statut courrier"]["Mise à jour"];
@@ -104,7 +107,7 @@ class SuiviDetailController extends AbstractController
         $statutCourrier
             ->setCourrier($courrierRepository->find($courrierId))
             ->setStatut($statutRepository->find($statutId))
-            ->setDate(new DateTime('now'))
+            ->setDate(new DateTime('now', $timezone))
             ->setFacteur($facteur ?? null);
         try {
             $statutCourrierRepository->add($statutCourrier, true);

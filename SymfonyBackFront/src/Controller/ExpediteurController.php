@@ -7,6 +7,7 @@ use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
 use DateTime;
+use DateTimeZone;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -121,6 +122,8 @@ class ExpediteurController extends AbstractController
                 ]);
             }
 
+            $timezone = new DateTimeZone('UTC');
+
             $expediteur = $form->getData();
             $expediteur->setClient(null);
             $expediteurArray = (new FormatageObjet)
@@ -146,7 +149,7 @@ class ExpediteurController extends AbstractController
 
             try {
                 $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
-                $expediteur->setCreatedAt(new DateTime('now'))->setUpdatedAt(new DateTime('now'))->setClient(null)->setRoles(['ROLE_INACTIF'])->setPassword(' ');
+                $expediteur->setCreatedAt(new DateTime('now', $timezone))->setUpdatedAt(new DateTime('now', $timezone))->setClient(null)->setRoles(['ROLE_INACTIF'])->setPassword(' ');
                 $expediteurRepo->add($expediteur->setClient($form->get('client')->getData()), true);
             } catch (UniqueConstraintViolationException) {
                 return $this->redirectToRoute('app_addExpediteur', [
