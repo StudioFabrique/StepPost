@@ -23,7 +23,7 @@ jobs:
       - name: Showing working directory
         run: pwd && ls
       - name: Showing remote user
-        run: ${{ secrets.REMOTE_USER }}
+        run: echo ${{ secrets.REMOTE_USER }}
       # Composer
       - name: Validate composer.json and composer.lock
         run: composer validate --no-check-publish
