@@ -18,7 +18,7 @@ jobs:
       - name: Check php version
         run: php -v
       - name: Navigate to directory SymfonyBackFront
-        run: cd SymfonyBackFront
+        run: cd SymfonyBackFront && pwd && ls
       - name: Showing directory
         run: pwd
       # Composer
