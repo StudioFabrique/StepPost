@@ -21,7 +21,7 @@ jobs:
       - name: Check php version
         run: php -v
       - name: Showing working directory
-        run: cd SymfonyBackFront && pwd && ls
+        run: pwd && ls
       # Composer
       - name: Validate composer.json and composer.lock
         run: composer validate
