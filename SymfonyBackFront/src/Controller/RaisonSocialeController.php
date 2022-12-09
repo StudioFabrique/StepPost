@@ -151,11 +151,15 @@ class RaisonSocialeController extends AbstractController
         $raisonId = $request->get('raisonId');
         $raisonSociale = $clientRepository->find($raisonId);
 
+        if (count($raisonSociale->getExpediteurs()) > 0) {
+            return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $messageErreur)]);
+        }
+
         try {
             $clientRepository->remove($raisonSociale, true);
             return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $message)]);
         } catch (Exception) {
-            return $this->redirectToRoute('app_deleteRaisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $messageErreur)]);
+            return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $messageErreur)]);
         }
     }
 

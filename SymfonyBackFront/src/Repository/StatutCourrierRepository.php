@@ -85,11 +85,12 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.civilite,
                 c.type,
                 e.id AS expediteur,
-                e.nom AS nomExpediteur'
+                rs.raisonSociale AS raison'
             )
             ->leftJoin('s.courrier', 'c')
             ->leftJoin('s.statut', 'd')
             ->leftJoin('c.expediteur', 'e')
+            ->leftJoin('e.client', 'rs')
             ->groupBy('c.id')
             ->orderBy('date', $order)
             ->getQuery()
