@@ -19,6 +19,8 @@ jobs:
         run: php -v
       - name: Navigate to directory SymfonyBackFront
         run: cd SymfonyBackFront
+      - name: Showing directory
+        run: pwd
       # Composer
       - name: Validate composer.json and composer.lock
         run: composer validate
