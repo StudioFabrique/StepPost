@@ -52,6 +52,7 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
+          fingerprint: ${{ secrets.FINGERPRINT }}
           rm: true
           source: "./SymfonyBackFront"
           target: ${{ secrets.REMOTE_TARGET }}
