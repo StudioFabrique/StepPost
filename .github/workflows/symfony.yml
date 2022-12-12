@@ -46,6 +46,7 @@ jobs:
           file_name: .env
       # Copying files and artifacts via SSH
       - name: Copying files to server
+        environment: Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
