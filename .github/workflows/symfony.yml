@@ -46,6 +46,8 @@ jobs:
           envkey_APP_SECRET: ${{ secrets.APP_SECRET }}
           file_name: .env
       # Copying files and artifacts via SSH
+      - name: echo key
+        run: echo test
       - name: Copying files to server
         uses: appleboy/scp-action@master
         with:
