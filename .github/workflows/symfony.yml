@@ -12,7 +12,9 @@ permissions:
 jobs:
   symfony:
     runs-on: ubuntu-20.04
-    working-directory: ./SymfonyBackFront
+    run:
+      default:
+        working-directory: ./SymfonyBackFront
     steps:
       - name: Test Environment variable
         run: echo ${{ secrets.TEST }}
