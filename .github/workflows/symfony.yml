@@ -16,8 +16,6 @@ jobs:
       run:
         working-directory: ./SymfonyBackFront
     steps:
-      - name: Test Environment variable
-        run: echo ${{ secrets.TEST }}
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check php version
