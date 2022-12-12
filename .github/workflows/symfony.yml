@@ -12,8 +12,8 @@ permissions:
 jobs:
   symfony:
     runs-on: ubuntu-20.04
-    run:
-      default:
+    default:
+      run:
         working-directory: ./SymfonyBackFront
     steps:
       - name: Test Environment variable
