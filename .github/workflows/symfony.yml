@@ -18,12 +18,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Show directory
+        run: cd toto && pwd && ls
       - name: Check php version
         run: php -v
       - name: Showing working directory
         run: pwd && ls
-      - name: Showing remote user
-        run: echo ${{ secrets.REMOTE_USER }}
       # Composer
       - name: Validate composer.json and composer.lock
         run: composer validate --no-check-publish
