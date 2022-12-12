@@ -24,7 +24,7 @@
         </form>
         <div>
             <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded"
-                href="{{ path('app_newFacteur', { isAdding: true }) }}">Créer un facteur</a>
+                href="{{ path('app_newFacteur', { isAdding: true, isEdit: false }) }}">Créer un facteur</a>
             <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
         </div>
     </section>
@@ -46,6 +46,9 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Statut du compte
+                    </th>
+                    <th>
+
                     </th>
                     <th>
 
@@ -79,8 +82,14 @@
                     </td>
                     <td class="px-6 py-4">
                         <a class="text-blue-800 bg-blue-100 p-2 rounded"
-                            href="{{ path('app_editFacteur', {id: facteur.id, isadding: false}) }}">
+                            href="{{ path('app_editFacteur', {id: facteur.id, isadding: false, isEdit: false}) }}">
                             Modifier
+                        </a>
+                    </td>
+                    <td class="px-6 py-4">
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                            href="{{ path('app_editFacteur', {id: facteur.id, isadding: false, isEdit: true}) }}">
+                            Modifier le mot de passe
                         </a>
                     </td>
                     <td class="px-6 py-4">

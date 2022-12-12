@@ -75,13 +75,21 @@ class ExpediteurType extends AbstractType
                 ],
             ])
             ->add('client', EntityType::class, [
-                'label' => 'Raison Sociale *',
+                'label' => 'Raison Sociale',
                 'class' => Client::class,
                 'choice_label' => 'raisonSociale',
                 'attr' => [
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
                 ],
                 'required' => false,
+            ])
+            ->add('clientTemp', TextType::class, [
+                'label' => 'ou Raison Sociale Temporaire',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
+                ]
             ]);
     }
 

@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Client;
 use App\Services\FormatageObjet;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
+use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
 use DateTime;
 use DateTimeZone;
@@ -90,7 +92,7 @@ class ExpediteurController extends AbstractController
         La méthode ajouter permet de créer un expéditeur inactif et de lui envoyer un lien de confirmation par mail fin de configurer son mot de passe.
     */
     #[Route('/ajouter', name: 'addExpediteur')]
-    public function new(Request $request, MailerInterface $mailer, ExpediteurRepository $expediteurRepo): Response
+    public function new(Request $request, MailerInterface $mailer, ExpediteurRepository $expediteurRepo, ClientRepository $raisonSocialeRepository): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -149,8 +151,10 @@ class ExpediteurController extends AbstractController
 
             try {
                 $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
-                $expediteur->setCreatedAt(new DateTime('now', $timezone))->setUpdatedAt(new DateTime('now', $timezone))->setClient(null)->setRoles(['ROLE_INACTIF'])->setPassword(' ');
-                $expediteurRepo->add($expediteur->setClient($form->get('client')->getData()), true);
+                $expediteur->setCreatedAt(new DateTime('now', $timezone))->setUpdatedAt(new DateTime('now', $timezone))->setRoles(['ROLE_INACTIF'])->setPassword(' ');
+                $raison = $form->get('clientTemp')->getData() == null ? $form->get("client")->getData() : (new Client)->setRaisonSociale('tmp_' . strval($form->get('clientTemp')->getData()));
+                $form->get('clientTemp')->getData() != null ? $raisonSocialeRepository->add($raison, true) : NULL;
+                $expediteurRepo->add($expediteur->setClient($raison), true);
             } catch (UniqueConstraintViolationException) {
                 return $this->redirectToRoute('app_addExpediteur', [
                     str_replace('[nom]', $expediteur->getNom(), $messageErreur),
