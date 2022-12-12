@@ -43,28 +43,28 @@ jobs:
           working-directory: ./SymfonyBackFront
           envkey_APP_ENV: prod
           envkey_APP_DEBUG: false
-          envkey_APP_SECRET: ${{ symfony.APP_SECRET }}
-          envkey_APP_DATABASE_URL: ${{ Databases.STEPPOST_MYSQL_DB }}
+          envkey_APP_SECRET: ${{ secrets.APP_SECRET }}
+          envkey_APP_DATABASE_URL: ${{ secrets.STEPPOST_MYSQL_DB }}
           file_name: .env
       # Copying files and artifacts via SSH
       - name: Copying files to server
         uses: appleboy/scp-action@master
         with:
           working-directory: ./SymfonyBackFront
-          host: ${{ Server.REMOTE_HOST }}
-          username: ${{ Server.REMOTE_USER }}
-          key: ${{ Server.SERVER_SSH_KEY }}
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
           passphrase: ""
           rm: true
           source: "./"
-          target: ${{ Server.REMOTE_TARGET }}
+          target: ${{ secrets.REMOTE_TARGET }}
       # Run commands on production
       - name: Executing remote ssh commands
         uses: appleboy/ssh-action@master
         with:
           working-directory: ./SymfonyBackFront
-          host: ${{ Server.REMOTE_HOST }}
-          username: ${{ Server.REMOTE_USER }}
-          key: ${{ Server.SERVER_SSH_KEY }}
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
           passphrase: ""
-          script: rsync -a --exclude={'var','temp'} --delete ${{ Server.REMOTE_TARGET }} ${{ Server.REMOTE_TARGET_DEPLOY }}
+          script: rsync -a --exclude={'var','temp'} --delete ${{ secrets.REMOTE_TARGET }} ${{ secrets.REMOTE_TARGET_DEPLOY }}
