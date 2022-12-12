@@ -12,10 +12,10 @@ permissions:
 jobs:
   symfony:
     runs-on: ubuntu-20.04
-    defaults:
-      run:
-        working-directory: ./SymfonyBackFront
+    working-directory: ./SymfonyBackFront
     steps:
+      - name: Test Environment variable
+        run: echo ${{ secrets.TEST }}
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check php version
@@ -42,11 +42,10 @@ jobs:
           APP_ENV: prod
           APP_DEBUG: false
           APP_SECRET: ${{ secrets.APP_SECRET }}
-          APP_DATABASE_URL: ${{ secrets.STEPPOST_MYSQL_DB }}
+          APP_DATABASE_URL: ${{ secrets.APP_DATABASE_URL }}
           file_name: .env
       # Copying files and artifacts via SSH
       - name: Copying files to server
-        environment: Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
