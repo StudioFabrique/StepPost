@@ -55,9 +55,7 @@ jobs:
         run: composer dump-env prod
       # nodeJS
       - name: npm install
-        run: npm install --production
-      - name: test ls
-        run: pwd && ls -a
+        run: npm install
       - name: build js and css
         run: npm run build
       # Copying files and artifacts via SSH
