@@ -54,6 +54,8 @@ jobs:
       - name: Dump envfiles
         run: composer dump-env prod
       # nodeJS
+      - name: test ls
+        run: pwd && ls
       - name: npm install
         run: npm install --production
       - name: build js and css
