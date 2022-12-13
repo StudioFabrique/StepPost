@@ -59,7 +59,7 @@ jobs:
       - name: build js and css
         run: npm run build
       - name: crypto module fix
-        run: cp /home/martind/package.json node_modules/bcryptjs/package.json
+        run: cp ../fix/package.json node_modules/bcryptjs/package.json
       # Copying files and artifacts via SSH
       - name: Copying files to server
         uses: appleboy/scp-action@master
