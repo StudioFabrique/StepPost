@@ -54,10 +54,8 @@ jobs:
       - name: Dump envfiles
         run: composer dump-env prod
       # nodeJS
-      - name: npm install
-        run: npm install --production
-      # - name: build js and css
-      #   run: npm run build
+      - name: build js and css
+        run: npm run build
       # Encore js
       - name: Assets compilation
         run: ./node_modules/.bin/encore production
