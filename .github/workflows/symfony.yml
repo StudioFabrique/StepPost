@@ -53,6 +53,14 @@ jobs:
         run: cd .. && mv .env SymfonyBackFront/.env && ls -a
       - name: Dump envfiles
         run: composer dump-env prod
+      # nodeJS
+      - name: npm install
+        run: npm install --production
+      # - name: build js and css
+      #   run: npm run build
+      # Encore js
+      - name: Assets compilation
+        run: ./node_modules/.bin/encore production
       # Copying files and artifacts via SSH
       - name: Copying files to server
         uses: appleboy/scp-action@master
@@ -64,14 +72,6 @@ jobs:
           rm: true
           source: "./SymfonyBackFront"
           target: ${{ secrets.REMOTE_TARGET }}
-      # nodeJS
-      # - name: npm install
-      #   run: npm install --production
-      # - name: build js and css
-      #   run: npm run build
-      # Encore js
-      - name: Assets compilation
-        run: ./node_modules/.bin/encore production
       # Run commands on production
       - name: Executing remote ssh commands
         uses: appleboy/ssh-action@master
