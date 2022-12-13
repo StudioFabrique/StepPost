@@ -39,10 +39,10 @@ jobs:
       - name: Make production envfile
         uses: SpicyPizza/create-envfile@v1
         with:
-          APP_ENV: prod
-          APP_DEBUG: false
-          APP_SECRET: ${{ secrets.APP_SECRET }}
-          APP_DATABASE_URL: ${{ secrets.APP_DATABASE_URL }}
+          envkey_APP_ENV: prod
+          envkey_APP_DEBUG: false
+          envkey_APP_SECRET: ${{ secrets.APP_SECRET }}
+          envkey_APP_DATABASE_URL: ${{ secrets.APP_DATABASE_URL }}
           file_name: .env
       # Copying files and artifacts via SSH
       - name: Copying files to server
