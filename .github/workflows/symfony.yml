@@ -45,7 +45,7 @@ jobs:
           envkey_APP_DATABASE_URL: ${{ secrets.APP_DATABASE_URL }}
           file_name: .env
       - name: move .env to the symfony folder
-        run: cd .. && mv .env /SymfonyBackFront/.env && ls -a
+        run: cd .. && mv .env SymfonyBackFront/.env && ls -a
       # Copying files and artifacts via SSH
       - name: Copying files to server
         uses: appleboy/scp-action@master
