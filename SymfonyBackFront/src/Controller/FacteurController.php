@@ -72,7 +72,8 @@ class FacteurController extends AbstractController
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
-            'isAdding' => $request->get('isAdding')
+            'isAdding' => $request->get('isAdding'),
+            'isEdit' => $request->get('isEdit')
         ]);
     }
 
@@ -117,7 +118,9 @@ class FacteurController extends AbstractController
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
-            'isAdding' => $request->get('isAdding')
+            'isAdding' => $request->get('isAdding'),
+            'isEdit' => $request->get('isEdit'),
+            'facteurId' => $request->get('id')
         ]);
     }
 
@@ -168,6 +171,29 @@ class FacteurController extends AbstractController
             ->setCreatedAt(new DateTime(), $timezone)
             ->setUpdatedAt(new DateTime(), $timezone)
             ->setRoles(['ROLE_FACTEUR']);
+        try {
+            $facteurRepository->add($facteur, true);
+            return new JsonResponse('facteur créé');
+        } catch (Exception $e) {
+            return new JsonResponse('erreur');
+        }
+    }
+
+    #[Route(path: '/api/editPasswordFacteur', name: 'api_editPasswordFacteur')]
+    public function editPasswordacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
+    {
+        $timezone = new DateTimeZone('UTC');
+
+        $id = $request->request->get('id');
+        $password = $request->request->get('password');
+
+        if (!$this->getUser() || $id == null || $password == null) {
+            return new JsonResponse("Authentification échoué");
+        }
+
+        $facteur = $facteurRepository->find($id)
+            ->setPassword($password)
+            ->setUpdatedAt(new DateTime(), $timezone);
         try {
             $facteurRepository->add($facteur, true);
             return new JsonResponse('facteur créé');
