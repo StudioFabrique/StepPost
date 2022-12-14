@@ -55,9 +55,7 @@ jobs:
           envkey_PASS_PHRASE: ${{ secrets.APP_PASS_PHRASE }}
           file_name: .env
       - name: move .env to the symfony folder
-        run: cd .. && mv .env SymfonyBackFront/.env && ls -a
-      - name: Dump envfiles
-        run: composer dump-env prod
+        run: mv ../.env .env && ls -a
       # nodeJS
       - name: npm install
         run: npm install
