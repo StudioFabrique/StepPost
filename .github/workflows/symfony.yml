@@ -65,7 +65,7 @@ jobs:
         run: cp ../fix/package.json node_modules/bcryptjs/package.json
       # caches
       - name: symfony caches clear
-        run: APP_ENV=prod APP_DEBUG=0 DATABASE_URL= php bin/console cache:clear
+        run: php bin/console cache:clear --env=prod
       # Copying files and artifacts via SSH
       - name: Copying files to server
         uses: appleboy/scp-action@master
