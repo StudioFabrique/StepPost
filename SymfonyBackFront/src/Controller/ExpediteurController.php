@@ -138,7 +138,7 @@ class ExpediteurController extends AbstractController
             $nbHeureExp = 24;
             $token = (new JWT())->encode(
                 $expediteurArray,
-                '8733c931dfe34198e060c1e7dae3a7f20887b00937859bba724a68b7de44f512', // pass phrase
+                $_ENV['PASS_PHRASE'], // pass phrase
                 'HS256', // protocole d'encodage
                 head: ['exp' => time() + (3600 * $nbHeureExp)]
             );

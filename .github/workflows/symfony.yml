@@ -40,9 +40,6 @@ jobs:
             ${{ runner.os }}-php-
       - name: Install Dependencies
         run: composer install --no-dev --optimize-autoloader
-      # caches
-      - name: symfony caches clear
-        run: APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
         # Prepare .env file for production
       - name: Make production envfile
         uses: SpicyPizza/create-envfile@v1

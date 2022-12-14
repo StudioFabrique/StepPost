@@ -83,8 +83,7 @@ class AccueilController extends AbstractController
             'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
             'errorMessage' => $request->get('errorMessage') ?? null,
             'dateMin' => $request->get('dateMin') ?? null,
-            'dateMax' => $request->get('dateMax') ?? null,
-            'datetime' => date_format(new DateTime('now'), 'h')
+            'dateMax' => $request->get('dateMax') ?? null
         ]);
     }
 
