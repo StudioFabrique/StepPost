@@ -65,7 +65,7 @@ jobs:
         run: cp ../fix/package.json node_modules/bcryptjs/package.json
       # caches
       - name: symfony caches clear
-        run: php bin/console cache:clear --env=prod
+        run: DATABASE_URL="mysql://root@127.0.0.1:3306/?serverVersion=5.7&charset=utf8mb4" php bin/console cache:clear --env=prod
       # Copying files and artifacts via SSH
       - name: Copying files to server
         uses: appleboy/scp-action@master
