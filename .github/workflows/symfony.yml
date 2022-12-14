@@ -22,19 +22,6 @@ jobs:
         run: php -v
       - name: Showing working directory
         run: pwd && ls
-      # Composer
-      - name: Validate composer.json and composer.lock
-        run: composer validate --no-check-publish
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-      - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --no-dev --optimize-autoloader
         # Prepare .env file for production
       - name: Make production envfile
         uses: SpicyPizza/create-envfile@v1
@@ -53,6 +40,19 @@ jobs:
         run: cd .. && mv .env SymfonyBackFront/.env && ls -a
       - name: Dump envfiles
         run: composer dump-env prod
+      # Composer
+      - name: Validate composer.json and composer.lock
+        run: composer validate --no-check-publish
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+      - name: Install Dependencies
+        run: composer install --no-dev --optimize-autoloader
       # nodeJS
       - name: npm install
         run: npm install
