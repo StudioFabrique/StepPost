@@ -47,7 +47,7 @@ jobs:
           envkey_APP_ENV: prod
           envkey_APP_DEBUG: false
           envkey_APP_SECRET: ${{ secrets.APP_SECRET }}
-          envkey_APP_DATABASE_URL: ${{ secrets.APP_DATABASE_URL }}
+          envkey_DATABASE_URL: ${{ secrets.APP_DATABASE_URL }}
           envkey_MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
           envkey_CORS_ALLOW_ORIGIN: '^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
           envkey_CSV_EXPORT_PATH: "/Users/martindhollande/Downloads"
@@ -65,7 +65,7 @@ jobs:
         run: cp ../fix/package.json node_modules/bcryptjs/package.json
       # caches
       - name: symfony caches clear
-        run: php bin/console cache:clear
+        run: APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
       # Copying files and artifacts via SSH
       - name: Copying files to server
         uses: appleboy/scp-action@master
