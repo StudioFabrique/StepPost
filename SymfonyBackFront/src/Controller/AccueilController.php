@@ -56,7 +56,7 @@ class AccueilController extends AbstractController
             $data = $statutCourrierRepo->findCourriers($order, $dateMin ?? null, $dateMax ?? null);
         } else {
             is_numeric($rechercheCourrier) ? $data = $statutCourrierRepo->findCourriersByBordereau($rechercheCourrier)
-                : (is_string($rechercheCourrier) ? $data = $statutCourrierRepo->findCourriersByNomPrenom($rechercheCourrier)
+                : (is_string($rechercheCourrier) ? $data = $statutCourrierRepo->findCourriersByNomPrenomClient($rechercheCourrier)
                     : $data = $statutCourrierRepo->findCourriers($order));
         }
 
@@ -83,7 +83,8 @@ class AccueilController extends AbstractController
             'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
             'errorMessage' => $request->get('errorMessage') ?? null,
             'dateMin' => $request->get('dateMin') ?? null,
-            'dateMax' => $request->get('dateMax') ?? null
+            'dateMax' => $request->get('dateMax') ?? null,
+            'recherche' => $request->get('recherche')
         ]);
     }
 

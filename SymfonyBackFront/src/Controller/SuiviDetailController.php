@@ -69,7 +69,8 @@ class SuiviDetailController extends AbstractController
             'statutsRestants' => $statuts,
             'signature' => $signatureBase64,
             'showSignature' => $signatureBase64 == null ? false : true,
-            'facteur' => $nomFacteur
+            'facteur' => $nomFacteur,
+            'recherche' => $request->get('recherche')
         ]);
     }
 

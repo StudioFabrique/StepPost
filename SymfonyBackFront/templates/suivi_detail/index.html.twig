@@ -35,7 +35,7 @@
             {% if showUpdateButton %}<button id="button"
                 class="text-white bg-green-500 hover:bg-green-700 p-2 rounded">Mettre à jour le statut</button>{% endif
             %}
-            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
+            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil', {recherche: recherche ?? null}) }}">Retour</a>
         </div>
     </div>
     <section>

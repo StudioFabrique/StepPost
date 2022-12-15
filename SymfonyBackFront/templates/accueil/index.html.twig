@@ -37,12 +37,12 @@
         <form class="" action="" method="get">
             <div class="mb-5 xl:w-50">
                 <div class="my-2">
-                    <label for="Recherche" class="text-black opacity-50 italic"> Recherche par nom, prenom ou nº
+                    <label for="Recherche" class="text-black opacity-50 italic"> Recherche par nom, prenom, client ou nº
                         bordereau</label>
                     <input name="recherche" type="search" class="form-control relative flex-auto min-w-0 px-3 py-1.5 
                         text-base font-normal text-gray-700 bg-white bg-clip-padding border 
                         border-solid border-gray-300 rounded transition ease-in-out m-0 
-                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder=""
+                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="{{ recherche ?? "" }}"
                         aria-label="" aria-describedby="button-addon2">
                 </div>
                 <label for="date" class="text-[#140A82]">Minimum</label>
@@ -104,10 +104,10 @@
                         {{courrier.date | date('d-m-Y H:i', "Europe/Paris") }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ courrier.raison }}
+                        {{ courrier.raison ?? 'non définie' }}
                         <hr class="border-y-2 my-2 border-blue-300">
                         <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white"
-                            href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur}) }}">
+                            href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur, recherche: recherche ?? null}) }}">
                             détails
                         </a>
                     </td>
@@ -117,7 +117,7 @@
                         {% endfor %}
                         <hr class="border-y-2 my-2 border-blue-300">
                         <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white"
-                            href="{{ path('app_suiviId', {id: courrier.courrier, courrierId: courrier.courrier}) }}">
+                            href="{{ path('app_suiviId', {id: courrier.courrier, courrierId: courrier.courrier, recherche: recherche ?? null}) }}">
                             détails
                         </a>
                     </td>
@@ -158,14 +158,14 @@
         {% set maxPages = (nbCourriersTotal % 10) < 5 and (nbCourriersTotal % 10) !=0 ? (nbCourriersTotal / 10)|round +
             1 : (nbCourriersTotal / 10)|round %} {% if maxPages> 1 %}
             {% if currentPage != 1 %}
-            <a href="{{ path('app_accueil', {currentPage: 1, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}"
+            <a href="{{ path('app_accueil', {currentPage: 1, recherche: recherche ?? null, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}"
                 class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
             {% endif %}
             <div class="bg-[#140A82]">
                 {{ knp_pagination_render(courriers) }}
             </div>
             {% if currentPage != maxPages %}
-            <a href="{{ path('app_accueil', {currentPage: maxPages, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}"
+            <a href="{{ path('app_accueil', {currentPage: maxPages, recherche: recherche ?? null, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}"
                 class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
             {% endif %}
             {% endif %}
