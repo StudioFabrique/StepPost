@@ -14,14 +14,23 @@
             
         {% endblock %}
     </head>
-        {% include('partials/_header.html.twig') %}
-        {% if errorMessage != null %}
-            {% include "partials/_errorAlert.html.twig" %}
-        {% endif %}
-        {% if expediteursInactifs != null %}
-            {% include "partials/_banner.html.twig" %}
-        {% endif %}
+        
     <body>
-        {% block body %}{% endblock %}
+        <main class="min-h-screen flex flex-col justify-between">
+            <div>
+                {% include('partials/_header.html.twig') %}
+                {% if errorMessage != null %}
+                    {% include "partials/_errorAlert.html.twig" %}
+                {% endif %}
+                {% if expediteursInactifs != null %}
+                    {% include "partials/_banner.html.twig" %}
+                {% endif %}
+                {% block body %}{% endblock %}
+            </div>
+            <div>
+                {% include('partials/_footer.html.twig') %}
+            </div>
+        </main>
     </body>
+    
 </html>

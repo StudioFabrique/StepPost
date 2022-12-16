@@ -89,10 +89,16 @@ class RaisonSocialeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $raisonSociale->setRaisonSociale(strip_tags(strtolower($form->get('raisonSociale')->getData())));
+                $name = $form->get('raisonSociale')->getData();
+                $raisonSociale->setRaisonSociale(strip_tags(strtolower($name)));
+                foreach ($clientRepository->findAll() as $raison) {
+                    if ($raison->getRaisonSociale() == str_replace([' ', 'tmp_'], '', $name)) {
+                        throw new Exception;
+                    }
+                }
                 $clientRepository->add($raisonSociale, true);
                 return $this->redirectToRoute('app_raisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $message)]);
-            } catch (UniqueConstraintViolationException $e) {
+            } catch (Exception $e) {
                 return $this->redirectToRoute('app_addRaisonSociale', ['errorMessage' => str_replace('[nom]', $raisonSociale->getRaisonSociale(), $messageErreur), 'isError' => true]);
             }
         }

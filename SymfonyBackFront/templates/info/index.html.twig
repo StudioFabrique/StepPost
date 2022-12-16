@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Info{% endblock %}
+
+{% block javascripts %}
+<script type="module">
+import { Octokit, App } from "https://cdn.skypack.dev/octokit";
+const octokit = new Octokit({auth: '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'});
+await octokit.request('GET /repos/{owner}/{repo}/commits{?sha,path,author,since,until,per_page,page}', {
+  owner: 'MartinDHLL',
+  repo: 'StepPostAdmin'
+})
+</script>
+{% endblock %}
+
+
+{% block body %}
+    <p></p>
+{% endblock %}
