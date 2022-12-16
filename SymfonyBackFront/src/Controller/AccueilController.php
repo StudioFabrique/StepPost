@@ -105,7 +105,7 @@ class AccueilController extends AbstractController
         foreach ($data as $courrier) {
             $csvCourriers[$i] = [
                 $courrier['date'],
-                $courrier['nomExpediteur'],
+                $courrier['raison'],
                 $courrier['etat'],
                 $courrier['bordereau'],
                 $courrier['type'] == 0 ? 'Lettre avec suivi' : ($courrier['type'] == 1 ? 'Lettre avec accusé de reception' : 'Colis'),
