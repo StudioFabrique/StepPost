@@ -45,7 +45,7 @@ export default class extends Controller {
                                     console.log(response);
                                     console.log(result);
                                     if (result) {
-                                        window.location = '/facteurs';
+                                        window.location = '/facteurs?errorMessage=Le%20facteur%20a%20bien%20été%20crée';
                                     } else {
                                         console.log("Problème serveur");
                                     }
@@ -83,7 +83,7 @@ export default class extends Controller {
                                     console.log(response);
                                     console.log(result);
                                     if (result) {
-                                        window.location = '/facteurs';
+                                        window.location = '/facteurs?errorMessage=Le%20mot%20de%20passe%20a%20été%20changé';
                                     } else {
                                         console.log("Problème serveur");
                                     }
@@ -91,7 +91,7 @@ export default class extends Controller {
                         );
                 } else {
                     console.log("Erreur de saisie");
-                    window.location = '/nouveauFacteur?errorMessage=Erreur%20de%20saisie&isAdding=0&isEdit=1&isError=true';
+                    window.location = '/facteurs?errorMessage=Erreur%20de%20saisie&isError=true';
                 }
             });
         }
