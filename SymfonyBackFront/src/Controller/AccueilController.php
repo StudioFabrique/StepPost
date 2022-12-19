@@ -112,7 +112,7 @@ class AccueilController extends AbstractController
         $data = $statutCourrierRepository->findCourriers($request->get('order'), $dateMin ?? null, $dateMax ?? null);
         $exportCsv = $export->ExportFileToPath($data);
         if ($exportCsv) {
-            return $this->redirectToRoute('app_accueil', ['errorMessage' => 'Le fichier a bien été exporté au répertoire ' . $export->GetExportPath()]);
+            return $this->redirectToRoute('app_accueil', ['errorMessage' => 'Le fichier a bien été exporté sous le nom ' . $export->GetExportPath()]);
         } else {
             return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
         }

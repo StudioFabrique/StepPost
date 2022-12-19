@@ -41,7 +41,7 @@ class ExportCSV
 
     public function GetExportPath(): string
     {
-        $path = $_ENV['CSV_EXPORT_PATH'] . '/courriers-' . date_format(new DateTime('now'), 'h-i') . '.csv';
+        $path =  'courriers-' . date_format(new DateTime('now'), 'h-i') . '.csv';
         return $path;
     }
 }

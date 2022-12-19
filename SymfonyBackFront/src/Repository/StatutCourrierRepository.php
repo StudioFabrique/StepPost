@@ -89,13 +89,13 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 e.nom AS nomExpediteur,
                 rs.raisonSociale AS raison'
                 )
-                ->andWhere(is_numeric($rechercheCourrier) ? "c.bordereau LIKE :valeur" : "c.nom = :valeur OR c.prenom = :valeur OR rs.raisonSociale = :valeur")
+                ->andWhere(is_numeric($rechercheCourrier) ? "c.bordereau LIKE :valeur" : "c.nom LIKE :valeur OR c.prenom LIKE :valeur OR rs.raisonSociale LIKE :valeur")
                 ->leftJoin('s.courrier', 'c')
                 ->leftJoin('s.statut', 'd')
                 ->leftJoin('c.expediteur', 'e')
                 ->leftJoin('e.client', 'rs')
                 ->groupBy('c.id')
-                ->setParameter('valeur', is_numeric($rechercheCourrier) ? ('%' . $rechercheCourrier . '%') : $rechercheCourrier)
+                ->setParameter('valeur', '%' . $rechercheCourrier . '%')
                 ->getQuery()
 
                 :
@@ -128,7 +128,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 ->having("MAX(s.date) > :dateMin and MAX(s.date) < :dateMax")
                 ->setParameter('dateMin', $dateMin)
                 ->setParameter('dateMax', $dateMax)
-                ->setParameter('valeur', is_numeric($rechercheCourrier) ? ('%' . $rechercheCourrier . '%') : $rechercheCourrier)
+                ->setParameter('valeur', '%' . $rechercheCourrier . '%')
                 ->getQuery();
         } else {
             $qb = $dateMin == null || $dateMax == null ?
