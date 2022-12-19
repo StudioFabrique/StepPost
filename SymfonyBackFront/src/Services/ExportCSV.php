@@ -31,7 +31,7 @@ class ExportCSV
         }
 
         try {
-            $writer = Writer::createFromPath($_ENV["PUBLIC_PATH"] . 'courriers.csv', 'w');
+            $writer = Writer::createFromPath('courriers.csv', 'w');
             $writer->insertAll($csvCourriers);
             return true;
         } catch (Exception) {
