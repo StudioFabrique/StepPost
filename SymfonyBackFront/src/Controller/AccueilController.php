@@ -6,6 +6,9 @@ use App\Form\DateType;
 use App\Repository\ExpediteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\StatutRepository;
+use App\Services\DataFinder;
+use App\Services\DateMaker;
+use App\Services\ExportCSV;
 use DateTime;
 use DateTimeZone;
 use Knp\Component\Pager\PaginatorInterface;
@@ -38,6 +41,8 @@ class AccueilController extends AbstractController
         PaginatorInterface $paginator, // Interface de pagination
         StatutRepository $statuts,
         ExpediteurRepository $expediteurRepository,
+        DateMaker $dateMaker,
+        DataFinder $dataFinder
     ): Response {
 
         // vérification que l'admin soit bien connecté sinon redirection vers la page de connexion
@@ -46,25 +51,29 @@ class AccueilController extends AbstractController
         }
 
         $order = $request->get('order') ?? "DESC";
-        $rechercheCourrier = $request->get('recherche') ?? null;
         $currentPage = $request->get('currentPage') ?? 1;
-
-        $dateMin = $request->get('dateMin') != null ? date_create($request->get('dateMin')) : null;
-        $dateMax = $request->get('dateMax') != null ? date_create($request->get('dateMax')) : null;
-
-        if ($rechercheCourrier == null) {
-            $data = $statutCourrierRepo->findCourriers($order, $dateMin ?? null, $dateMax ?? null);
-        } else {
-            is_numeric($rechercheCourrier) ? $data = $statutCourrierRepo->findCourriersByBordereau($rechercheCourrier)
-                : (is_string($rechercheCourrier) ? $data = $statutCourrierRepo->findCourriersByNomPrenomClient($rechercheCourrier)
-                    : $data = $statutCourrierRepo->findCourriers($order));
-        }
+        $rechercheCourrier = $request->get('recherche');
 
         $form = $this->createForm(DateType::class)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->redirectToRoute('app_accueil', ['order' => $order, 'DateMin' => $form->get('DateMin')->getData(), 'DateMax' => $form->get('dateMax')->getData()]);
+            return $this->redirectToRoute(
+                'app_accueil',
+                [
+                    'order' => $order,
+                    'DateMin' => $form->get('DateMin')->getData(),
+                    'DateMax' => $form->get('dateMax')->getData()
+                ]
+            );
         }
+
+        $data = $dataFinder->getCourriers(
+            $statutCourrierRepo,
+            $order,
+            $rechercheCourrier,
+            $dateMaker->convertDateDefault($request->get('dateMin')),
+            $dateMaker->convertDateDefault($request->get('dateMax'))
+        );
 
         $courriers = $paginator->paginate(
             $data,
@@ -93,37 +102,16 @@ class AccueilController extends AbstractController
     */
 
     #[Route('/exportCsv', name: 'export_csv')]
-    public function exportCsv(Request $request, StatutCourrierRepository $statutCourrierRepository)
+    public function exportCsv(Request $request, StatutCourrierRepository $statutCourrierRepository, ExportCSV $export)
     {
         $dateMin = $request->get('dateMin') != null ? date_create($request->get('dateMin')) : null;
         $dateMax = $request->get('dateMax') != null ? date_create($request->get('dateMax')) : null;
 
         $data = $statutCourrierRepository->findCourriers($request->get('order'), $dateMin ?? null, $dateMax ?? null);
-        $path = $_ENV['CSV_EXPORT_PATH'] . '/courriers-' . date_format(new DateTime('now'), 'h-i') . '.csv';
-        $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
-        $i = 1;
-        foreach ($data as $courrier) {
-            $csvCourriers[$i] = [
-                $courrier['date'],
-                $courrier['raison'],
-                $courrier['etat'],
-                $courrier['bordereau'],
-                $courrier['type'] == 0 ? 'Lettre avec suivi' : ($courrier['type'] == 1 ? 'Lettre avec accusé de reception' : 'Colis'),
-                $courrier['nom'],
-                $courrier['prenom'],
-                $courrier['adresse'],
-                $courrier['codePostal'],
-                $courrier['ville']
-            ];
-            $i++;
-        }
-
-        try {
-            $writer = Writer::createFromPath($path, 'w');
-            $writer->insertAll($csvCourriers);
-            return $this->redirectToRoute('app_accueil', ['errorMessage' => 'Le fichier a bien été exporté au répertoire ' . $path]);
-        } catch (CannotInsertRecord $e) {
-            $e->getRecord();
+        $exportCsv = $export->ExportFileToPath($data);
+        if ($exportCsv) {
+            return $this->redirectToRoute('app_accueil', ['errorMessage' => 'Le fichier a bien été exporté au répertoire ' . $export->GetExportPath()]);
+        } else {
             return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }

@@ -315,7 +315,9 @@ class ExpediteurController extends AbstractController
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
-            'recherche' => $request->get('recherche')
+            'recherche' => $request->get('recherche'),
+            'dateMin' => $request->get('dateMin'),
+            'dateMax' => $request->get('dateMax')
         ]);
     }
 

@@ -65,85 +65,14 @@ class StatutCourrierRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    public function findCourriers($order, DateTime $dateMin = null, DateTime $dateMax = null)
-    {
-        $qb = $dateMin == null || $dateMax == null ?
-            $this->createQueryBuilder('s')
-            ->select(
-                'c.id AS courrier,
-                MAX(s.date) AS date,
-                MAX(d.statutCode) AS statut,
-                d.etat AS etat,
-                c.nom,
-                c.prenom,
-                c.adresse,
-                c.complement,
-                c.ville,
-                c.codePostal,
-                c.telephone,
-                c.bordereau,
-                c.civilite,
-                c.type,
-                e.id AS expediteur,
-                rs.raisonSociale AS raison'
-            )
-            ->leftJoin('s.courrier', 'c')
-            ->leftJoin('s.statut', 'd')
-            ->leftJoin('c.expediteur', 'e')
-            ->leftJoin('e.client', 'rs')
-            ->groupBy('c.id')
-            ->orderBy('date', $order)
-            ->getQuery()
-
-            :
-
-            $this->createQueryBuilder('s')
-            ->select(
-                'c.id AS courrier,
-                MAX(s.date) AS date,
-                MAX(d.statutCode) AS statut,
-                d.etat AS etat,
-                c.nom,
-                c.prenom,
-                c.adresse,
-                c.complement,
-                c.ville,
-                c.codePostal,
-                c.telephone,
-                c.bordereau,
-                c.civilite,
-                c.type,
-                e.id AS expediteur,
-                e.nom AS nomExpediteur'
-            )
-            ->leftJoin('s.courrier', 'c')
-            ->leftJoin('s.statut', 'd')
-            ->leftJoin('c.expediteur', 'e')
-            ->groupBy('c.id')
-            ->orderBy('date', $order)
-            ->having("MAX(s.date) > :dateMin and MAX(s.date) < :dateMax")
-            ->setParameter('dateMin', $dateMin)
-            ->setParameter('dateMax', $dateMax)
-            ->getQuery();
-
-        return $qb->getResult();
-    }
-
-    public function findCourriersByNomPrenomClient($valeur)
+    public function findCourriers($order, $rechercheCourrier = null, DateTime $dateMin = null, DateTime $dateMax = null)
     {
 
-
-        // SELECT
-        //     courrier_id,
-        //     MAX(DATE) AS DATE,
-        //     MAX(status_id) AS etat
-        // FROM
-        //     statutCourrier
-        // GROUP BY
-        //     courrier_id
-        $qb = $this->createQueryBuilder('s')
-            ->select(
-                'c.id AS courrier,
+        if ($rechercheCourrier != null) {
+            $qb = $dateMin == null || $dateMax == null ?
+                $this->createQueryBuilder('s')
+                ->select(
+                    'c.id AS courrier,
                 MAX(s.date) AS date,
                 MAX(d.statutCode) AS statut,
                 c.nom,
@@ -159,33 +88,21 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 e.id AS expediteur,
                 e.nom AS nomExpediteur,
                 rs.raisonSociale AS raison'
-            )
-            ->andWhere("c.nom = :valeur OR c.prenom = :valeur OR rs.raisonSociale = :valeur")
-            ->leftJoin('s.courrier', 'c')
-            ->leftJoin('s.statut', 'd')
-            ->leftJoin('c.expediteur', 'e')
-            ->leftJoin('e.client', 'rs')
-            ->groupBy('c.id')
-            ->setParameter('valeur', $valeur)
-            ->getQuery();
-        return $qb->getResult();
-    }
+                )
+                ->andWhere(is_numeric($rechercheCourrier) ? "c.bordereau LIKE :valeur" : "c.nom = :valeur OR c.prenom = :valeur OR rs.raisonSociale = :valeur")
+                ->leftJoin('s.courrier', 'c')
+                ->leftJoin('s.statut', 'd')
+                ->leftJoin('c.expediteur', 'e')
+                ->leftJoin('e.client', 'rs')
+                ->groupBy('c.id')
+                ->setParameter('valeur', is_numeric($rechercheCourrier) ? ('%' . $rechercheCourrier . '%') : $rechercheCourrier)
+                ->getQuery()
 
-    public function findCourriersByBordereau($valeur)
-    {
+                :
 
-
-        // SELECT
-        //     courrier_id,
-        //     MAX(DATE) AS DATE,
-        //     MAX(status_id) AS etat
-        // FROM
-        //     statutCourrier
-        // GROUP BY
-        //     courrier_id
-        $qb = $this->createQueryBuilder('s')
-            ->select(
-                'c.id AS courrier,
+                $this->createQueryBuilder('s')
+                ->select(
+                    'c.id AS courrier,
                 MAX(s.date) AS date,
                 MAX(d.statutCode) AS statut,
                 c.nom,
@@ -199,15 +116,82 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.civilite,
                 c.type,
                 e.id AS expediteur,
+                e.nom AS nomExpediteur,
+                rs.raisonSociale AS raison'
+                )
+                ->andWhere(is_numeric($rechercheCourrier) ? "c.bordereau LIKE :valeur" : "c.nom = :valeur OR c.prenom = :valeur OR rs.raisonSociale = :valeur")
+                ->leftJoin('s.courrier', 'c')
+                ->leftJoin('s.statut', 'd')
+                ->leftJoin('c.expediteur', 'e')
+                ->leftJoin('e.client', 'rs')
+                ->groupBy('c.id')
+                ->having("MAX(s.date) > :dateMin and MAX(s.date) < :dateMax")
+                ->setParameter('dateMin', $dateMin)
+                ->setParameter('dateMax', $dateMax)
+                ->setParameter('valeur', is_numeric($rechercheCourrier) ? ('%' . $rechercheCourrier . '%') : $rechercheCourrier)
+                ->getQuery();
+        } else {
+            $qb = $dateMin == null || $dateMax == null ?
+                $this->createQueryBuilder('s')
+                ->select(
+                    'c.id AS courrier,
+                MAX(s.date) AS date,
+                MAX(d.statutCode) AS statut,
+                d.etat AS etat,
+                c.nom,
+                c.prenom,
+                c.adresse,
+                c.complement,
+                c.ville,
+                c.codePostal,
+                c.telephone,
+                c.bordereau,
+                c.civilite,
+                c.type,
+                e.id AS expediteur,
+                rs.raisonSociale AS raison'
+                )
+                ->leftJoin('s.courrier', 'c')
+                ->leftJoin('s.statut', 'd')
+                ->leftJoin('c.expediteur', 'e')
+                ->leftJoin('e.client', 'rs')
+                ->groupBy('c.id')
+                ->orderBy('date', $order)
+                ->getQuery()
+
+                :
+
+                $this->createQueryBuilder('s')
+                ->select(
+                    'c.id AS courrier,
+                MAX(s.date) AS date,
+                MAX(d.statutCode) AS statut,
+                d.etat AS etat,
+                c.nom,
+                c.prenom,
+                c.adresse,
+                c.complement,
+                c.ville,
+                c.codePostal,
+                c.telephone,
+                c.bordereau,
+                c.civilite,
+                c.type,
+                e.id AS expediteur,
                 e.nom AS nomExpediteur'
-            )
-            ->andWhere("c.bordereau LIKE :valeur")
-            ->leftJoin('s.courrier', 'c')
-            ->leftJoin('s.statut', 'd')
-            ->leftJoin('c.expediteur', 'e')
-            ->groupBy('c.id')
-            ->setParameter('valeur', '%' . $valeur . '%')
-            ->getQuery();
+                )
+                ->leftJoin('s.courrier', 'c')
+                ->leftJoin('s.statut', 'd')
+                ->leftJoin('c.expediteur', 'e')
+                ->groupBy('c.id')
+                ->orderBy('date', $order)
+                ->having("MAX(s.date) > :dateMin and MAX(s.date) < :dateMax")
+                ->setParameter('dateMin', $dateMin)
+                ->setParameter('dateMax', $dateMax)
+                ->getQuery();
+        }
+
+
         return $qb->getResult();
     }
 

@@ -70,7 +70,9 @@ class SuiviDetailController extends AbstractController
             'signature' => $signatureBase64,
             'showSignature' => $signatureBase64 == null ? false : true,
             'facteur' => $nomFacteur,
-            'recherche' => $request->get('recherche')
+            'recherche' => $request->get('recherche'),
+            'dateMin' => $request->get('dateMin'),
+            'dateMax' => $request->get('dateMax')
         ]);
     }
 
