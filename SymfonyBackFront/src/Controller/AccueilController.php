@@ -111,7 +111,7 @@ class AccueilController extends AbstractController
             $export->ExportFile($data);
             return $export->GetFile();
         } catch (Exception) {
-            return $this->redirectToRoute('app_accueil', ['errorMessage' => "L'exportation en .csv a échoué (code 2)", 'isError' => true], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_accueil', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 }

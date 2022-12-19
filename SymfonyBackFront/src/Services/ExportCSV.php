@@ -4,13 +4,19 @@ namespace App\Services;
 
 use DateTime;
 use Exception;
-use League\Csv\CannotInsertRecord;
 use League\Csv\Writer;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ExportCSV
 {
+    private $parameters;
+    public function __construct(ParameterBagInterface $parameters)
+    {
+        $this->parameters = $parameters;
+    }
+
     public function ExportFile($data)
     {
         $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
@@ -32,7 +38,7 @@ class ExportCSV
         }
 
         try {
-            $writer = Writer::createFromPath('courriers.csv', 'w');
+            $writer = Writer::createFromPath($this->parameters->get('public_directory') . 'courriers.csv', 'w');
             $writer->insertAll($csvCourriers);
         } catch (Exception $e) {
             return $e;
@@ -41,7 +47,7 @@ class ExportCSV
 
     public function GetFile()
     {
-        $file = new BinaryFileResponse($_ENV["PUBLIC_PATH"] . "courriers.csv");
+        $file = new BinaryFileResponse($this->parameters->get('public_directory') . 'courriers.csv');
         $file->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, "courriers-" . (new DateTime("now"))->format("H-m") . ".csv");
         return $file;
     }
