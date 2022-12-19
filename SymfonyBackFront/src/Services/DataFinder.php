@@ -15,16 +15,12 @@ class DataFinder
         return $data;
     }
 
-    public function PaginateAndClean($data, PaginatorInterface $paginator, $page, $currentPage)
+    public function Paginate($data, PaginatorInterface $paginator, $page, $currentPage)
     {
         $courriers = $paginator->paginate(
             $data,
             $page < 2 ? $currentPage : $page
         );
-
-        foreach ($courriers as $courrier) {
-            $courrier["raison"] = str_replace("tmp_", "", $courrier["raison"]);
-        }
 
         return $courriers;
     }

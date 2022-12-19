@@ -75,7 +75,7 @@ class AccueilController extends AbstractController
             $dateMaker->convertDateDefault($request->get('dateMax'))
         );
 
-        $courriers = $dataFinder->PaginateAndClean(
+        $courriers = $dataFinder->Paginate(
             $data,
             $paginator,
             $request->query->getInt('page'),
