@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -95,7 +94,8 @@ class AccueilController extends AbstractController
             'errorMessage' => $request->get('errorMessage') ?? null,
             'dateMin' => $request->get('dateMin') ?? null,
             'dateMax' => $request->get('dateMax') ?? null,
-            'recherche' => $request->get('recherche')
+            'recherche' => $request->get('recherche'),
+            'pathTest' => __DIR__
         ]);
     }
 
