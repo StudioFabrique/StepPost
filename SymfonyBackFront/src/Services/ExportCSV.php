@@ -4,6 +4,7 @@ namespace App\Services;
 
 use DateTime;
 use Exception;
+use League\Csv\CannotInsertRecord;
 use League\Csv\Writer;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -31,10 +32,10 @@ class ExportCSV
         }
 
         try {
-            $writer = Writer::createFromPath('csv/courriers.csv', 'w');
+            $writer = Writer::createFromPath('csv/courriers.csv', 'w+');
             $writer->insertAll($csvCourriers);
             return true;
-        } catch (Exception) {
+        } catch (CannotInsertRecord) {
             return false;
         }
     }
