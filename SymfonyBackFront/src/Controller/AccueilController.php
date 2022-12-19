@@ -94,8 +94,7 @@ class AccueilController extends AbstractController
             'errorMessage' => $request->get('errorMessage') ?? null,
             'dateMin' => $request->get('dateMin') ?? null,
             'dateMax' => $request->get('dateMax') ?? null,
-            'recherche' => $request->get('recherche'),
-            'pathTest' => __DIR__
+            'recherche' => $request->get('recherche')
         ]);
     }
 
