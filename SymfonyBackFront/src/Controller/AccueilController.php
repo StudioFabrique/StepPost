@@ -117,10 +117,10 @@ class AccueilController extends AbstractController
                 $file->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, "courriers.csv");
                 return $file;
             } catch (Exception) {
-                return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_accueil', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
             }
         } else {
-            return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_accueil', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 }
