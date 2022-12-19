@@ -32,7 +32,7 @@ class ExportCSV
         }
 
         try {
-            $writer = Writer::createFromPath('csv/courriers.csv', 'w+');
+            $writer = Writer::createFromPath('csv/courriers.csv');
             $writer->insertAll($csvCourriers);
             return true;
         } catch (CannotInsertRecord) {
@@ -40,7 +40,7 @@ class ExportCSV
         }
     }
 
-    public function GetFile(): BinaryFileResponse
+    public function GetFile()
     {
         $file = new BinaryFileResponse($_ENV["PUBLIC_PATH"] . "courriers.csv");
         $file->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, "courriers-" . (new DateTime("now"))->format("H-m") . ".csv");
