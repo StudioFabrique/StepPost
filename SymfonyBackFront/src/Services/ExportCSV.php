@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use DateTime;
 use Exception;
 use League\Csv\Writer;
 
@@ -40,7 +39,7 @@ class ExportCSV
 
     public function GetExportPath(): string
     {
-        $path =  'courriers.csv';
+        $path =  'csv/courriers.csv';
         return $path;
     }
 }

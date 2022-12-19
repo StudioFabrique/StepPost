@@ -106,7 +106,6 @@ class AccueilController extends AbstractController
     #[Route('/exportCsv', name: 'export_csv')]
     public function exportCsv(Request $request, StatutCourrierRepository $statutCourrierRepository, ExportCSV $export)
     {
-        $fileManager = new Filesystem();
         $dateMin = $request->get('dateMin') != null ? date_create($request->get('dateMin')) : null;
         $dateMax = $request->get('dateMax') != null ? date_create($request->get('dateMax')) : null;
 
