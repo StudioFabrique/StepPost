@@ -54,14 +54,6 @@ class ExpediteurController extends AbstractController
         $openDetails = $request->get('openDetails') ?? false;
         $currentPage = $request->get('currentPage') ?? 1;
 
-        $expediteursToRemove = array();
-        $expediteursToKeep = $expediteurs->findExpediteurToKeep(new DateTime('now'));
-        $i = 0;
-        foreach ($expediteurs->findAll() as $expediteur) {
-            in_array($expediteur->getId(), $expediteursToKeep[$i] ?? [null]) ? NULL : array_push($expediteursToRemove, $expediteur->getNom() . ' ' . $expediteur->getPrenom());
-            $i++;
-        }
-
         if ($rechercheExpediteur != null && strval($rechercheExpediteur)) {
             $isCheckBoxExact ? $data = $expediteurs->findBy(['nom' => $rechercheExpediteur])
                 : $data = $expediteurs->findLike($rechercheExpediteur);
@@ -83,8 +75,7 @@ class ExpediteurController extends AbstractController
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
             'nbExpediteursTotal' => count($data),
-            'checkBoxExact' => $isCheckBoxExact ?? false,
-            'expediteursToRemove' => $expediteursToRemove
+            'checkBoxExact' => $isCheckBoxExact ?? false
         ]);
     }
 
@@ -99,7 +90,7 @@ class ExpediteurController extends AbstractController
         }
 
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $form = $this->createForm(ExpediteurType::class);
+        $form = $this->createForm(ExpediteurType::class, null, ['type' => 'create']);
         $form->handleRequest($request);
 
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
@@ -325,7 +316,7 @@ class ExpediteurController extends AbstractController
         Cette méthode change le rôle d'un expéditeur à ROLE_CLIENT
     */
     #[Route('/activer', name: 'activateExpediteur')]
-    public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em, MailerInterface $mailer): RedirectResponse
+    public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em, MailerInterface $mailer, ClientRepository $clientRepository): RedirectResponse
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -337,6 +328,9 @@ class ExpediteurController extends AbstractController
 
         $expediteurId = $request->get('expediteurId');
         $expediteur = ($expediteurRepository->find($expediteurId))->setRoles(['ROLE_CLIENT']);
+        $client = ($expediteur->getClient());
+        $client->setRaisonSociale(str_replace("tmp_", "", $client->getRaisonSociale()));
+        $em->persist($client);
         $email = (new Email())
             ->from('step.automaticmailservice@gmail.com')
             ->subject('Activation de votre compte Step Post')

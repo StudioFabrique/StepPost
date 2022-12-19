@@ -67,7 +67,7 @@ class AccueilController extends AbstractController
             );
         }
 
-        $data = $dataFinder->getCourriers(
+        $data = $dataFinder->GetCourriers(
             $statutCourrierRepo,
             $order,
             $rechercheCourrier,
@@ -75,9 +75,11 @@ class AccueilController extends AbstractController
             $dateMaker->convertDateDefault($request->get('dateMax'))
         );
 
-        $courriers = $paginator->paginate(
+        $courriers = $dataFinder->PaginateAndClean(
             $data,
-            $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
+            $paginator,
+            $request->query->getInt('page'),
+            $currentPage
         );
 
         return $this->render('accueil/index.html.twig', [
