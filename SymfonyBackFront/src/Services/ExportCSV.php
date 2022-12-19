@@ -32,10 +32,10 @@ class ExportCSV
         }
 
         try {
-            $writer = Writer::createFromPath('csv/courriers.csv');
+            $writer = Writer::createFromPath('./csv/courriers.csv', 'w');
             $writer->insertAll($csvCourriers);
             return true;
-        } catch (CannotInsertRecord) {
+        } catch (Exception) {
             return false;
         }
     }
