@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use DateTime;
-use League\Csv\CannotInsertRecord;
+use Exception;
 use League\Csv\Writer;
 
 class ExportCSV
@@ -33,15 +33,14 @@ class ExportCSV
             $writer = Writer::createFromPath($path, 'w');
             $writer->insertAll($csvCourriers);
             return true;
-        } catch (CannotInsertRecord $e) {
-            $e->getRecord();
+        } catch (Exception $e) {
             return false;
         }
     }
 
     public function GetExportPath(): string
     {
-        $path =  'courriers-' . date_format(new DateTime('now'), 'h-i') . '.csv';
+        $path =  'courriers.csv';
         return $path;
     }
 }

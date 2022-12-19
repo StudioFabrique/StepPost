@@ -9,16 +9,14 @@ use App\Repository\StatutRepository;
 use App\Services\DataFinder;
 use App\Services\DateMaker;
 use App\Services\ExportCSV;
-use DateTime;
-use DateTimeZone;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use League\Csv\Writer;
-use League\Csv\CannotInsertRecord;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /*
 Cette classe est le point d'entrée de l'application après que 
@@ -106,13 +104,14 @@ class AccueilController extends AbstractController
     #[Route('/exportCsv', name: 'export_csv')]
     public function exportCsv(Request $request, StatutCourrierRepository $statutCourrierRepository, ExportCSV $export)
     {
+        $fileManager = new Filesystem();
         $dateMin = $request->get('dateMin') != null ? date_create($request->get('dateMin')) : null;
         $dateMax = $request->get('dateMax') != null ? date_create($request->get('dateMax')) : null;
 
         $data = $statutCourrierRepository->findCourriers($request->get('order'), $dateMin ?? null, $dateMax ?? null);
         $exportCsv = $export->ExportFileToPath($data);
         if ($exportCsv) {
-            return $this->redirectToRoute('app_accueil', ['errorMessage' => 'Le fichier a bien été exporté sous le nom ' . $export->GetExportPath()]);
+            return new BinaryFileResponse($export->GetExportPath());
         } else {
             return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
         }
