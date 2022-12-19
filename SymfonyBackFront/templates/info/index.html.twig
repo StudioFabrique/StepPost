@@ -2,20 +2,6 @@
 
 {% block title %}Info{% endblock %}
 
-{% block javascripts %}
-<script type="module">
-    import { Octokit, App } from "https://cdn.skypack.dev/octokit";
-    const octokit = new Octokit({
-        auth: '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'
-    });
-    const request = octokit.request('GET /repos/{owner}/{repo}/commits{?sha,path,author,since,until,per_page,page}', {
-        owner: 'MartinDHLL',
-        repo: 'gestion_projets'
-    });
-    console.log(request);
-</script>
-{% endblock %}
-
 {% block body %}
     <div class="flex justify-between mr-10">
         <div></div>

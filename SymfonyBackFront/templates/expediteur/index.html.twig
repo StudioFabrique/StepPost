@@ -163,9 +163,6 @@
                         Mise à jour
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Date
-                    </th>
-                    <th scope="col" class="px-6 py-3">
 
                     </th>
                     <th scope="col" class="px-6 py-3">
@@ -177,8 +174,8 @@
                 {% for expediteur in expediteurs %}
                 {% set role = 'ROLE_INACTIF' in expediteur.roles ? 'utilisateur inactif' : 'expéditeur' %}
                 {% if role == 'expéditeur' %}
-                <tr class="bg-white border-b ">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                <tr class="bg-white border-b">
+                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 ">
                         {% if isSearch == true %}
                         {% if checkBoxExact == false %}
                         {{ expediteur.raisonSociale ? expediteur.raisonSociale : 'Non défini' }}
@@ -188,33 +185,33 @@
                         {% else %}
                         {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
                         {% endif %}
-                    </th>
-                    <td class="px-6 py-4">
+                    </td>
+                    <td class="px-6 py-4 break-words">
                         <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id}) }}">{{ expediteur.email
                             }}</a>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 break-words">
                         {{ expediteur.nom }}
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 break-words">
                         {{ expediteur.prenom }}
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 break-words">
                         {{ role }}
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 break-words">
                         {{expediteur.createdAt | date('d-m-Y H:i', "Europe/Paris") }}
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 break-words">
                         {{expediteur.updatedAt | date('d-m-Y H:i', "Europe/Paris") }}
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 break-words">
                         <a class="text-blue-800 bg-blue-100 p-2 rounded"
                             href="{{ path('app_editExpediteur', {id: expediteur.id}) }}">
                             Modifier
                         </a>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 break-words">
                         <button id="showButton" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
                         <div id="confirmBox" class="fixed -ml-40 bg-[#140A82] rounded-lg p-2">
                             <p class="text-white">Êtes-vous sûr de vouloir supprimer cet expéditeur ? </p>

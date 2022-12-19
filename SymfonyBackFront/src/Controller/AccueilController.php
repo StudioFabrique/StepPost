@@ -9,6 +9,7 @@ use App\Repository\StatutRepository;
 use App\Services\DataFinder;
 use App\Services\DateMaker;
 use App\Services\ExportCSV;
+use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /*
 Cette classe est le point d'entrée de l'application après que 
@@ -111,7 +113,13 @@ class AccueilController extends AbstractController
         $data = $statutCourrierRepository->findCourriers($request->get('order'), $dateMin ?? null, $dateMax ?? null);
         $exportCsv = $export->ExportFileToPath($data);
         if ($exportCsv) {
-            return new BinaryFileResponse($export->GetExportPath());
+            try {
+                $file = new BinaryFileResponse($export->GetExportPath());
+                $file->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, "courriers.csv");
+                return $file;
+            } catch (Exception) {
+                return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
+            }
         } else {
             return $this->redirectToRoute('app_admin_add', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
         }
