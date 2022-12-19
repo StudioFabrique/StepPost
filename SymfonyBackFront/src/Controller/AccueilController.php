@@ -107,15 +107,11 @@ class AccueilController extends AbstractController
         $dateMax = $request->get('dateMax') != null ? date_create($request->get('dateMax')) : null;
 
         $data = $statutCourrierRepository->findCourriers($request->get('order'), $dateMin ?? null, $dateMax ?? null);
-        $exportCsv = $export->ExportFile($data);
-        if ($exportCsv) {
-            try {
-                return $export->GetFile();
-            } catch (Exception) {
-                return $this->redirectToRoute('app_accueil', ['errorMessage' => "L'exportation en .csv a échoué (code 2)", 'isError' => true], Response::HTTP_SEE_OTHER);
-            }
-        } else {
-            return $this->redirectToRoute('app_accueil', ['errorMessage' => "L'exportation en .csv a échoué (code 1)", 'isError' => true], Response::HTTP_SEE_OTHER);
+        try {
+            $export->ExportFile($data);
+            return $export->GetFile();
+        } catch (Exception) {
+            return $this->redirectToRoute('app_accueil', ['errorMessage' => "L'exportation en .csv a échoué (code 2)", 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 }

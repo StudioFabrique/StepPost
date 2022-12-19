@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ExportCSV
 {
-    public function ExportFile($data): bool
+    public function ExportFile($data)
     {
         $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
         $i = 1;
@@ -32,11 +32,10 @@ class ExportCSV
         }
 
         try {
-            $writer = Writer::createFromPath('./csv/courriers.csv', 'w');
+            $writer = Writer::createFromPath('courriers.csv', 'w');
             $writer->insertAll($csvCourriers);
-            return true;
-        } catch (Exception) {
-            return false;
+        } catch (Exception $e) {
+            return $e;
         }
     }
 
