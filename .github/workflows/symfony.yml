@@ -53,6 +53,7 @@ jobs:
           envkey_CSV_EXPORT_PATH: "/Users/martindhollande/Downloads"
           envkey_MAILER_DSN: ${{ secrets.APP_MAILER_DSN }}
           envkey_PASS_PHRASE: ${{ secrets.APP_PASS_PHRASE }}
+          envkey_PUBLIC_PATH: ${{ secrets.PUBLIC_PATH }}
           file_name: .env
       - name: move .env to the symfony folder
         run: mv ../.env .env && ls -a
