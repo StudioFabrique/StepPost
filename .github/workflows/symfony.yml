@@ -50,7 +50,6 @@ jobs:
           envkey_DATABASE_URL: ${{ secrets.APP_DATABASE_URL }}
           envkey_MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
           envkey_CORS_ALLOW_ORIGIN: '^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
-          envkey_CSV_EXPORT_PATH: "/Users/martindhollande/Downloads"
           envkey_MAILER_DSN: ${{ secrets.APP_MAILER_DSN }}
           envkey_PASS_PHRASE: ${{ secrets.APP_PASS_PHRASE }}
           envkey_PUBLIC_PATH: ${{ secrets.PUBLIC_PATH }}
