@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ExportCSV
 {
-    public function ExportFileToPath($data, $exportPath = null): bool
+    public function ExportFile($data): bool
     {
         $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
         $i = 1;
@@ -31,10 +31,10 @@ class ExportCSV
         }
 
         try {
-            $writer = Writer::createFromPath('/courriers.csv', 'w');
+            $writer = Writer::createFromPath($_ENV["PUBLIC_PATH"] . 'courriers.csv', 'w');
             $writer->insertAll($csvCourriers);
             return true;
-        } catch (Exception $e) {
+        } catch (Exception) {
             return false;
         }
     }

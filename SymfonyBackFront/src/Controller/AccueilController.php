@@ -107,7 +107,7 @@ class AccueilController extends AbstractController
         $dateMax = $request->get('dateMax') != null ? date_create($request->get('dateMax')) : null;
 
         $data = $statutCourrierRepository->findCourriers($request->get('order'), $dateMin ?? null, $dateMax ?? null);
-        $exportCsv = $export->ExportFileToPath($data);
+        $exportCsv = $export->ExportFile($data);
         if ($exportCsv) {
             try {
                 return $export->GetFile();
