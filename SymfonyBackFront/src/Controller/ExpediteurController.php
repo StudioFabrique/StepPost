@@ -66,9 +66,17 @@ class ExpediteurController extends AbstractController
             $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
 
+        $expediteursInactifs = $expediteurs->findAllInactive();
+
+        $index = 0;
+        foreach ($expediteursInactifs as $expediteur) {
+            $expediteursInactifs[$index]["raison"] = str_replace("tmp_", "", $expediteursInactifs[$index]["raison"]);
+            $index++;
+        }
+
         return $this->render('expediteur/index.html.twig', [
             'expediteurs' => $expediteur,
-            'expediteursInactifs' => $expediteurs->findAllInactive(),
+            'expediteursInactifs' => $expediteursInactifs,
             'isSearch' => $rechercheExpediteur,
             'openDetails' => $openDetails,
             'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
