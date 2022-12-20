@@ -54,6 +54,14 @@ class ExpediteurController extends AbstractController
         $openDetails = $request->get('openDetails') ?? false;
         $currentPage = $request->get('currentPage') ?? 1;
 
+        $expediteursInactifs = $expediteurs->findAllInactive();
+        $index = 0;
+        foreach ($expediteursInactifs as $expediteur) {
+            $expediteursInactifs[$index]["raisonSociale"] = str_replace("tmp_", "", $expediteur["raisonSociale"]);
+            var_dump($expediteur);
+            $index++;
+        }
+
         if ($rechercheExpediteur != null && strval($rechercheExpediteur)) {
             $isCheckBoxExact ? $data = $expediteurs->findBy(['nom' => $rechercheExpediteur])
                 : $data = $expediteurs->findLike($rechercheExpediteur);
@@ -65,14 +73,6 @@ class ExpediteurController extends AbstractController
             $data,
             $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
-
-        $expediteursInactifs = $expediteurs->findAllInactive();
-
-        $index = 0;
-        foreach ($expediteursInactifs as $expediteur) {
-            $expediteursInactifs[$index]["raisonSociale"] = str_replace("tmp_", "", $expediteur["raisonSociale"]);
-            $index++;
-        }
 
         return $this->render('expediteur/index.html.twig', [
             'expediteurs' => $expediteur,
