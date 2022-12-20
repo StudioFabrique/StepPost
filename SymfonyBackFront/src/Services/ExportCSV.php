@@ -38,7 +38,7 @@ class ExportCSV
         }
 
         try {
-            $writer = Writer::createFromPath($this->parameters->get('public_directory') . 'courriers.csv', 'w');
+            $writer = Writer::createFromPath($this->parameters->get('csv_directory') . 'courriers.csv', 'w');
             $writer->insertAll($csvCourriers);
         } catch (Exception $e) {
             return $e;
@@ -47,14 +47,8 @@ class ExportCSV
 
     public function GetFile()
     {
-        $file = new BinaryFileResponse($this->parameters->get('public_directory') . 'courriers.csv');
+        $file = new BinaryFileResponse($this->parameters->get('csv_directory') . 'courriers.csv');
         $file->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, "courriers-" . (new DateTime("now"))->format("H-i") . ".csv");
         return $file;
-    }
-
-    public function ShowPathTest()
-    {
-        $path = $this->parameters->get('public_directory') . 'courriers.csv';
-        return $path;
     }
 }
