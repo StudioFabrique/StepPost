@@ -48,7 +48,13 @@ class ExportCSV
     public function GetFile()
     {
         $file = new BinaryFileResponse($this->parameters->get('public_directory') . 'courriers.csv');
-        $file->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, "courriers-" . (new DateTime("now"))->format("H-m") . ".csv");
+        $file->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, "courriers-" . (new DateTime("now"))->format("H-i") . ".csv");
         return $file;
+    }
+
+    public function ShowPathTest()
+    {
+        $path = $this->parameters->get('public_directory') . 'courriers.csv';
+        return $path;
     }
 }

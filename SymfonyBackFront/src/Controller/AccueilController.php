@@ -39,7 +39,8 @@ class AccueilController extends AbstractController
         StatutRepository $statuts,
         ExpediteurRepository $expediteurRepository,
         DateMaker $dateMaker,
-        DataFinder $dataFinder
+        DataFinder $dataFinder,
+        ExportCSV $export
     ): Response {
 
         // vérification que l'admin soit bien connecté sinon redirection vers la page de connexion
@@ -92,7 +93,8 @@ class AccueilController extends AbstractController
             'errorMessage' => $request->get('errorMessage') ?? null,
             'dateMin' => $request->get('dateMin') ?? null,
             'dateMax' => $request->get('dateMax') ?? null,
-            'recherche' => $request->get('recherche')
+            'recherche' => $request->get('recherche'),
+            'pathTest' => $export->ShowPathTest()
         ]);
     }
 
