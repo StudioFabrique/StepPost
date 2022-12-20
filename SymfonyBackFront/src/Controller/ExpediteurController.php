@@ -58,7 +58,6 @@ class ExpediteurController extends AbstractController
         $index = 0;
         foreach ($expediteursInactifs as $expediteur) {
             $expediteursInactifs[$index]["raisonSociale"] = str_replace("tmp_", "", $expediteur["raisonSociale"]);
-            var_dump($expediteur);
             $index++;
         }
 
