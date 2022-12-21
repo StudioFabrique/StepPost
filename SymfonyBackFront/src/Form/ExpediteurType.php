@@ -57,7 +57,6 @@ class ExpediteurType extends AbstractType
             ])
             ->add('complement', TextType::class, [
                 'required' => false,
-                'data' => '',
                 'label' => "Complement d'adresse",
                 'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                 'attr' => [

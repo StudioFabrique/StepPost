@@ -207,26 +207,25 @@ class ExpediteurController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        try {
-            if (strlen(intval($form->get('codePostal')->getData())) != 5) {
-                throw new Exception("Le code postal est incorrect");
-            }
-            if (strlen(intval($form->get('telephone')->getData())) < 9) {
-                throw new Exception("Le numéro de téléphone est incorrect");
-            }
-        } catch (Exception $e) {
-            return $this->redirectToRoute('app_editExpediteur', [
-                'errorMessage' => $e->getMessage(),
-                'isError' => true,
-                'id' => $ancienExpediteur->getId()
-            ]);
-        }
-
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
         $message = $messages["Messages Informations"]["Expéditeur"]["Modification"];
         $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Modification"];
 
         if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                if (strlen(intval($form->get('codePostal')->getData())) != 5) {
+                    throw new Exception("Le code postal est incorrect");
+                }
+                if (strlen(intval(str_replace(" ", "", $form->get('telephone')->getData()))) < 9) {
+                    throw new Exception("Le numéro de téléphone est incorrect");
+                }
+            } catch (Exception $e) {
+                return $this->redirectToRoute('app_editExpediteur', [
+                    'errorMessage' => $e->getMessage(),
+                    'isError' => true,
+                    'id' => $ancienExpediteur->getId()
+                ]);
+            }
             $ancienExpediteur->setClient(null);
             $expediteur = (new FormatageObjet)->stringToLowerObject(
                 $ancienExpediteur,
