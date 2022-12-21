@@ -150,9 +150,10 @@ class ExpediteurController extends AbstractController
             try {
                 $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
                 $expediteur->setCreatedAt(new DateTime('now', $timezone))->setUpdatedAt(new DateTime('now', $timezone))->setRoles(['ROLE_INACTIF'])->setPassword(' ');
-                $raison = $form->get('clientTemp')->getData() == null ? $form->get("client")->getData() : (new Client)->setRaisonSociale('tmp_' . strval($form->get('clientTemp')->getData()));
-                $form->get('clientTemp')->getData() != null ? $raisonSocialeRepository->add($raison, true) : NULL;
-                $expediteurRepo->add($expediteur->setClient($raison), true);
+                $raison = $form->get('clientTemp')->getData() == null ? null : (new Client)->setRaisonSociale('tmp_' . strval($form->get('clientTemp')->getData()));
+                $raison != null ? $raisonSocialeRepository->add($raison, true) : NULL;
+                $raison != null ? $expediteur->setClient($raison) : NULL;
+                $expediteurRepo->add($expediteur, true);
             } catch (UniqueConstraintViolationException) {
                 return $this->redirectToRoute('app_addExpediteur', [
                     str_replace('[nom]', $expediteur->getNom(), $messageErreur),
