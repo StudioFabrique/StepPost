@@ -33,7 +33,7 @@ class RaisonSocialeController extends AbstractController
         }
 
         $currentPage = $request->get('currentPage') ?? 1;
-        $data = $clientRepository->findAll();
+        $data = $clientRepository->findActiveClients();
         // replace 'tmp_' if exist for clients
         foreach ($data as $client) {
             $client->setRaisonSociale(str_replace('tmp_', '', $client->getRaisonSociale()));
