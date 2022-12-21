@@ -54,7 +54,7 @@
                     value="Rechercher">
                 <div></div>
                 <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded"
-                    href="{{ path('app_export_csv', {order: order == 'ASC' ? 'DESC' : 'ASC', dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Exporter
+                    href="{{ path('app_export_csv', {order: order == 'ASC' ? 'DESC' : 'ASC', recherche: recherche, dateMin: dateMin, dateMax: dateMax}) }}">Exporter
                     la selection en csv</a>
             </div>
         </form>

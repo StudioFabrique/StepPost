@@ -75,6 +75,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                     'c.id AS courrier,
                 MAX(s.date) AS date,
                 MAX(d.statutCode) AS statut,
+                d.etat AS etat,
                 c.nom,
                 c.prenom,
                 c.adresse,
@@ -105,6 +106,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                     'c.id AS courrier,
                 MAX(s.date) AS date,
                 MAX(d.statutCode) AS statut,
+                d.etat AS etat,
                 c.nom,
                 c.prenom,
                 c.adresse,
@@ -119,7 +121,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 e.nom AS nomExpediteur,
                 rs.raisonSociale AS raison'
                 )
-                ->andWhere(is_numeric($rechercheCourrier) ? "c.bordereau LIKE :valeur" : "c.nom = :valeur OR c.prenom = :valeur OR rs.raisonSociale = :valeur")
+                ->andWhere(is_numeric($rechercheCourrier) ? "c.bordereau LIKE :valeur" : "c.nom LIKE :valeur OR c.prenom LIKE :valeur OR rs.raisonSociale LIKE :valeur")
                 ->leftJoin('s.courrier', 'c')
                 ->leftJoin('s.statut', 'd')
                 ->leftJoin('c.expediteur', 'e')
@@ -178,11 +180,13 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.civilite,
                 c.type,
                 e.id AS expediteur,
-                e.nom AS nomExpediteur'
+                e.nom AS nomExpediteur,
+                rs.raisonSociale AS raison'
                 )
                 ->leftJoin('s.courrier', 'c')
                 ->leftJoin('s.statut', 'd')
                 ->leftJoin('c.expediteur', 'e')
+                ->leftJoin('e.client', 'rs')
                 ->groupBy('c.id')
                 ->orderBy('date', $order)
                 ->having("MAX(s.date) > :dateMin and MAX(s.date) < :dateMax")
