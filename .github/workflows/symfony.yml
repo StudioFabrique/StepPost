@@ -69,6 +69,8 @@ jobs:
       # make .csv
       - name: make courriers.csv file in cache
         run: touch var/cache/courriers.csv
+      - name: give write access to CSV file
+        run: chmod 777 var/cache/courriers.csv
       # Copying files and artifacts via SSH
       - name: Copying files to server
         uses: appleboy/scp-action@master
