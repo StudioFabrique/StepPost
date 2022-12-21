@@ -49,17 +49,18 @@ class ExpediteurController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $rechercheExpediteur = $request->get('recherche');
-        $isCheckBoxExact = $request->get('checkBoxExact');
-        $openDetails = $request->get('openDetails') ?? false;
-        $currentPage = $request->get('currentPage') ?? 1;
-
         $expediteursInactifs = $expediteurs->findAllInactive();
+
         $index = 0;
         foreach ($expediteursInactifs as $expediteur) {
             $expediteursInactifs[$index]["raisonSociale"] = str_replace("tmp_", "", $expediteur["raisonSociale"]);
             $index++;
         }
+
+        $rechercheExpediteur = $request->get('recherche');
+        $isCheckBoxExact = $request->get('checkBoxExact');
+        $openDetails = $request->get('openDetails') ?? false;
+        $currentPage = $request->get('currentPage') ?? 1;
 
         if ($rechercheExpediteur != null && strval($rechercheExpediteur)) {
             $isCheckBoxExact ? $data = $expediteurs->findBy(['nom' => $rechercheExpediteur])
@@ -97,6 +98,7 @@ class ExpediteurController extends AbstractController
         }
 
         $serializer = new Serializer([new ObjectNormalizer()]);
+
         $form = $this->createForm(ExpediteurType::class, null, ['type' => 'create']);
         $form->handleRequest($request);
 
@@ -150,7 +152,7 @@ class ExpediteurController extends AbstractController
             try {
                 $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
                 $expediteur->setCreatedAt(new DateTime('now', $timezone))->setUpdatedAt(new DateTime('now', $timezone))->setRoles(['ROLE_INACTIF'])->setPassword(' ');
-                $raison = $form->get('clientTemp')->getData() == null ? null : (new Client)->setRaisonSociale('tmp_' . strval($form->get('clientTemp')->getData()));
+                $raison = $form->get('clientTemp')->getData() == null ? NULL : (new Client)->setRaisonSociale('tmp_' . strval($form->get('clientTemp')->getData()));
                 $raison != null ? $raisonSocialeRepository->add($raison, true) : NULL;
                 $raison != null ? $expediteur->setClient($raison) : NULL;
                 $expediteurRepo->add($expediteur, true);
@@ -199,7 +201,10 @@ class ExpediteurController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $form = $this->createForm(ExpediteurType::class, $ancienExpediteur);
+        $form = $this->createForm(ExpediteurType::class, $ancienExpediteur, [
+            "type" => "edit",
+            "clientTemp" => $ancienExpediteur->getClient() != null ? $ancienExpediteur->getClient()->getRaisonSociale() : 'Aucune raison sociale définie par le client'
+        ]);
         $form->handleRequest($request);
 
         try {
@@ -229,7 +234,7 @@ class ExpediteurController extends AbstractController
                 array('client')
             );
             try {
-                $em->persist($expediteur->setClient($form->get('client')->getData()));
+                $em->persist($expediteur->setClient($form->get('addClient')->getData()));
                 $em->flush();
                 return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)], Response::HTTP_SEE_OTHER);
             } catch (Exception $e) {
