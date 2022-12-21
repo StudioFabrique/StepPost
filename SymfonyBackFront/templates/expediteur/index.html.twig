@@ -57,14 +57,14 @@
                         {% for expediteur in expediteursInactifs %}
                         {% set role = 'ROLE_INACTIF' in expediteur.roles ? 'utilisateur inactif' : 'expéditeur' %}
                         <tr class="bg-white border-b ">
-                            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap break-words">
                                 {{ expediteur.raisonSociale ? expediteur.raisonSociale : 'Non défini' }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 break-words">
                                 <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id}) }}">{{
                                     expediteur.email }}</a>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 break-words">
                                 {{ expediteur.nom }}
                             </td>
                             <td class="px-6 py-4">

@@ -2,10 +2,10 @@
 
 namespace App\Form;
 
-use App\Entity\Client;
 use App\Entity\Expediteur;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Repository\ClientRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -13,6 +13,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ExpediteurType extends AbstractType
 {
+    private $clientRepository;
+
+    public function __construct(ClientRepository $clientRepository)
+    {
+        $this->clientRepository = $clientRepository;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['type'] == 'create') {
@@ -49,7 +56,7 @@ class ExpediteurType extends AbstractType
                 ],
             ])
             ->add('complement', TextType::class, [
-                'required'   => false,
+                'required' => false,
                 'label' => "Complement d'adresse",
                 'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                 'attr' => [
@@ -76,31 +83,64 @@ class ExpediteurType extends AbstractType
                 'attr' => [
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
                 ],
-            ])
-            ->add('client', EntityType::class, [
-                'label' => 'Raison Sociale',
-                'class' => Client::class,
-                'choice_label' => 'raisonSociale',
-                'attr' => [
-                    'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
-                ],
-                'required' => true,
-            ])
-            ->add('clientTemp', TextType::class, [
-                'label' => 'ou Raison Sociale Temporaire',
-                'mapped' => false,
-                'required' => false,
-                'attr' => [
-                    'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
-                ]
             ]);
+        if ($options['type'] == 'create') {
+            $builder
+                ->add(
+                    'clientTemp',
+                    TextType::class,
+                    [
+                        'label' => 'Raison sociale temporaire',
+                        'mapped' => false,
+                        'required' => false,
+                        'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
+                        'attr' => [
+                            'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
+                        ],
+                    ]
+                );
+        }
+        if ($options['type'] == 'edit') {
+            $builder
+                ->add(
+                    'existClient',
+                    TextType::class,
+                    [
+                        'label' => 'Raison sociale temporaire renseigné par le client',
+                        'data' => str_replace('tmp_', '', $options["clientTemp"]),
+                        'mapped' => false,
+                        'required' => false,
+                        'disabled' => true,
+                        'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
+                        'attr' => [
+                            'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
+                        ],
+                    ]
+                )
+                ->add(
+                    'addClient',
+                    ChoiceType::class,
+                    [
+                        'label' => 'Associer à la raison sociale',
+                        'choices' => $this->clientRepository->findActiveClients(),
+                        'choice_label' => 'raisonSociale',
+                        'mapped' => false,
+                        'required' => false,
+                        'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
+                        'attr' => [
+                            'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
+                        ]
+                    ]
+                );
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Expediteur::class,
-            'type' => 'modify'
+            'type' => 'edit',
+            'clientTemp' => 'Aucune raison sociale définie'
         ]);
     }
 }

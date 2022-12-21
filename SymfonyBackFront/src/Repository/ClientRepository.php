@@ -39,20 +39,17 @@ class ClientRepository extends ServiceEntityRepository
         }
     }
 
-    //    /**
-    //     * @return Client[] Returns an array of Client objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Client[] Returns an array with active Clients
+     */
+    public function findActiveClients(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere("c.raisonSociale NOT LIKE '%tmp_%'")
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
     //    public function findOneBySomeField($value): ?Client
     //    {
