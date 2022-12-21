@@ -105,7 +105,7 @@ class ExpediteurRepository extends ServiceEntityRepository
                 client.raisonSociale AS raisonSociale
             ')
             ->from('App\Entity\Expediteur', 'e')
-            ->where('e.nom LIKE :nom')
+            ->where('e.nom LIKE :nom OR e.prenom LIKE :nom OR client.raisonSociale LIKE :nom')
             ->leftJoin('e.client', 'client')
             ->setParameter('nom', '%' . $nom . '%')
             ->getQuery()
