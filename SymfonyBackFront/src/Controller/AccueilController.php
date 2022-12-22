@@ -9,6 +9,8 @@ use App\Repository\StatutRepository;
 use App\Services\DataFinder;
 use App\Services\DateMaker;
 use App\Services\ExportCSV;
+use App\Services\MessageService;
+use App\Services\RequestManager;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -28,27 +30,32 @@ courriers présents dans la base données.
 #[IsGranted('ROLE_ADMIN')]
 class AccueilController extends AbstractController
 {
+    public function __construct(
+        private DataFinder $dataFinder,
+        DateMaker $dateMaker,
+        ExportCSV $exportCsv,
+        MessageService $messageService,
+        RequestManager $requestManager
+    ) {
+        $this->$dataFinder = $dataFinder;
+        $this->dateMaker = $dateMaker;
+        $this->messageService = $messageService;
+        $this->exportCsv = $exportCsv;
+        $this->requestManager = $requestManager;
+    }
+
     /*
     Retourne un template twig avec tous les courriers avec une pagination.
     */
     #[Route('/', name: 'accueil')]
-    public function index(
-        StatutCourrierRepository $statutCourrierRepo, // Le répertoire contenant un tableau de tous les courriers
-        Request $request,
-        PaginatorInterface $paginator, // Interface de pagination
-        StatutRepository $statuts,
-        ExpediteurRepository $expediteurRepository,
-        DateMaker $dateMaker,
-        DataFinder $dataFinder
-    ): Response {
+    public function index(Request $request): Response
+    {
 
         // vérification que l'admin soit bien connecté sinon redirection vers la page de connexion
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
 
-        $order = $request->get('order') ?? "DESC";
-        $currentPage = $request->get('currentPage') ?? 1;
         $rechercheCourrier = $request->get('recherche');
 
         $form = $this->createForm(DateType::class)->handleRequest($request);
@@ -57,71 +64,47 @@ class AccueilController extends AbstractController
             return $this->redirectToRoute(
                 'app_accueil',
                 [
-                    'order' => $order,
+                    'order' => $request->get('order') ?? "DESC",
                     'DateMin' => $form->get('DateMin')->getData(),
                     'DateMax' => $form->get('dateMax')->getData()
                 ]
             );
         }
 
-        $data = $dataFinder->GetCourriers(
-            $statutCourrierRepo,
-            $order,
+        $data = $this->dataFinder->GetCourriers(
+            $request->get('order') ?? "DESC",
             $rechercheCourrier,
-            $dateMaker->convertDateDefault($request->get('dateMin')),
-            $dateMaker->convertDateDefault($request->get('dateMax'))
+            $this->dateMaker->convertDateDefault($request->get('dateMin')),
+            $this->dateMaker->convertDateDefault($request->get('dateMax'))
         );
 
-        $courriers = $dataFinder->Paginate(
+        $dataPagination = $this->dataFinder->Paginate(
             $data,
-            $paginator,
-            $request->query->getInt('page'),
-            $currentPage
+            $request
         );
 
-        return $this->render('accueil/index.html.twig', [
-
-            'isError' => $request->get('isError') ?? false,
-            'courriers' => $courriers,
-            'statuts' => $statuts->findAll(),
-            'order' => $order == "DESC" ? "ASC" : "DESC",
-            'isSearching' => is_integer($rechercheCourrier) ? true : (is_string($rechercheCourrier) ? true : false),
-            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
-            'nbCourriersTotal' => count($data),
-            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
-            'errorMessage' => $request->get('errorMessage') ?? null,
-            'dateMin' => $request->get('dateMin') ?? null,
-            'dateMax' => $request->get('dateMax') ?? null,
-            'recherche' => $request->get('recherche')
-        ]);
+        return $this->render('accueil/index.html.twig', $this->requestManager->GenerateRenderRequest('accueil', $request, $dataPagination, $data));
     }
 
     /* 
         Cette méthode permet d'exporter les données passés en requêtes en format csv (microsoft excel)
     */
 
-    #[Route('/exportCsv', name: 'export_csv')]
-    public function exportCsv(
-        Request $request,
-        StatutCourrierRepository $statutCourrierRepository,
-        ExportCSV $export,
-        DateMaker $dateMaker,
-        DataFinder $dataFinder
-    ) {
-        $data = $dataFinder->GetCourriers(
-            $statutCourrierRepository,
+    #[Route('/export', name: 'export_csv')]
+    public function export(Request $request)
+    {
+        $data = $this->dataFinder->GetCourriers(
             $request->get('order'),
             $request->get('recherche'),
-            $dateMaker->convertDateDefault($request->get('dateMin')),
-            $dateMaker->convertDateDefault($request->get('dateMax'))
+            $this->dateMaker->convertDateDefault($request->get('dateMin')),
+            $this->dateMaker->convertDateDefault($request->get('dateMax'))
         );
-        $export->ExportFile($data);
-        return $export->GetFile();
+
         try {
-            $export->ExportFile($data);
-            return $export->GetFile();
+            $this->exportCsv->ExportFile($data);
+            return $this->exportCsv->GetFile();
         } catch (Exception) {
-            return $this->redirectToRoute('app_accueil', ['errorMessage' => "L'exportation en .csv a échoué", 'isError' => true], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_accueil', $this->messageService->GetErrorMessage("Exportation CSV", 1), Response::HTTP_SEE_OTHER);
         }
     }
 }

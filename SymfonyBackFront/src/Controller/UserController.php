@@ -6,10 +6,13 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\ExpediteurRepository;
 use App\Repository\UserRepository;
+use App\Services\DataFinder;
+use App\Services\EntityManagementService;
+use App\Services\MessageService;
+use App\Services\RequestManager;
 use DateTime;
 use DateTimeZone;
 use Exception;
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,87 +28,58 @@ Seul le super admin a les droits d'accès aux différentes méthodes de cette cl
 #[Route('/admin', name: 'app_')]
 #[IsGranted('ROLE_SUPERADMIN')]
 
-class AdminController extends AbstractController
+class UserController extends AbstractController
 {
+
+    public function __construct(private RequestManager $requestManager, EntityManagementService $entityManagementService, MessageService $messageService)
+    {
+        $this->requestManager = $requestManager;
+        $this->entityManagementService = $entityManagementService;
+        $this->messageService = $messageService;
+    }
 
     /* 
     Retourne un template twig avec la liste des admins avec une pagination.
     */
     #[Route('/', name: 'admin')]
     public function index(
-        UserRepository $admins,
-        Request $request,
-        PaginatorInterface $paginator,
-        ExpediteurRepository $expediteurRepository
+        DataFinder $dataFinder,
+        Request $request
     ): Response {
 
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
 
-        $currentPage = $request->get('currentPage') ?? 1;
+        $data = $dataFinder->GetAdmins();
 
-        $data = $admins->findAll([], ['id' => 'DESC']);
-        $admins = $paginator->paginate(
-            $data,
-            $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
-        );
+        $dataPagination = $dataFinder->Paginate($data, $request);
 
-        return $this->render('admin/index.html.twig', [
-            'admins' => $admins,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
-            'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false,
-            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
-            'nbAdminsTotal' => count($data)
-        ]);
+        return $this->render('admin/index.html.twig', $this->requestManager->GenerateRenderRequest('admin', $request, $dataPagination, $data));
     }
 
     /* 
         La méthode new permet de créer un administrateur ayant comme rôle ROLE_ADMIN
     */
     #[Route('/ajouter', name: 'admin_add')]
-    public function new(Request $request, UserRepository $adminRepository, UserPasswordHasherInterface $passwordHasher, ExpediteurRepository $expediteurRepository): Response
+    public function new(Request $request): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
 
-        $timezone = new DateTimeZone('UTC');
-
-        $admin = new User();
-        $form = $this->createForm(UserType::class, $admin, ['addUser' => true]);
-        $form->handleRequest($request);
-
-        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
-        $message = $messages["Messages Informations"]["Administrateur"]["Création"];
-        $messageErreur = $messages["Messages Erreurs"]["Administrateur"]["Création"];
+        $form = $this->createForm(UserType::class, null, ['addUser' => true])->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $pass = $form->get('password')->getData();
-            $hashedPassword = $passwordHasher->hashPassword(
-                $admin,
-                $pass
-            );
-            $admin->setPassword($hashedPassword);
-            $admin->setCreatedAt(new DateTime('now', $timezone));
-            $admin->setUpdatedAt(new DateTime('now', $timezone));
-            $admin->setRoles(['ROLE_ADMIN']);
             try {
-                $adminRepository->add($admin);
-                return $this->redirectToRoute('app_admin', ['errorMessage' => str_replace('[nom]', $admin->getNom(), $message)], Response::HTTP_SEE_OTHER);
+                $admin = $this->entityManagementService->MakeUser($form);
+                return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 1, $admin->get('nom')->getData()), Response::HTTP_SEE_OTHER);
             } catch (Exception) {
-                return $this->redirectToRoute('app_admin_add', ['errorMessage' => str_replace('[nom]', $admin->getNom(), $messageErreur), 'isError' => true], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin_add', $this->messageService->GetErrorMessage("Administrateur", 1, $admin->get('nom')->getData()), Response::HTTP_SEE_OTHER);
             }
         }
 
-        return $this->renderForm('admin/new.html.twig', [
-            'user_step' => $admin,
-            'form' => $form,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
-            'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false
-        ]);
+        return $this->renderForm('admin/new.html.twig', $this->requestManager->GenerateRenderFormRequest('admin_add', $request, $form));
     }
 
     /* 

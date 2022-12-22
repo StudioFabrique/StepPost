@@ -1,0 +1,64 @@
+{
+    "Messages Informations": {
+        "Administrateur": {
+            "1,Création": "L'administrateur [nom] a été créé",
+            "2,Modification": "L'administrateur [nom] a été modifié",
+            "3,Suppression": "L'administrateur [nom] a été supprimé"
+        },
+        "Expéditeur": {
+            "1,Création": "L'expéditeur [nom] a été créé et un email de confirmation lui a été envoyé",
+            "2,Modification": "L'expéditeur [nom] a été modifié",
+            "3,Suppression": "L'expéditeur [nom] a bien été supprimé",
+            "4,Activation": "L'expéditeur [nom] a bien été activé et il a été informé par mail"
+        },
+        "Facteur": {
+            "1,Création": "Le facteur [nom] a été créé",
+            "2,Modification": "Le facteur [nom] a été modifié",
+            "3,Suppression": "Le facteur [nom] a été supprimé"
+        },
+        "Raison sociale": {
+            "1,Création": "La raison sociale [nom] a été créé",
+            "2,Modification": "La raison sociale [nom] a été modifié",
+            "3,Suppression": "La raison sociale [nom] a été supprimé",
+            "4,Ajout expéditeur": "L'expéditeur [nom] a été ajouté à cette raison sociale",
+            "5,Supression expéditeur": "L'expéditeur [nom] a bien été détaché de cette raison sociale"
+        },
+        "Statut courrier": {
+            "1,Mise à jour": "Le statut a été mis à jour",
+            "2,Suppression": "Le statut a bien été supprimé"
+        }
+    },
+    "Messages Erreurs": {
+        "Administrateur": {
+            "1,Création": "L'adresse mail saisie est déjà associée à un administrateur existant",
+            "2,Modification": "L'email saisie est déjà attribuée à un autre administrateur",
+            "3,Suppression": "L'administrateur [nom] n'a pas pu être supprimé"
+        },
+        "Expéditeur": {
+            "1,Création": "L'adresse mail saisie est déjà associée à un expéditeur existant",
+            "2,CréationBis": "Une erreur s'est produite lors de l'envoi du mail",
+            "3,Modification": "La modification de l'expediteur est impossible car l'adresse mail est déjà attribuée à un autre expéditeur",
+            "4,Suppression": "L'expéditeur [nom] n'a pas pu être supprimé",
+            "5,Activation": "L'activation du compte de l'expéditeur n'a pas pu être effectué"
+        },
+        "Facteur": {
+            "1,Création": "L'adresse mail saisie est déjà associée à un facteur existant",
+            "2,Modification": "Le facteur [nom] n'a pas pu être modifié",
+            "3,Suppression": "Le facteur [nom] n'a pas pu être supprimé"
+        },
+        "Raison sociale": {
+            "1,Création": "La raison sociale [nom] n'a pas pu être créé car elle existe déjà",
+            "2,Modification": "La raison sociale [nom] n'a pas pu être modifié",
+            "3,Suppression": "La raison sociale [nom] n'a pas pu être supprimé",
+            "4,Ajout expéditeur": "L'expéditeur [nom] n'a pas pu être ajouté",
+            "5,Supression expéditeur": "L'expéditeur [nom] n'a pas pu être détaché"
+        },
+        "Statut courrier": {
+            "1,Mise à jour": "Impossible de mettre le statut à jour",
+            "2,Suppression": "Impossible de supprimer le statut"
+        },
+        "Exportation CSV": {
+            "1,Exportation": "L'exportation en .csv a échoué"
+        }
+    }
+}
