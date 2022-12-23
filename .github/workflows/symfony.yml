@@ -65,7 +65,9 @@ jobs:
       # caches
       - name: symfony caches clear
         run: DATABASE_URL="mysql://root@127.0.0.1:3306/?serverVersion=5.7&charset=utf8mb4" php bin/console cache:clear --env=prod
-      
+      # make .csv
+      - name: make csv directory and courriers.csv file
+        run: mkdir public/csv && touch public/csv/courriers.csv
       # Copying files and artifacts via SSH
       - name: Copying files to server
         uses: appleboy/scp-action@master
