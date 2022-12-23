@@ -8,8 +8,9 @@ class MessageService
     {
         $messages = array();
         $index = 1;
-        foreach ($this->DecodeMessageArray('error')[$type] as $message) {
+        foreach ($this->DecodeMessageArray('success')[$type] as $message) {
             $messages[$index] = $message;
+            $index++;
         }
         return ['errorMessage' => str_replace('[nom]', $replace, $messages[$action])];
     }
@@ -20,6 +21,7 @@ class MessageService
         $index = 1;
         foreach ($this->DecodeMessageArray('error')[$type] as $message) {
             $messages[$index] = $message;
+            $index++;
         }
         return ['errorMessage' => str_replace('[nom]', $replace, $messages[$action]), 'isError' => true];
     }

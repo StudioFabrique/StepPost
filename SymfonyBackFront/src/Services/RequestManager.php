@@ -9,17 +9,19 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RequestManager
 {
-    public function __construct(private StatutRepository $statutRepo, ExpediteurRepository $expediteurRepo)
+    private $statutRepo, $expediteurRepo, $dataFinder;
+    public function __construct(StatutRepository $statutRepo, ExpediteurRepository $expediteurRepo, DataFinder $dataFinder)
     {
         $this->statutRepo = $statutRepo;
         $this->expediteurRepo = $expediteurRepo;
+        $this->dataFinder = $dataFinder;
     }
 
     public function GenerateRenderRequest(string $routeName, Request $request, $dataPagination = null, $data = null): array
     {
         switch ($routeName) {
             case "accueil":
-                $requests = [
+                return [
                     'isError' => $request->get('isError') ?? false,
                     'courriers' => $dataPagination,
                     'statuts' => $this->statutRepo->findAll(),
@@ -35,7 +37,7 @@ class RequestManager
                 ];
                 break;
             case "admin":
-                $requests = [
+                return [
                     'admins' => $dataPagination,
                     'expediteursInactifs' => $this->expediteurRepo->findAllInactive(),
                     'errorMessage' => $request->get('errorMessage') ?? null,
@@ -44,25 +46,34 @@ class RequestManager
                     'nbAdminsTotal' => count($data)
                 ];
                 break;
+            case "expediteur":
+                return [
+                    'expediteurs' => $dataPagination,
+                    'expediteursInactifs' => $this->dataFinder->getExpediteurs($request, true),
+                    'isSearch' => $request->get('recherche'),
+                    'openDetails' => $request->get('openDetails') ?? false,
+                    'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $request->get('currentPage') ?? 1,
+                    'errorMessage' => $request->get('errorMessage') ?? null,
+                    'isError' => $request->get('isError') ?? false,
+                    'nbExpediteursTotal' => count($data),
+                    'checkBoxExact' => $request->get('checkBoxExact') ?? false
+                ];
+                break;
         }
-
-        return $requests;
     }
 
     public function GenerateRenderFormRequest(string $routeName, Request $request, Form $form): array
     {
         switch ($routeName) {
-            case "admin_add":
-                $requests = [
+            case "admin":
+                return [
                     'form' => $form,
                     'expediteursInactifs' => $this->expediteurRepo->findAllInactive(),
                     'errorMessage' => $request->get('errorMessage') ?? null,
-                    'isError' => $request->get('isError') ?? false
+                    'isError' => $request->get('isError') ?? false,
                 ];
                 break;
         }
-
-        return $requests;
     }
 
     public function __toString()

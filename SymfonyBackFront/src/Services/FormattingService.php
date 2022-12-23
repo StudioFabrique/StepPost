@@ -7,7 +7,7 @@ use Symfony\Component\Serializer\Serializer;
 
 // Cette classe contient des méthodes permettant de formatter des objets selons certains critères.
 
-class FormatageObjet
+class FormattingService
 {
     /* 
         Cette méthode permet de tranformer tous les champs d'une entité (venant d'un formulaire par exemple) en lowercase.
@@ -37,4 +37,6 @@ class FormatageObjet
 
         return !$isArrayOut ? $serializer->denormalize($newArray, $objectClass, null, [ObjectNormalizer::OBJECT_TO_POPULATE => $object]) : $newArray;
     }
+
+    // public function generateJWT()
 }

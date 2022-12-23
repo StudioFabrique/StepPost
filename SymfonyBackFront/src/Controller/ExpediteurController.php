@@ -8,12 +8,15 @@ use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
+use App\Services\DataFinder;
+use App\Services\FormattingService;
+use App\Services\MessageService;
+use App\Services\RequestManager;
 use DateTime;
 use DateTimeZone;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,56 +38,33 @@ Cette classe donne la possibilité de créer, modifier, activer et supprimer un 
 #[IsGranted('ROLE_ADMIN')]
 class ExpediteurController extends AbstractController
 {
+    private $requestManager, $dataFinder, $formattingService, $messageService;
+
+    public function __construct(RequestManager $requestManager, DataFinder $dataFinder, FormattingService $formattingService, MessageService $messageService)
+    {
+        $this->requestManager = $requestManager;
+        $this->dataFinder = $dataFinder;
+        $this->formattingService = $formattingService;
+        $this->messageService = $messageService;
+    }
+
     /*
         Retourne un template twig avec la liste de tous les expéditeurs
     */
     #[Route('/expediteurs', name: 'expediteur')]
     public function index(
-        ExpediteurRepository $expediteurs,
-        Request $request,
-        PaginatorInterface $paginator
+        Request $request
     ): Response {
 
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
 
-        $expediteursInactifs = $expediteurs->findAllInactive();
+        $data = $this->dataFinder->GetExpediteurs($request);
 
-        $index = 0;
-        foreach ($expediteursInactifs as $expediteur) {
-            $expediteursInactifs[$index]["raisonSociale"] = str_replace("tmp_", "", $expediteur["raisonSociale"]);
-            $index++;
-        }
+        $dataPagination = $this->dataFinder->Paginate($data, $request);
 
-        $rechercheExpediteur = $request->get('recherche');
-        $isCheckBoxExact = $request->get('checkBoxExact');
-        $openDetails = $request->get('openDetails') ?? false;
-        $currentPage = $request->get('currentPage') ?? 1;
-
-        if ($rechercheExpediteur != null && strval($rechercheExpediteur)) {
-            $isCheckBoxExact ? $data = $expediteurs->findBy(['nom' => $rechercheExpediteur])
-                : $data = $expediteurs->findLike($rechercheExpediteur);
-        } else {
-            $data = $expediteurs->findAll([], ['id' => 'DESC']);
-        }
-
-        $expediteur = $paginator->paginate(
-            $data,
-            $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
-        );
-
-        return $this->render('expediteur/index.html.twig', [
-            'expediteurs' => $expediteur,
-            'expediteursInactifs' => $expediteursInactifs,
-            'isSearch' => $rechercheExpediteur,
-            'openDetails' => $openDetails,
-            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
-            'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false,
-            'nbExpediteursTotal' => count($data),
-            'checkBoxExact' => $isCheckBoxExact ?? false
-        ]);
+        return $this->render('expediteur/index.html.twig', $this->requestManager->GenerateRenderRequest("expediteur", $request, $dataPagination, $data));
     }
 
     /* 
@@ -101,11 +81,6 @@ class ExpediteurController extends AbstractController
 
         $form = $this->createForm(ExpediteurType::class, null, ['type' => 'create']);
         $form->handleRequest($request);
-
-        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
-        $message = $messages["Messages Informations"]["Expéditeur"]["Création"];
-        $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Création"];
-        $messageErreurBis = $messages["Messages Erreurs"]["Expéditeur"]["CréationBis"];
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -128,7 +103,7 @@ class ExpediteurController extends AbstractController
 
             $expediteur = $form->getData();
             $expediteur->setClient(null);
-            $expediteurArray = (new FormatageObjet)
+            $expediteurArray = $this->formattingService
                 ->stringToLowerObject(
                     $expediteur,
                     Expediteur::class,
@@ -157,10 +132,7 @@ class ExpediteurController extends AbstractController
                 $raison != null ? $expediteur->setClient($raison) : NULL;
                 $expediteurRepo->add($expediteur, true);
             } catch (UniqueConstraintViolationException) {
-                return $this->redirectToRoute('app_addExpediteur', [
-                    str_replace('[nom]', $expediteur->getNom(), $messageErreur),
-                    'isError' => true
-                ]);
+                return $this->redirectToRoute('app_addExpediteur', $this->messageService->GetErrorMessage("Expéditeur", 1));
             }
 
             try {
@@ -170,15 +142,10 @@ class ExpediteurController extends AbstractController
                     ->subject('Création de votre compte client')
                     ->html($body);
                 $mailer->send($mail);
-                return $this->redirectToRoute('app_expediteur', [
-                    'errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)
-                ]);
+                return $this->redirectToRoute('app_expediteur', $this->messageService->GetSuccessMessage("Expéditeur", 1));
             } catch (TransportExceptionInterface $e) {
                 // supprimer le compte expéditeur créé si envoi raté de l'email
-                return $this->redirectToRoute('app_addExpediteur', [
-                    'errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreurBis),
-                    'isError' => true
-                ]);
+                return $this->redirectToRoute('app_addExpediteur', $this->messageService->GetErrorMessage("Expéditeur", 2));
             }
         }
 
@@ -227,7 +194,7 @@ class ExpediteurController extends AbstractController
                 ]);
             }
             $ancienExpediteur->setClient(null);
-            $expediteur = (new FormatageObjet)->stringToLowerObject(
+            $expediteur = $this->formattingService->stringToLowerObject(
                 $ancienExpediteur,
                 Expediteur::class,
                 array('client')

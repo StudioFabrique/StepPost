@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repository\ExpediteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\UserRepository;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -10,16 +11,29 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DataFinder
 {
-    public function __construct(private StatutCourrierRepository $statutCourrierRepo, PaginatorInterface $paginator, UserRepository $userRepo)
-    {
+    private $statutCourrierRepo, $paginator, $userRepo, $dateMaker, $expediteurRepo;
+    public function __construct(
+        StatutCourrierRepository $statutCourrierRepo,
+        PaginatorInterface $paginator,
+        UserRepository $userRepo,
+        DateMaker $dateMaker,
+        ExpediteurRepository $expediteurRepo
+    ) {
         $this->statutCourrierRepo = $statutCourrierRepo;
         $this->paginator = $paginator;
         $this->userRepo = $userRepo;
+        $this->dateMaker = $dateMaker;
+        $this->expediteurRepo = $expediteurRepo;
     }
 
-    public function GetCourriers($order, $rechercheCourrier = null, $dateMin = null, $dateMax = null): array
+    public function GetCourriers(Request $request): array
     {
-        $data = $this->statutCourrierRepo->findCourriers($order, $rechercheCourrier, $dateMin, $dateMax);
+        $data = $this->statutCourrierRepo->findCourriers(
+            $request->get('order') ?? "DESC",
+            $request->get('recherche'),
+            $this->dateMaker->convertDateDefault($request->get('dateMin')),
+            $this->dateMaker->convertDateDefault($request->get('dateMax'))
+        );
 
         return $data;
     }
@@ -28,6 +42,28 @@ class DataFinder
     {
         $data = $this->userRepo->findAll([], ['id' => 'DESC']);
         return $data;
+    }
+
+    public function GetExpediteurs(Request $request, bool $inactives = false): array
+    {
+        if ($inactives) {
+            $index = 0;
+            $expediteursInactifs = $this->expediteurRepo->findAllInactive();
+            foreach ($this->expediteurRepo->findAllInactive() as $expediteur) {
+                $expediteursInactifs[$index]["raisonSociale"] = str_replace("tmp_", "", $expediteur["raisonSociale"]);
+                $index++;
+            }
+            return $expediteursInactifs;
+        } else {
+            $rechercheExpediteur = $request->get('recherche');
+            if ($rechercheExpediteur != null && strval($rechercheExpediteur)) {
+                $request->get("checkBoxExact") ? $data = $this->expediteurRepo->findBy(['nom' => $rechercheExpediteur])
+                    : $data = $this->expediteurRepo->findLike($rechercheExpediteur);
+            } else {
+                $data = $this->expediteurRepo->findAll([], ['id' => 'DESC']);
+            }
+            return $data;
+        }
     }
 
     public function Paginate($data, Request $request): PaginationInterface
@@ -40,10 +76,5 @@ class DataFinder
         );
 
         return $courriers;
-    }
-
-    public function __toString()
-    {
-        return '';
     }
 }

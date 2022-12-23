@@ -3,7 +3,8 @@
         "Administrateur": {
             "1,Création": "L'administrateur [nom] a été créé",
             "2,Modification": "L'administrateur [nom] a été modifié",
-            "3,Suppression": "L'administrateur [nom] a été supprimé"
+            "3,Modification mot de passe": "Le mot de passe de l'administrateur [nom] a été modifié",
+            "4,Suppression": "L'administrateur [nom] a été supprimé"
         },
         "Expéditeur": {
             "1,Création": "L'expéditeur [nom] a été créé et un email de confirmation lui a été envoyé",
@@ -32,7 +33,8 @@
         "Administrateur": {
             "1,Création": "L'adresse mail saisie est déjà associée à un administrateur existant",
             "2,Modification": "L'email saisie est déjà attribuée à un autre administrateur",
-            "3,Suppression": "L'administrateur [nom] n'a pas pu être supprimé"
+            "3,Modification mot de passe": "Le mot de passe de l'administrateur [nom] n'a pas pu été modifié",
+            "4,Suppression": "L'administrateur [nom] n'a pas pu être supprimé"
         },
         "Expéditeur": {
             "1,Création": "L'adresse mail saisie est déjà associée à un expéditeur existant",

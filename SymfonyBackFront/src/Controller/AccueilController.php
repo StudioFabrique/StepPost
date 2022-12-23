@@ -2,22 +2,16 @@
 
 namespace App\Controller;
 
-use App\Form\DateType;
-use App\Repository\ExpediteurRepository;
-use App\Repository\StatutCourrierRepository;
-use App\Repository\StatutRepository;
-use App\Services\DataFinder;
-use App\Services\DateMaker;
-use App\Services\ExportCSV;
-use App\Services\MessageService;
-use App\Services\RequestManager;
 use Exception;
-use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Services\DataFinder;
+use App\Services\ExportCSV;
+use App\Services\MessageService;
+use App\Services\RequestManager;
 
 /*
 Cette classe est le point d'entrée de l'application après que 
@@ -30,15 +24,14 @@ courriers présents dans la base données.
 #[IsGranted('ROLE_ADMIN')]
 class AccueilController extends AbstractController
 {
+    private $dataFinder, $exportCsv, $messageService, $requestManager;
     public function __construct(
-        private DataFinder $dataFinder,
-        DateMaker $dateMaker,
+        DataFinder $dataFinder,
         ExportCSV $exportCsv,
         MessageService $messageService,
         RequestManager $requestManager
     ) {
-        $this->$dataFinder = $dataFinder;
-        $this->dateMaker = $dateMaker;
+        $this->dataFinder = $dataFinder;
         $this->messageService = $messageService;
         $this->exportCsv = $exportCsv;
         $this->requestManager = $requestManager;
@@ -56,27 +49,7 @@ class AccueilController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $rechercheCourrier = $request->get('recherche');
-
-        $form = $this->createForm(DateType::class)->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            return $this->redirectToRoute(
-                'app_accueil',
-                [
-                    'order' => $request->get('order') ?? "DESC",
-                    'DateMin' => $form->get('DateMin')->getData(),
-                    'DateMax' => $form->get('dateMax')->getData()
-                ]
-            );
-        }
-
-        $data = $this->dataFinder->GetCourriers(
-            $request->get('order') ?? "DESC",
-            $rechercheCourrier,
-            $this->dateMaker->convertDateDefault($request->get('dateMin')),
-            $this->dateMaker->convertDateDefault($request->get('dateMax'))
-        );
+        $data = $this->dataFinder->GetCourriers($request);
 
         $dataPagination = $this->dataFinder->Paginate(
             $data,
@@ -93,12 +66,7 @@ class AccueilController extends AbstractController
     #[Route('/export', name: 'export_csv')]
     public function export(Request $request)
     {
-        $data = $this->dataFinder->GetCourriers(
-            $request->get('order'),
-            $request->get('recherche'),
-            $this->dateMaker->convertDateDefault($request->get('dateMin')),
-            $this->dateMaker->convertDateDefault($request->get('dateMax'))
-        );
+        $data = $this->dataFinder->GetCourriers($request);
 
         try {
             $this->exportCsv->ExportFile($data);
