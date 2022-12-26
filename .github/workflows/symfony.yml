@@ -90,4 +90,4 @@ jobs:
           script: | 
             rsync -a --delete ${{ secrets.REMOTE_TARGET }} ${{ secrets.REMOTE_TARGET_DEPLOY }}
             cd deploy_temp/SymfonyBackFront/public/ && ls
-            echo ${{ secrets.USER_PASSWORD }} | sudo chown -S -R www-data:www-data csv
+            echo ${{ secrets.USER_PASSWORD }} | sudo -S chown -R www-data:www-data csv
