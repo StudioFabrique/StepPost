@@ -52,6 +52,7 @@ jobs:
           envkey_CORS_ALLOW_ORIGIN: '^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
           envkey_MAILER_DSN: ${{ secrets.APP_MAILER_DSN }}
           envkey_PASS_PHRASE: ${{ secrets.APP_PASS_PHRASE }}
+          envkey_SETUP_PASS: ${{ secrets.SETUP_PASS }}
           file_name: .env
       - name: move .env to the symfony folder
         run: mv ../.env .env && ls -a

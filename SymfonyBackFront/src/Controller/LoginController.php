@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Services\ConfigAppService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,8 +12,12 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class LoginController extends AbstractController
 {
     #[Route(path: '/', name: 'login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, ConfigAppService $configAppService): Response
     {
+        if ($configAppService->needToBeSetup()) {
+            return $configAppService->setupApp();
+        }
+
         if ($this->getUser()) {
             return $this->redirectToRoute('app_accueil');
         }

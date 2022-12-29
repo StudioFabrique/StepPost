@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Configuration de Step Post Gestion{% endblock %}
+
+{% block body %}
+<main class="w-[90%] m-auto">
+    {% if form %}
+        {{ include('admin/_form.html.twig') }}
+    {% else %}
+        <form method="post">
+            <label for="number">PASS :</label>
+            <input type="number" name="pass" id="pass">
+            <input type="submit" value="Confirmer">
+        </form>
+    {% endif %}
+</main>
+{% endblock %}
