@@ -121,7 +121,8 @@ class ExpediteurRepository extends ServiceEntityRepository
                 e.nom,
                 e.prenom,
                 e.roles,
-                client.raisonSociale AS raisonSociale
+                client.raisonSociale AS raisonSociale,
+                LENGTH(e.password) AS pswLength
             ')
             ->from('App\Entity\Expediteur', 'e')
             ->where('e.roles LIKE :role')

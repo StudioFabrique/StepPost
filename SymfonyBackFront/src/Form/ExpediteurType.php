@@ -84,22 +84,6 @@ class ExpediteurType extends AbstractType
                     'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
                 ],
             ]);
-        if ($options['type'] == 'create') {
-            $builder
-                ->add(
-                    'clientTemp',
-                    TextType::class,
-                    [
-                        'label' => 'Raison sociale temporaire',
-                        'mapped' => false,
-                        'required' => false,
-                        'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
-                        'attr' => [
-                            'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
-                        ],
-                    ]
-                );
-        }
         if ($options['type'] == 'edit') {
             $builder
                 ->add(
@@ -132,7 +116,23 @@ class ExpediteurType extends AbstractType
                         ]
                     ]
                 );
-        }
+        };
+        $builder
+            ->add(
+                'addClient',
+                ChoiceType::class,
+                [
+                    'label' => 'Associer à la raison sociale',
+                    'choices' => $this->clientRepository->findActiveClients(),
+                    'choice_label' => 'raisonSociale',
+                    'mapped' => false,
+                    'required' => $options['type'] == 'create' ? true : false,
+                    'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
+                    'attr' => [
+                        'class' => 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4',
+                    ]
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
