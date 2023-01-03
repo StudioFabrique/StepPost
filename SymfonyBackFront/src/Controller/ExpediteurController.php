@@ -304,8 +304,13 @@ class ExpediteurController extends AbstractController
 
         $expediteurId = $request->get('expediteurId');
         $expediteur = ($expediteurRepository->find($expediteurId))->setRoles(['ROLE_CLIENT']);
-        $client = ($expediteur->getClient());
+        $client = $expediteur->getClient();
         $client->setRaisonSociale(str_replace("tmp_", "", $client->getRaisonSociale()));
+        if (in_array($client, $clientRepository->findAll())) {
+            return $this->redirectToRoute('app_expediteur', [
+                "errorMessage" => $this->messageService->GetErrorMessage("Raison Sociale", 1, $client->getRaisonSociale())
+            ]);
+        }
         $em->persist($client);
         $email = (new Email())
             ->from('step.automaticmailservice@gmail.com')
