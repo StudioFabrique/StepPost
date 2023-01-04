@@ -13,10 +13,10 @@ class Client
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(name: 'raisonSociale', length: 255, unique: true)]
-    private ?string $raisonSociale = null;
+    private string $raisonSociale;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Expediteur::class)]
     private Collection $expediteurs;
@@ -31,7 +31,7 @@ class Client
         return $this->id;
     }
 
-    public function getRaisonSociale(): ?string
+    public function getRaisonSociale(): string
     {
         return $this->raisonSociale;
     }
