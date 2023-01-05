@@ -60,7 +60,7 @@ class Expediteur implements UserInterface
     private $courriers;
 
     #[ORM\ManyToOne(inversedBy: 'expediteurs')]
-    private Client $client;
+    private ?Client $client = null;
 
     public function __construct()
     {
@@ -279,12 +279,12 @@ class Expediteur implements UserInterface
         return $this;
     }
 
-    public function getClient(): Client
+    public function getClient(): ?Client
     {
         return $this->client;
     }
 
-    public function setClient(?Client $client = null): self
+    public function setClient(?Client $client): self
     {
         $this->client = $client;
 

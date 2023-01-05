@@ -303,14 +303,9 @@ class ExpediteurController extends AbstractController
         $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Activation"];
 
         $expediteurId = $request->get('expediteurId');
-        $expediteur = ($expediteurRepository->find($expediteurId))->setRoles(['ROLE_CLIENT']);
+        $expediteur = $expediteurRepository->find($expediteurId);
         $client = $expediteur->getClient();
         $client->setRaisonSociale(str_replace("tmp_", "", $client->getRaisonSociale()));
-        if (in_array($client, $clientRepository->findAll())) {
-            return $this->redirectToRoute('app_expediteur', [
-                "errorMessage" => $this->messageService->GetErrorMessage("Raison Sociale", 1, $client->getRaisonSociale())
-            ]);
-        }
         $em->persist($client);
         $email = (new Email())
             ->from('step.automaticmailservice@gmail.com')
@@ -319,11 +314,11 @@ class ExpediteurController extends AbstractController
             ->text("Votre compte associé à l'adresse mail " . $expediteur->getEmail() . " a été activé. Vous pouvez donc vous connecter.");
 
         try {
-            $em->persist($expediteur);
+            $em->persist($expediteur->setRoles(['ROLE_CLIENT']));
             $em->flush();
             $mailer->send($email);
             return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)]);
-        } catch (UniqueConstraintViolationException $e) {
+        } catch (Exception $e) {
             return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur), 'isError' => true]);
         }
     }
