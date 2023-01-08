@@ -120,7 +120,7 @@ class ExpediteurController extends AbstractController
             $expInHtml = $nbHeureExp == 1 ? " heure </p>" : " heures </p>";
             $body = "
             <p> Bonjour" . ($form->get('prenom')->getData() != null ? " " . $form->get('prenom')->getData() . ",</p>" : ",</p>") . "<p>veuillez confirmer la création de votre compte client associé à l'email " . $form->get('email')->getData() . " avec le bouton se trouvant ci-dessous. </p>
-            <p><a href='https://main.d2o3rptynqut3f.amplifyapp.com/profil/validation-nouveau-compte?token=" . $token . "'> Confirmer la création de mon compte client </a></p>
+            <p><a href='https://step-post.fr/profil/validation-nouveau-compte?token=" . $token . "'> Confirmer la création de mon compte client </a></p>
             <p> La confirmation va expirer dans " . $nbHeureExp . $expInHtml;
 
 
@@ -311,7 +311,7 @@ class ExpediteurController extends AbstractController
             ->from('step.automaticmailservice@gmail.com')
             ->subject('Activation de votre compte Step Post')
             ->to($expediteur->getEmail())
-            ->text("Votre compte associé à l'adresse mail " . $expediteur->getEmail() . " a été activé. Vous pouvez donc vous connecter.");
+            ->html("<p>Votre compte associé à l'adresse mail " . $expediteur->getEmail() . " a été activé. Vous pouvez donc vous connecter à adresse : </p><a href='https://step-post.fr'>https://step-post.fr</a>");
 
         try {
             $em->persist($expediteur->setRoles(['ROLE_CLIENT']));
