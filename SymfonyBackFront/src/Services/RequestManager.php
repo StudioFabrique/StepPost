@@ -56,8 +56,7 @@ class RequestManager
                     'errorMessage' => $request->get('errorMessage') ?? null,
                     'isError' => $request->get('isError') ?? false,
                     'nbExpediteursTotal' => count($data),
-                    'checkBoxExact' => $request->get('checkBoxExact') ?? false,
-                    'redirectTo' => $request->get("redirectTo")
+                    'checkBoxExact' => $request->get('checkBoxExact') ?? false
                 ];
                 break;
         }

@@ -110,7 +110,7 @@
                         {{ courrier.raison ?? 'non définie' }}
                         <hr class="border-y-2 my-2 border-blue-300">
                         <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white"
-                            href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur, recherche: recherche ?? null, redirectTo: accueil}) }}">
+                            href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur, recherche: recherche ?? null, redirectTo: "app_accueil"}) }}">
                             détails
                         </a>
                     </td>
