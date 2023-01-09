@@ -14,5 +14,9 @@ import './img/arrow.svg';
 
 import './img/person.svg';
 
+import './img/favicon.ico';
+
+import './img/logo.png'
+
 // start the Stimulus application
 import './bootstrap';

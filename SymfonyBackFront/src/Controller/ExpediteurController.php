@@ -11,6 +11,7 @@ use App\Repository\ExpediteurRepository;
 use App\Services\DataFinder;
 use App\Services\FormattingService;
 use App\Services\MessageService;
+use App\Services\MailService;
 use App\Services\RequestManager;
 use DateTime;
 use DateTimeZone;
@@ -38,14 +39,21 @@ Cette classe donne la possibilité de créer, modifier, activer et supprimer un 
 #[IsGranted('ROLE_ADMIN')]
 class ExpediteurController extends AbstractController
 {
-    private $requestManager, $dataFinder, $formattingService, $messageService;
+    private $requestManager, $dataFinder, $formattingService, $messageService, $mailService;
 
-    public function __construct(RequestManager $requestManager, DataFinder $dataFinder, FormattingService $formattingService, MessageService $messageService)
+    public function __construct(
+        RequestManager $requestManager,
+        DataFinder $dataFinder,
+        FormattingService $formattingService,
+        MessageService $messageService,
+        MailService $mailService
+    )
     {
         $this->requestManager = $requestManager;
         $this->dataFinder = $dataFinder;
         $this->formattingService = $formattingService;
         $this->messageService = $messageService;
+        $this->mailService = $mailService;
     }
 
     /*
@@ -121,7 +129,7 @@ class ExpediteurController extends AbstractController
             $body = "
             <p> Bonjour" . ($form->get('prenom')->getData() != null ? " " . $form->get('prenom')->getData() . ",</p>" : ",</p>") . "<p>veuillez confirmer la création de votre compte client associé à l'email " . $form->get('email')->getData() . " avec le bouton se trouvant ci-dessous. </p>
             <p><a href='https://step-post.fr/profil/validation-nouveau-compte?token=" . $token . "'> Confirmer la création de mon compte client </a></p>
-            <p> La confirmation va expirer dans " . $nbHeureExp . $expInHtml;
+            <p> La confirmation va expirer dans " . $nbHeureExp . $expInHtml . $this->mailService->getSignature();
 
 
             try {
