@@ -51,8 +51,10 @@
                     {{ statut.statut ? statut.statut.etat }} {{statut.facteur != null ? 'par'}} {{statut.facteur != null
                     ? statut.facteur.nom}}
                 </p>
+                {% if statut.statut.statutCode >= 3 %}
                 <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded"
                     href="{{ path('app_delete_statut', { courrierId: statut.courrier.id, statutId: statut.id }) }}">Supprimer</a>
+                {% endif %}
             </div>
         </div>
         {% endfor %}

@@ -199,18 +199,13 @@ class ExpediteurController extends AbstractController
                 ]);
             }
             $ancienExpediteur->setClient(null);
-            $expediteur = $this->formattingService->stringToLowerObject(
-                $ancienExpediteur,
-                Expediteur::class,
-                array('client')
-            );
             try {
-                /* $expediteur = $this->formattingService->stringToLowerObject(
+                $expediteur = $this->formattingService->stringToLowerObject(
                     $ancienExpediteur,
                     Expediteur::class,
-                    array('client')
-                ); */
-                $em->persist($expediteur->setClient($form->get('addClient')->getData()));
+                    array('client', 'password')
+                );
+                $em->persist($expediteur->setClient($form->get('addClient')->getData())->setPassword($ancienExpediteur->getPassword()));
                 $em->flush();
                 return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)], Response::HTTP_SEE_OTHER);
             } catch (Exception $e) {
@@ -299,8 +294,7 @@ class ExpediteurController extends AbstractController
             'isError' => $request->get('isError') ?? false,
             'recherche' => $request->get('recherche'),
             'dateMin' => $request->get('dateMin'),
-            'dateMax' => $request->get('dateMax'),
-            'redirectTo' => $request->get("redirectTo")
+            'dateMax' => $request->get('dateMax')
         ]);
     }
 
