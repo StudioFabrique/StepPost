@@ -23,8 +23,8 @@ class FormattingService
 
     public function stringToLowerObject($object, string $objectClass, array $exclude = null, bool $isArrayOut = false)
     {
-        $serializer = new Serializer([new ObjectNormalizer()]);
-        $objectToTransform = $serializer->normalize($object);
+        $serializer = new Serializer([(new ObjectNormalizer())]);
+        $objectToTransform = $serializer->normalize($object, null, ['ignored_attributes' => ["courriers", "destinataires"]]);
         $newArray = array();
 
         foreach ($objectToTransform as $data => $value) {
@@ -38,7 +38,8 @@ class FormattingService
         return !$isArrayOut ? $serializer->denormalize($newArray, $objectClass, null, [ObjectNormalizer::OBJECT_TO_POPULATE => $object]) : $newArray;
     }
 
-    public function formatMailFromEnv(string $subject) {
+    public function formatMailFromEnv(string $subject)
+    {
         return str_replace('%40', '@', substr($subject, 13, strpos($subject, ":", 13)));
     }
 }

@@ -47,8 +47,7 @@ class ExpediteurController extends AbstractController
         FormattingService $formattingService,
         MessageService $messageService,
         MailService $mailService
-    )
-    {
+    ) {
         $this->requestManager = $requestManager;
         $this->dataFinder = $dataFinder;
         $this->formattingService = $formattingService;
@@ -205,11 +204,16 @@ class ExpediteurController extends AbstractController
                 array('client')
             );
             try {
+                /* $expediteur = $this->formattingService->stringToLowerObject(
+                    $ancienExpediteur,
+                    Expediteur::class,
+                    array('client')
+                ); */
                 $em->persist($expediteur->setClient($form->get('addClient')->getData()));
                 $em->flush();
                 return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)], Response::HTTP_SEE_OTHER);
             } catch (Exception $e) {
-                return $this->redirectToRoute('app_editExpediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur), 'isError' => true, 'id' => $ancienExpediteur->getId()], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_editExpediteur', ['errorMessage' => str_replace('[nom]', $ancienExpediteur->getNom(), $messageErreur), 'isError' => true, 'id' => $ancienExpediteur->getId()], Response::HTTP_SEE_OTHER);
             }
         }
 

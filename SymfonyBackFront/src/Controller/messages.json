@@ -37,7 +37,7 @@
         "Expéditeur": {
             "Création": "L'adresse mail saisie est déjà associée à un expéditeur existant",
             "CréationBis": "Une erreur s'est produite lors de l'envoi du mail",
-            "Modification": "La modification de l'expediteur est impossible car l'adresse mail est déjà attribuée à un autre expéditeur",
+            "Modification": "Une erreur s'est produite lors de la modification de l'expéditeur [nom]",
             "Suppression": "L'expéditeur [nom] n'a pas pu être supprimé",
             "Activation": "L'activation du compte de l'expéditeur n'a pas pu être effectué"
         },
