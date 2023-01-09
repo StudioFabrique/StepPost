@@ -16,6 +16,7 @@ use App\Services\RequestManager;
 use DateTime;
 use DateTimeZone;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -230,7 +231,7 @@ class ExpediteurController extends AbstractController
         La méthode Delete permet de supprimer un Expéditeur
     */
     #[Route('/delete/{id}', name: 'deleteExpediteur')]
-    public function Delete(Expediteur $expediteur, ExpediteurRepository $expediteurRepository): Response
+    public function Delete(Expediteur $expediteur, EntityManagerInterface $em): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -241,7 +242,9 @@ class ExpediteurController extends AbstractController
         $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Suppression"];
 
         try {
-            $expediteurRepository->remove($expediteur);
+            $expediteur->setRoles(["ROLE_DELETED"]);
+            $em->persist($expediteur);
+            $em->flush();
             return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message), Response::HTTP_SEE_OTHER]);
         } catch (Exception) {
             return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur), 'isError' => true], Response::HTTP_SEE_OTHER);

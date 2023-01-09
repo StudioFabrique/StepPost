@@ -40,9 +40,6 @@
                                 Prenom / Service
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                role
-                            </th>
-                            <th scope="col" class="px-6 py-3">
 
                             </th>
                             <th scope="col" class="px-6 py-3">
@@ -55,7 +52,6 @@
                     </thead>
                     <tbody>
                         {% for expediteur in expediteursInactifs %}
-                        {% set role = 'ROLE_INACTIF' in expediteur.roles ? 'utilisateur inactif' : 'expéditeur' %}
                         <tr class="bg-white border-b ">
                             <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap break-words">
                                 {{ expediteur.raisonSociale ? expediteur.raisonSociale : 'Non défini' }}
@@ -68,9 +64,6 @@
                             </td>
                             <td class="px-6 py-4">
                                 {{ expediteur.prenom }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ role }}
                             </td>
                             <td class="px-6 py-4">
                                 <a class="text-blue-800 bg-blue-100 p-2 rounded"
@@ -157,9 +150,6 @@
                         Prenom / Service
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        role
-                    </th>
-                    <th scope="col" class="px-6 py-3">
                         Création
                     </th>
                     <th scope="col" class="px-6 py-3">
@@ -175,8 +165,8 @@
             </thead>
             <tbody>
                 {% for expediteur in expediteurs %}
-                {% set role = 'ROLE_INACTIF' in expediteur.roles ? 'utilisateur inactif' : 'expéditeur' %}
-                {% if role == 'expéditeur' %}
+                {% set role = 'ROLE_DELETED' in expediteur.roles or 'ROLE_INACTIF' in expediteur.roles ? 'inactif' : 'actif' %}
+                {% if role == 'actif' %}
                 <tr class="bg-white border-b">
                     <td scope="row" class="px-6 py-4 font-medium text-gray-900 ">
                         {% if isSearch == true %}
@@ -198,9 +188,6 @@
                     </td>
                     <td class="px-6 py-4 break-words">
                         {{ expediteur.prenom }}
-                    </td>
-                    <td class="px-6 py-4 break-words">
-                        {{ role }}
                     </td>
                     <td class="px-6 py-4 break-words">
                         {{expediteur.createdAt | date('d-m-Y H:i', "Europe/Paris") }}
