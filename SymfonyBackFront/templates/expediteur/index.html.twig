@@ -180,7 +180,7 @@
                         {% endif %}
                     </td>
                     <td class="px-6 py-4 break-words">
-                        <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id}) }}">{{ expediteur.email
+                        <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id, redirectTo:"expediteur"}) }}">{{ expediteur.email
                             }}</a>
                     </td>
                     <td class="px-6 py-4 break-words">

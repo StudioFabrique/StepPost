@@ -299,7 +299,8 @@ class ExpediteurController extends AbstractController
             'isError' => $request->get('isError') ?? false,
             'recherche' => $request->get('recherche'),
             'dateMin' => $request->get('dateMin'),
-            'dateMax' => $request->get('dateMax')
+            'dateMax' => $request->get('dateMax'),
+            'redirectTo' => $request->get("redirectTo")
         ]);
     }
 
