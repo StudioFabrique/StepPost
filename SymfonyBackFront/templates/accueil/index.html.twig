@@ -42,8 +42,8 @@
                     <input name="recherche" type="search" class="form-control relative flex-auto min-w-0 px-3 py-1.5 
                         text-base font-normal text-gray-700 bg-white bg-clip-padding border 
                         border-solid border-gray-300 rounded transition ease-in-out m-0 
-                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="{{ recherche ?? "" }}"
-                        aria-label="" aria-describedby="button-addon2">
+                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                        placeholder="{{ recherche ?? "" }}" aria-label="" aria-describedby="button-addon2">
                 </div>
                 <label for="date" class="text-[#140A82]">Minimum</label>
                 <input type="date" class="px-4" name="dateMin">
@@ -110,8 +110,9 @@
                         {{ courrier.raison ?? 'non définie' }}
                         <hr class="border-y-2 my-2 border-blue-300">
                         <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white"
-                            href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur, recherche: recherche ?? null}) }}">
-                            détails
+                            href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur, recherche: recherche ?? null, redirectTo: "
+                            app_accueil"}) }}">
+                            details
                         </a>
                     </td>
                     <td class="px-6 py-4">

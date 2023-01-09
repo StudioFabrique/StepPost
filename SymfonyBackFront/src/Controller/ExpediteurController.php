@@ -283,8 +283,6 @@ class ExpediteurController extends AbstractController
     #[Route('/detailsExpediteur', name: 'detailsExpediteur')]
     public function Details(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
-
-
         $expediteurId = $request->get('expediteurId');
         $expediteur = $expediteurRepository->find($expediteurId);
         return $this->render('expediteur/details.html.twig', [
@@ -294,7 +292,8 @@ class ExpediteurController extends AbstractController
             'isError' => $request->get('isError') ?? false,
             'recherche' => $request->get('recherche'),
             'dateMin' => $request->get('dateMin'),
-            'dateMax' => $request->get('dateMax')
+            'dateMax' => $request->get('dateMax'),
+            'redirectTo' => $request->get("redirectTo")
         ]);
     }
 

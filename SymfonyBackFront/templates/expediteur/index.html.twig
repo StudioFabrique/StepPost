@@ -79,7 +79,7 @@
                                 <a href="{{ path('app_activateExpediteur', {expediteurId: expediteur.id}) }}"
                                     class="text-blue-800 bg-blue-100 p-2 rounded">Activer</a>
                                 {% else %}
-                                    <a class="text-gray-100 bg-gray-200 p-2 rounded hover:cursor-no-drop">Activer</a>
+                                <a class="text-gray-100 bg-gray-200 p-2 rounded hover:cursor-no-drop">Activer</a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -165,7 +165,8 @@
             </thead>
             <tbody>
                 {% for expediteur in expediteurs %}
-                {% set role = 'ROLE_DELETED' in expediteur.roles or 'ROLE_INACTIF' in expediteur.roles ? 'inactif' : 'actif' %}
+                {% set role = 'ROLE_DELETED' in expediteur.roles or 'ROLE_INACTIF' in expediteur.roles ? 'inactif' :
+                'actif' %}
                 {% if role == 'actif' %}
                 <tr class="bg-white border-b">
                     <td scope="row" class="px-6 py-4 font-medium text-gray-900 ">
@@ -180,7 +181,8 @@
                         {% endif %}
                     </td>
                     <td class="px-6 py-4 break-words">
-                        <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id}) }}">{{ expediteur.email
+                        <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id, redirectTo:"
+                            app_expediteur"}) }}">{{ expediteur.email
                             }}</a>
                     </td>
                     <td class="px-6 py-4 break-words">
