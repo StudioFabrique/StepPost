@@ -134,7 +134,7 @@ class ExpediteurController extends AbstractController
 
             try {
                 $mail = (new Email())
-                    ->from('step.automaticmailservice@gmail.com') // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
+                    ->from($this->formattingService->formatMailFromEnv($_ENV["MAILER_DSN"])) // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
                     ->to($form->get('email')->getData())
                     ->subject('Création de votre compte client')
                     ->html($body);

@@ -38,5 +38,7 @@ class FormattingService
         return !$isArrayOut ? $serializer->denormalize($newArray, $objectClass, null, [ObjectNormalizer::OBJECT_TO_POPULATE => $object]) : $newArray;
     }
 
-    // public function generateJWT()
+    public function formatMailFromEnv(string $subject) {
+        return str_replace('%40', '@', substr($subject, 13, strpos($subject, ":", 13)));
+    }
 }
