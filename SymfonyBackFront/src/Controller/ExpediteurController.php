@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Client;
-use App\Services\FormatageObjet;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ClientRepository;
@@ -16,7 +14,6 @@ use App\Services\RequestManager;
 use DateTime;
 use DateTimeZone;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
