@@ -25,7 +25,7 @@ class RequestManager
                     'isError' => $request->get('isError') ?? false,
                     'courriers' => $dataPagination,
                     'statuts' => $this->statutRepo->findAll(),
-                    'order' => $request->get('order') ?? "DESC" == "DESC" ? "ASC" : "DESC",
+                    'order' => ($request->get('order') ?? "DESC") == "DESC" ? "ASC" : "DESC",
                     'isSearching' => is_integer($request->get('recherche')) ? true : (is_string($request->get('recherche')) ? true : false),
                     'expediteursInactifs' => $this->expediteurRepo->findAllInactive(),
                     'nbCourriersTotal' => count($data),
