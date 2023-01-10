@@ -40,10 +40,10 @@
                 {% for expediteur in clients %}
                 <tr class="bg-white border-b ">
                     <td class="px-6 py-4">
-                        {{ expediteur.nom }}
+                        {{ expediteur.nom|title }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ expediteur.email }}
+                        {{ expediteur.email|title }}
                     </td>
                     <td class="px-6 py-4">
                         <a class="text-blue-800 bg-blue-100 p-2 rounded"

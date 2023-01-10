@@ -20,24 +20,24 @@
         <div class="flex justify-center gap-x-10">
             <p class="text-gray-600">Email : <span class="text-[#140A82]">{{ expediteur.email }}</span></p>
 
-            <p class="text-gray-600">Prénom / Service : <span class="text-[#140A82]">{{expediteur.prenom ?? 'non
-                    défini'}} </span></p>
+            <p class="text-gray-600">Prénom / Service : <span class="text-[#140A82]">{{ (expediteur.prenom ?? 'non
+                    défini') | title }} </span></p>
 
-            <p class="text-gray-600">Nom / Nom de l'entreprise : <span class="text-[#140A82]">{{expediteur.nom}}</span>
+            <p class="text-gray-600">Nom / Nom de l'entreprise : <span class="text-[#140A82]">{{ expediteur.nom | title }}</span>
             </p>
 
-            <p class="text-gray-600">Raison Sociale : <span class="text-[#140A82]">{{expediteur.client.raisonSociale ??
-                    'non définie'}}</span></p>
+            <p class="text-gray-600">Raison Sociale : <span class="text-[#140A82]">{{ (expediteur.client.raisonSociale ??
+                    'non définie') | title }}</span></p>
         </div>
         <div class="flex justify-center gap-x-10">
-            <p class="text-gray-600">Adresse : <span class="text-[#140A82]">{{ expediteur.adresse }}</span></p>
+            <p class="text-gray-600">Adresse : <span class="text-[#140A82]">{{ expediteur.adresse | title }}</span></p>
 
-            <p class="text-gray-600">Complément d'adresse : <span class="text-[#140A82]">{{ expediteur.complement ??
-                    'non défini' }}</span></p>
+            <p class="text-gray-600">Complément d'adresse : <span class="text-[#140A82]">{{ (expediteur.complement ??
+                    'non défini') | title }}</span></p>
 
             <p class="text-gray-600">Code Postal : <span class="text-[#140A82]">{{ expediteur.codePostal }}</span></p>
 
-            <p class="text-gray-600">Ville : <span class="text-[#140A82]">{{ expediteur.ville }}</span></p>
+            <p class="text-gray-600">Ville : <span class="text-[#140A82]">{{ expediteur.ville | title }}</span></p>
         </div>
         <div class="flex justify-center gap-x-10">
             <p class="text-gray-600">Téléphone : <span class="text-[#140A82]">{{ expediteur.telephone }}</span></p>
@@ -45,7 +45,7 @@
         <hr class="border-y-1 my-10 border-gray-400">
         <div>
             <h2 class="text-xl font-semibold border-y-1 my-10 border-gray-400 text-[#140A82]">Contacts enregistrés par
-                {{ expediteur.client.raisonSociale }} - {{ expediteur.nom }} {{ expediteur.prenom }} :</h2>
+                {{ (expediteur.client.raisonSociale ?? 'non définie') | title }} - {{ expediteur.nom | title }} {{ expediteur.prenom | title }} :</h2>
             {% for destinataire in expediteur.destinataires %}
             <div class="flex items-center m-4 shadow-lg rounded-lg px-2">
                 <svg class="w-5" xmlns="http://www.w3.org/2000/svg" width="43.36" height="43.36"
@@ -65,7 +65,7 @@
                         </g>
                     </g>
                 </svg>
-                <p class="px-4">{{ destinataire.nom }} {{ destinataire.prenom }}</p>
+                <p class="px-4">{{ destinataire.nom | title }} {{ destinataire.prenom | title }}</p>
             </div>
             {% endfor %}
         </div>

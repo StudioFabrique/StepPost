@@ -24,13 +24,13 @@
 		<div class="flex justify-center">
 			<div class="w-[55%] p-10">
 				<p class="text-center m-5 text-xl my-10">
-					Nombre de courriers gérés par <span class="text-[#140A82]">{{ facteur.nom }}</span>
+					Nombre de courriers gérés par <span class="text-[#140A82]">{{ facteur.nom|title }}</span>
 				</p>
 				<p>{{ render_chart(chart1) }}</p>
 			</div>
 			<div class="max-w-sm p-10">
 				<p class="text-center m-5 text-xl my-10">
-					Statuts actuels des courriers gérés par <span class="text-[#140A82]">{{ facteur.nom }}</span>
+					Statuts actuels des courriers gérés par <span class="text-[#140A82]">{{ facteur.nom|title }}</span>
 				</p>
 				<p>{{ render_chart(chart2) }}</p>
 			</div>

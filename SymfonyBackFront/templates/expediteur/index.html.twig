@@ -172,12 +172,12 @@
                     <td scope="row" class="px-6 py-4 font-medium text-gray-900 ">
                         {% if isSearch == true %}
                         {% if checkBoxExact == false %}
-                        {{ expediteur.raisonSociale ? expediteur.raisonSociale : 'Non défini' }}
+                        {{ expediteur.raisonSociale ? expediteur.raisonSociale | title : 'Non défini' }}
                         {% else %}
-                        {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
+                        {{ expediteur.client ? expediteur.client.raisonSociale | title : 'Non défini' }}
                         {% endif %}
                         {% else %}
-                        {{ expediteur.client ? expediteur.client.raisonSociale : 'Non défini' }}
+                        {{ expediteur.client ? expediteur.client.raisonSociale | title : 'Non défini' }}
                         {% endif %}
                     </td>
                     <td class="px-6 py-4 break-words">
@@ -187,10 +187,10 @@
                             }}</a>
                     </td>
                     <td class="px-6 py-4 break-words">
-                        {{ expediteur.nom }}
+                        {{ expediteur.nom | title }}
                     </td>
                     <td class="px-6 py-4 break-words">
-                        {{ expediteur.prenom }}
+                        {{ expediteur.prenom | title }}
                     </td>
                     <td class="px-6 py-4 break-words">
                         {{expediteur.createdAt | date('d-m-Y H:i', "Europe/Paris") }}

@@ -48,8 +48,7 @@
             </div>
             <div class="flex justify-between">
                 <p>
-                    {{ statut.statut ? statut.statut.etat }} {{statut.facteur != null ? 'par'}} {{statut.facteur != null
-                    ? statut.facteur.nom}}
+                    {{ statut.statut ? statut.statut.etat }} {{statut.facteur != null ? 'par ' ~ statut.facteur.nom|title}} 
                 </p>
                 {% if statut.statut.statutCode >= 3 %}
                 <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded"
@@ -63,7 +62,7 @@
         <div>
             {% if facteur != null %}
             <p class="text-gray-500">Facteur :</p>
-            <p>{{ facteur }}</p>
+            <p>{{ facteur|title }}</p>
             {% endif %}
         </div>
         {% if showSignature %}

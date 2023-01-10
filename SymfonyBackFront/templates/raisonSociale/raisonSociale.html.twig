@@ -41,7 +41,7 @@
                 {% for raison in raisonsSociales %}
                 <tr class="bg-white border-b ">
                     <td class="px-6 py-4">
-                        {{ raison.raisonSociale }}
+                        {{ raison.raisonSociale|title }}
                     </td>
                     <td class="px-2 py-4 pl-20">
                         <b>{{ raison.expediteurs|length }}</b>

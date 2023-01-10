@@ -102,6 +102,8 @@ class ExpediteurRepository extends ServiceEntityRepository
                 e.nom,
                 e.prenom,
                 e.roles,
+                e.createdAt,
+                e.updatedAt,
                 client.raisonSociale AS raisonSociale
             ')
             ->from('App\Entity\Expediteur', 'e')

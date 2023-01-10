@@ -1,0 +1,92 @@
+name: Symfony Deploy Test
+
+on:
+  push:
+    branches: ["dev"]
+  pull_request:
+    branches: ["dev"]
+
+permissions:
+  contents: read
+
+jobs:
+  symfony:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./SymfonyBackFront
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Php
+      - name: setup php version 8.1
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+      - name: Check php version
+        run: php -v
+      - name: Showing working directory
+        run: pwd && ls
+      # Composer
+      - name: Validate composer.json and composer.lock
+        run: composer validate --no-check-publish
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+      - name: Install Dependencies
+        run: composer install --no-dev --optimize-autoloader
+      # Prepare .env file for production
+      - name: Make production envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_APP_ENV: prod
+          envkey_APP_DEBUG: false
+          envkey_APP_SECRET: ${{ secrets.TEST_APP_SECRET }}
+          envkey_DATABASE_URL: ${{ secrets.TEST_APP_DATABASE_URL }}
+          envkey_MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
+          envkey_CORS_ALLOW_ORIGIN: '^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+          envkey_MAILER_DSN: ${{ secrets.TEST_APP_MAILER_DSN }}
+          envkey_PASS_PHRASE: ${{ secrets.TEST_APP_PASS_PHRASE }}
+          envkey_SETUP_PASS: ${{ secrets.TEST_SETUP_PASS }}
+          file_name: .env
+      - name: move .env to the symfony folder
+        run: mv ../.env .env && ls -a
+      # nodeJS
+      - name: npm install
+        run: npm install
+      - name: build js and css
+        run: npm run build
+      - name: crypto module fix
+        run: cp ../fix/package.json node_modules/bcryptjs/package.json
+      # caches
+      - name: symfony caches clear
+        run: DATABASE_URL="mysql://root@127.0.0.1:3306/?serverVersion=5.7&charset=utf8mb4" php bin/console cache:clear --env=prod
+      # make .csv
+      - name: make csv directory and courriers.csv file
+        run: mkdir public/csv && touch public/csv/courriers.csv
+      # Copying files and artifacts via SSH
+      - name: Copying files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.TEST_REMOTE_HOST }}
+          username: ${{ secrets.TEST_REMOTE_USER }}
+          key: ${{ secrets.TEST_SERVER_SSH_KEY }}
+          passphrase: ${{ secrets.TEST_PASSPHRASE }}
+          rm: true
+          source: "./SymfonyBackFront"
+          target: ${{ secrets.TEST_REMOTE_TARGET }}
+      # Run commands on production
+      - name: Executing remote ssh commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.TEST_REMOTE_HOST }}
+          username: ${{ secrets.TEST_REMOTE_USER }}
+          key: ${{ secrets.TEST_SERVER_SSH_KEY }}
+          passphrase: ${{ secrets.TEST_PASSPHRASE }}
+          script: |
+            rsync -a --delete ${{ secrets.TEST_REMOTE_TARGET }} ${{ secrets.TEST_REMOTE_TARGET_DEPLOY }}
