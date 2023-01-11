@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repository\StatutRepository;
 use DateTime;
 use Exception;
 use League\Csv\Writer;
@@ -11,10 +12,11 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ExportCSV
 {
-    private $parameters;
-    public function __construct(ParameterBagInterface $parameters)
+    private $parameters, $statutRepo;
+    public function __construct(ParameterBagInterface $parameters, StatutRepository $statutRepo)
     {
         $this->parameters = $parameters;
+        $this->statutRepo = $statutRepo;
     }
 
     public function ExportFile($data)
@@ -25,7 +27,7 @@ class ExportCSV
             $csvCourriers[$i] = [
                 $courrier['date'],
                 $courrier['raison'],
-                $courrier['statut'],
+                $this->statutRepo->findOneBy(['statutCode' => $courrier['statut']])->getEtat(),
                 $courrier['bordereau'],
                 $courrier['type'] == 0 ? 'Lettre avec suivi' : ($courrier['type'] == 1 ? 'Lettre avec accusé de reception' : 'Colis'),
                 $courrier['nom'],
