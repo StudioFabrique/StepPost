@@ -34,7 +34,7 @@ Cette classe donne la possibilité de créer, modifier, activer et supprimer un 
 */
 
 #[Route('/', name: 'app_')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_GESTION')]
 class ExpediteurController extends AbstractController
 {
     private $requestManager, $dataFinder, $formattingService, $messageService, $mailService;

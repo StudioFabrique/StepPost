@@ -15,7 +15,7 @@ use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
 #[Route('/statistiques', name: 'app_')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_GESTION')]
 class StatistiqueController extends AbstractController
 {
     /* 

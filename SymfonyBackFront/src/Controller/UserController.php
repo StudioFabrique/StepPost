@@ -4,14 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
-use App\Repository\ExpediteurRepository;
 use App\Repository\UserRepository;
 use App\Services\DataFinder;
 use App\Services\EntityManagementService;
 use App\Services\MessageService;
 use App\Services\RequestManager;
-use DateTime;
-use DateTimeZone;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,7 +59,7 @@ class UserController extends AbstractController
         La méthode new permet de créer un administrateur ayant comme rôle ROLE_ADMIN
     */
     #[Route('/ajouter', name: 'admin_add')]
-    public function new(Request $request): Response
+    public function new(Request $request,): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -72,7 +69,8 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $admin = $this->entityManagementService->MakeUser($form);
+                $admin = $this->entityManagementService->MakeUser($form, $request->get('isMairie'));
+                if ($request->get('isMairie'))  $this->entityManagementService->MakeRaisonSociale('mairie');
                 return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 1, $admin->getNom()), Response::HTTP_SEE_OTHER);
             } catch (Exception) {
                 return $this->redirectToRoute('app_admin_add', $this->messageService->GetErrorMessage("Administrateur", 1, $admin->getNom()), Response::HTTP_SEE_OTHER);

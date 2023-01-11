@@ -43,13 +43,12 @@ class AccueilController extends AbstractController
     #[Route('/', name: 'accueil')]
     public function index(Request $request): Response
     {
-
         // vérification que l'admin soit bien connecté sinon redirection vers la page de connexion
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
 
-        $data = $this->dataFinder->GetCourriers($request);
+        $data = $this->dataFinder->GetCourriers($request, $this->getUser());
 
         $dataPagination = $this->dataFinder->Paginate(
             $data,
@@ -66,7 +65,7 @@ class AccueilController extends AbstractController
     #[Route('/export', name: 'export_csv')]
     public function export(Request $request)
     {
-        $data = $this->dataFinder->GetCourriers($request);
+        $data = $this->dataFinder->GetCourriers($request, $this->getUser());
 
         try {
             $this->exportCsv->ExportFile($data);
