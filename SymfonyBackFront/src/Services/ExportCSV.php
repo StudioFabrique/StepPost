@@ -23,11 +23,14 @@ class ExportCSV
     {
         $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
         $i = 1;
+        foreach ($this->statutRepo->findAll() as $statut) {
+            $statutArray[$statut->getStatutCode()] = $statut->getEtat();
+        }
         foreach ($data as $courrier) {
             $csvCourriers[$i] = [
                 $courrier['date'],
                 $courrier['raison'],
-                $this->statutRepo->findOneBy(['statutCode' => $courrier['statut']])->getEtat(),
+                $statutArray[$courrier['statut']],
                 $courrier['bordereau'],
                 $courrier['type'] == 0 ? 'Lettre avec suivi' : ($courrier['type'] == 1 ? 'Lettre avec accusé de reception' : 'Colis'),
                 $courrier['nom'],
