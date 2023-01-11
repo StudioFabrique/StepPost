@@ -20,7 +20,7 @@ Par l'intermédiaire de cette classe, l'administrateur va pouvoir gérer les dif
 courriers présents dans la base données.
 */
 
-#[Route('/', name: 'app_')]
+#[Route('/accueil', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
 class AccueilController extends AbstractController
 {
