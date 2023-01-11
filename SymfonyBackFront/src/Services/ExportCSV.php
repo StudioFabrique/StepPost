@@ -25,7 +25,7 @@ class ExportCSV
             $csvCourriers[$i] = [
                 $courrier['date'],
                 $courrier['raison'],
-                $courrier['etat'],
+                $courrier['statut'],
                 $courrier['bordereau'],
                 $courrier['type'] == 0 ? 'Lettre avec suivi' : ($courrier['type'] == 1 ? 'Lettre avec accusé de reception' : 'Colis'),
                 $courrier['nom'],
