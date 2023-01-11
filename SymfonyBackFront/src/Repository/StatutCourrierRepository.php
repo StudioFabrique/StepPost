@@ -67,7 +67,6 @@ class StatutCourrierRepository extends ServiceEntityRepository
 
     public function findCourriers($order, $rechercheCourrier = null, DateTime $dateMin = null, DateTime $dateMax = null, string $raison = null)
     {
-
         if ($rechercheCourrier != null) {
             $qb = $dateMin == null || $dateMax == null ?
                 $this->createQueryBuilder('s')
@@ -149,6 +148,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.civilite,
                 c.type,
                 e.id AS expediteur,
+                e.nom AS nomExpediteur,
                 rs.raisonSociale AS raison'
                 )
                 ->leftJoin('s.courrier', 'c')

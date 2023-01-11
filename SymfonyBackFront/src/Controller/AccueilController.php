@@ -20,7 +20,7 @@ Par l'intermédiaire de cette classe, l'administrateur va pouvoir gérer les dif
 courriers présents dans la base données.
 */
 
-#[Route('/accueil', name: 'app_')]
+#[Route('/', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
 class AccueilController extends AbstractController
 {
@@ -56,6 +56,16 @@ class AccueilController extends AbstractController
         );
 
         return $this->render('accueil/index.html.twig', $this->requestManager->GenerateRenderRequest('accueil', $request, $dataPagination, $data));
+    }
+
+    /* 
+        La méthode DetailsExpediteur récupère et affiche tous les détails d'un expéditeur
+    */
+
+    #[Route('/detailsExpediteur', name: 'detailsExpediteur')]
+    public function DetailsExpediteur(Request $request): Response
+    {
+        return $this->render('expediteur/details.html.twig', $this->requestManager->GenerateRenderRequest('detailsExpediteur', $request));
     }
 
     /* 

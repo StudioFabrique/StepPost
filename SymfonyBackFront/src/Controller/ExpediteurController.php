@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
-use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
 use App\Services\DataFinder;
 use App\Services\FormattingService;
@@ -24,6 +23,7 @@ use Firebase\JWT\JWT;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -244,61 +244,10 @@ class ExpediteurController extends AbstractController
     }
 
     /* 
-        La méthode MultipleDelete permet de supprimer un Expéditeur
-        ...Mis en suspens...
-    */
-    /* #[Route('/delete', name: 'deleteMultipleExpediteur')]
-    public function MultipleDelete(ExpediteurRepository $expediteurRepository, EntityManagerInterface $manager): Response
-    {
-        if (!$this->getUser()) {
-            return $this->redirectToRoute('app_login');
-        }
-
-        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
-        $message = $messages["Messages Informations"]["Expéditeur"]["Suppression"];
-        $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Suppression"];
-
-        $expediteursToKeep = $expediteurRepository->findExpediteurToKeep(new DateTime('now'));
-        $i = 0;
-        foreach ($expediteurRepository->findAll() as $expediteur) {
-            in_array($expediteur->getId(), $expediteursToKeep[$i] ?? [null]) ? NULL : $expediteurRepository->remove($expediteur, false);
-            $i++;
-        }
-
-        try {
-            $manager->flush();
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message), Response::HTTP_SEE_OTHER]);
-        } catch (Exception) {
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur), 'isError' => true], Response::HTTP_SEE_OTHER);
-        }
-    } */
-
-
-    /* 
-        La méthode Details récupère et affiche tous les détails d'un expéditeur
-    */
-    #[Route('/detailsExpediteur', name: 'detailsExpediteur')]
-    public function Details(Request $request, ExpediteurRepository $expediteurRepository): Response
-    {
-        $expediteurId = $request->get('expediteurId');
-        $expediteur = $expediteurRepository->find($expediteurId);
-        return $this->render('expediteur/details.html.twig', [
-            'expediteur' => $expediteur,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
-            'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false,
-            'recherche' => $request->get('recherche'),
-            'dateMin' => $request->get('dateMin'),
-            'dateMax' => $request->get('dateMax'),
-            'redirectTo' => $request->get("redirectTo")
-        ]);
-    }
-
-    /* 
         Cette méthode change le rôle d'un expéditeur à ROLE_CLIENT
     */
     #[Route('/activer', name: 'activateExpediteur')]
-    public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em, MailerInterface $mailer, ClientRepository $clientRepository): RedirectResponse
+    public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em, MailerInterface $mailer): RedirectResponse
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');

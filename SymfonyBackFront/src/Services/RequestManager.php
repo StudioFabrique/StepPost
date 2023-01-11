@@ -59,6 +59,18 @@ class RequestManager
                     'checkBoxExact' => $request->get('checkBoxExact') ?? false
                 ];
                 break;
+            case "detailsExpediteur":
+                return [
+                    'expediteur' => $this->expediteurRepo->find($request->get('expediteurId')),
+                    'expediteursInactifs' => $this->expediteurRepo->findAllInactive(),
+                    'errorMessage' => $request->get('errorMessage') ?? null,
+                    'isError' => $request->get('isError') ?? false,
+                    'recherche' => $request->get('recherche'),
+                    'dateMin' => $request->get('dateMin'),
+                    'dateMax' => $request->get('dateMax'),
+                    'redirectTo' => $request->get("redirectTo")
+                ];
+                break;
         }
     }
 

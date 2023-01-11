@@ -108,8 +108,7 @@
                         {{courrier.date | date('d-m-Y H:i', "Europe/Paris") }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ 'ROLE_MAIRIE' in app.user.roles ? (courrier.expediteur.nom ?? 'non définie') | title :
-                        (courrier.raison ?? 'non définie') | title }}
+                        {{ 'ROLE_MAIRIE' in app.user.roles ? (courrier.nomExpediteur ?? 'non définie') : (courrier.raison ?? 'non définie') }}
                         <hr class="border-y-2 my-2 border-blue-300">
                         <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white"
                             href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur, recherche: recherche ?? null, redirectTo: 'app_accueil'}) }}">

@@ -48,13 +48,13 @@
                 {% for user in admins %}
                 {% set role = 'ROLE_SUPERADMIN' in user.roles ? 'Administrateur' : 'Gestionnaire' %}
                 <tr class="bg-white border-b ">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         {{ role }}
-                    </th>
-                    <th scope="row" class="px-6 py-4">
+                    </td>
+                    <td scope="row" class="px-6 py-4">
                         {{ user.fonction | title }}
-                    </th>
-                    <td class="px-6 py-4">
+                    </td>
+                    <td class="px-6 py-4 break-words">
                         {{ user.email }}
                     </td>
                     <td class="px-6 py-4">

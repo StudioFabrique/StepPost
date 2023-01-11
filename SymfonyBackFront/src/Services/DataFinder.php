@@ -29,7 +29,7 @@ class DataFinder
 
     public function GetCourriers(Request $request, UserInterface $user): array
     {
-        $raison = in_array('ROLE_MAIRIE', $user->getRoles()) ? 'mairie' : null;
+        $raison = in_array('ROLE_MAIRIE', $user->getRoles()) ? 'mairie de pau' : null;
         $data = $this->statutCourrierRepo->findCourriers(
             $request->get('order') ?? "DESC",
             $request->get('recherche'),
@@ -37,7 +37,6 @@ class DataFinder
             $this->dateMaker->convertDateDefault($request->get('dateMax')),
             $raison
         );
-
         return $data;
     }
 
@@ -77,7 +76,6 @@ class DataFinder
             $data,
             $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
-
         return $courriers;
     }
 }
