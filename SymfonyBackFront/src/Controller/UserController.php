@@ -73,7 +73,7 @@ class UserController extends AbstractController
                 if ($request->get('isMairie'))  $this->entityManagementService->MakeRaisonSociale('mairie');
                 return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 1, $admin->getNom()), Response::HTTP_SEE_OTHER);
             } catch (Exception) {
-                return $this->redirectToRoute('app_admin_add', $this->messageService->GetErrorMessage("Administrateur", 1, $admin->getNom()), Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin_add', $this->messageService->GetErrorMessage("Administrateur", 1), Response::HTTP_SEE_OTHER);
             }
         }
 
