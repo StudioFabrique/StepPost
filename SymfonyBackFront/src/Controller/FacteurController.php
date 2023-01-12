@@ -67,7 +67,6 @@ class FacteurController extends AbstractController
         $messageErreur = $messages["Messages Erreurs"]["Facteur"]["Création"];
 
         return $this->renderForm('facteur/form.html.twig', [
-            // 'form' => $form,
             'title' => 'Créer un facteur',
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,

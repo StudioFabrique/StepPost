@@ -49,7 +49,6 @@ class AccueilController extends AbstractController
         }
 
         $data = $this->dataFinder->GetCourriers($request, $this->getUser());
-
         $dataPagination = $this->dataFinder->Paginate(
             $data,
             $request

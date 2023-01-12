@@ -12,8 +12,9 @@
                 </div>
                 <div class="absolute inset-y-0 flex items-center sm:static sm:inset-auto sm:ml-6 ">
                     {% if app.user %}
-                    <h1 class="text-black text-xl font-bold mr-3" id="dropdownDefault" data-dropdown-toggle="dropdown">
-                        {{app.user.nom|title}}</h1>
+                    {% if 'ROLE_MAIRIE' in app.user.roles == false %}
+                    <h1 class="text-black text-xl font-bold mr-3" id="dropdownDefault" data-dropdown-toggle="dropdown"> {{app.user.nom|title}}</h1>
+                    {% endif %}
                     {% if 'ROLE_GESTION' in app.user.roles %}
                     <a data-turbo="false" href="{{ path('app_statistiques') }}" class="mr-3">Statistiques</a>
                     {% endif %}
