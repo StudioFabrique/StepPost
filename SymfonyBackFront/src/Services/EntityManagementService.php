@@ -58,7 +58,7 @@ class EntityManagementService
     public function EditUser(Form $formData, bool $isSuperAdmin): User
     {
         $admin = $formData->getData();
-        $admin->setRoles($isSuperAdmin ? ['ROLE_ADMIN', 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN']);
+        $admin->setRoles($isSuperAdmin ? ['ROLE_ADMIN', "ROLE_GESTION", 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN', "ROLE_GESTION"]);
         $admin->setUpdatedAt($this->dateMaker->createFromDateTimeZone());
         $this->userRepo->add($admin);
         return $admin;

@@ -58,7 +58,7 @@ class SetupController extends AbstractController
                 ->setEmail($form->get("email")->getData())
                 ->setNom($form->get("nom")->getData())
                 ->setFonction($form->get("fonction")->getData())
-                ->setRoles(["ROLE_ADMIN", "ROLE_SUPERADMIN"])
+                ->setRoles(["ROLE_ADMIN", "ROLE_GESTION", "ROLE_SUPERADMIN"])
                 ->setPassword($password)
                 ->setCreatedAt(new DateTime('now'))
                 ->setUpdatedAt(new DateTime('now'));
