@@ -63,7 +63,7 @@
             </thead>
             <tbody>
                 {% for facteur in facteurs %}
-                {% if 'ROLE_FACTEUR' %}
+                {% if 'ROLE_FACTEUR' in facteur.roles %}
                 <tr class="bg-white border-b00">
                     <td class="px-6 py-4">
                         {{facteur.email }}
