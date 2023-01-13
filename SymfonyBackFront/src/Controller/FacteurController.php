@@ -130,7 +130,7 @@ class FacteurController extends AbstractController
      * Supprime un facteur
      */
     #[Route('/supprimerFacteur', 'deleteFacteur')]
-    public function deleteFacteur(Request $request, FacteurRepository $facteurRepo): Response
+    public function deleteFacteur(Request $request, FacteurRepository $facteurRepo, EntityManagerInterface $em): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -145,6 +145,8 @@ class FacteurController extends AbstractController
 
         try {
             $facteur->setRoles(['ROLE_INACTIF']);
+            $em->persist($facteur);
+            $em->flush();
             return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $message)]);
         } catch (Exception) {
             return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $messageErreur), 'isError' => true]);
