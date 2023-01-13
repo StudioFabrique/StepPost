@@ -25,6 +25,9 @@ use App\Services\RequestManager;
 class AccueilController extends AbstractController
 {
     private $dataFinder, $exportCsv, $messageService, $requestManager;
+    /**
+     * Constructeur
+     */
     public function __construct(
         DataFinder $dataFinder,
         ExportCSV $exportCsv,
@@ -37,9 +40,11 @@ class AccueilController extends AbstractController
         $this->requestManager = $requestManager;
     }
 
-    /*
-    Retourne un template twig avec tous les courriers avec une pagination.
-    */
+    /**
+     * Retourne un template twig avec tous les courriers avec une pagination.
+     * @param Request $request
+     */
+
     #[Route('/', name: 'accueil')]
     public function index(Request $request): Response
     {
@@ -57,9 +62,10 @@ class AccueilController extends AbstractController
         return $this->render('accueil/index.html.twig', $this->requestManager->GenerateRenderRequest('accueil', $request, $dataPagination, $data));
     }
 
-    /* 
-        La méthode DetailsExpediteur récupère et affiche tous les détails d'un expéditeur
-    */
+    /**
+     * Récupère et affiche tous les détails d'un expéditeur
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
 
     #[Route('/detailsExpediteur', name: 'detailsExpediteur')]
     public function DetailsExpediteur(Request $request): Response
@@ -67,9 +73,10 @@ class AccueilController extends AbstractController
         return $this->render('expediteur/details.html.twig', $this->requestManager->GenerateRenderRequest('detailsExpediteur', $request));
     }
 
-    /* 
-        Cette méthode permet d'exporter les données passés en requêtes en format csv (microsoft excel)
-    */
+    /**
+     * Exporte les données passés en requêtes en format csv (microsoft excel)
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
 
     #[Route('/export', name: 'export_csv')]
     public function export(Request $request)

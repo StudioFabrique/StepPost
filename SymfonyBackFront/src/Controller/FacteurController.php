@@ -23,9 +23,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class FacteurController extends AbstractController
 {
 
-    /* 
-        Retourne un template twig avec la liste de tous les facteurs
-    */
+    /**
+     * Retourne un template twig avec la liste de tous les facteurs
+     */
     #[Route('/facteurs', name: 'facteur')]
     public function showFacteurs(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, Request $request, ExpediteurRepository $expediteurRepository): Response
     {
@@ -52,9 +52,9 @@ class FacteurController extends AbstractController
     }
 
 
-    /* 
-        La méthode newFacteur affiche la page de création de facteur
-    */
+    /**
+     * Affiche la page de création de facteur
+     */
     #[Route('/nouveauFacteur', 'newFacteur')]
     public function showNewFacteur(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
@@ -76,6 +76,9 @@ class FacteurController extends AbstractController
         ]);
     }
 
+    /**
+     * Modifie un facteur
+     */
     #[Route('/modifierFacteur', 'editFacteur')]
     public function editFacteur(FacteurRepository $facteurRepo, Request $request, EntityManagerInterface $em, ExpediteurRepository $expediteurRepository): Response
     {
@@ -123,6 +126,9 @@ class FacteurController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprime un facteur
+     */
     #[Route('/supprimerFacteur', 'deleteFacteur')]
     public function deleteFacteur(Request $request, FacteurRepository $facteurRepo): Response
     {
@@ -145,11 +151,10 @@ class FacteurController extends AbstractController
         }
     }
 
-    /* 
-        newFacteur est une api qui permet de créer un facteur.
-        La méthode est en POST et récupère les requêtes suivantes :
-        email, nom, password
-    */
+    /**
+     * Api qui permet de créer un facteur.
+     * @param Request $request POST : email, nom, prenom
+     */
     #[Route(path: '/api/newFacteur', name: 'api_newFacteur')]
     public function newFacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
     {
@@ -178,6 +183,10 @@ class FacteurController extends AbstractController
         }
     }
 
+    /**
+     * Api qui permet de modifier un facteur.
+     * @param Request $request POST : email, nom, prenom
+     */
     #[Route(path: '/api/editPasswordFacteur', name: 'api_editPasswordFacteur')]
     public function editPasswordacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
     {

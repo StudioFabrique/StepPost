@@ -26,9 +26,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
-/*
-Cette classe donne la possibilité de créer, modifier, activer et supprimer un expéditeur.
-*/
+/**
+ * Cette classe donne la possibilité de créer, modifier, activer et supprimer un expéditeur.
+ */
 
 #[Route('/', name: 'app_')]
 #[IsGranted('ROLE_GESTION')]
@@ -36,6 +36,9 @@ class ExpediteurController extends AbstractController
 {
     private $requestManager, $dataFinder, $formattingService, $messageService, $mailService, $formVerification, $entityManagementService, $tokenManager;
 
+    /**
+     * Constructeur
+     */
     public function __construct(
         RequestManager $requestManager,
         DataFinder $dataFinder,
@@ -56,9 +59,10 @@ class ExpediteurController extends AbstractController
         $this->tokenManager = $tokenManager;
     }
 
-    /*
-        Retourne un template twig avec la liste de tous les expéditeurs
-    */
+    /**
+     * Retourne un template twig avec la liste de tous les expéditeurs
+     * @param Request $request
+     */
     #[Route('/expediteurs', name: 'expediteur')]
     public function index(
         Request $request
@@ -75,9 +79,10 @@ class ExpediteurController extends AbstractController
         return $this->render('expediteur/index.html.twig', $this->requestManager->GenerateRenderRequest("expediteur", $request, $dataPagination, $data));
     }
 
-    /* 
-        La méthode ajouter permet de créer un expéditeur inactif et de lui envoyer un lien de confirmation par mail fin de configurer son mot de passe.
-    */
+    /**
+     * Crée un expéditeur inactif et lui envoi un lien de confirmation par mail afin de configurer son mot de passe.
+     * @param Request $request
+     */
     #[Route('/ajouter', name: 'addExpediteur')]
     public function new(Request $request): Response
     {
@@ -118,10 +123,9 @@ class ExpediteurController extends AbstractController
         return $this->renderForm('expediteur/new.html.twig', $this->requestManager->GenerateRenderFormRequest('expediteur', $request, $form));
     }
 
-
-    /* 
-        La méthode edit permet de modifier les informations d'un expéditeur
-    */
+    /**
+     * Modifie les informations d'un expéditeur
+     */
     #[Route('/edit/{id}', name: 'editExpediteur')]
     public function edit(Request $request, Expediteur $ancienExpediteur, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em): Response
     {
@@ -178,9 +182,9 @@ class ExpediteurController extends AbstractController
         ]);
     }
 
-    /* 
-        La méthode Delete permet de supprimer un Expéditeur
-    */
+    /**
+     * Supprime un expéditeur
+     */
     #[Route('/delete/{id}', name: 'deleteExpediteur')]
     public function Delete(Request $request, Expediteur $expediteur, EntityManagerInterface $em, ExpediteurRepository $expediteurRepository): Response
     {
@@ -204,9 +208,9 @@ class ExpediteurController extends AbstractController
         }
     }
 
-    /* 
-        Cette méthode change le rôle d'un expéditeur à ROLE_CLIENT
-    */
+    /**
+     * Change le rôle d'un expéditeur à ROLE_CLIENT
+     */
     #[Route('/activer', name: 'activateExpediteur')]
     public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em, MailerInterface $mailer): RedirectResponse
     {
