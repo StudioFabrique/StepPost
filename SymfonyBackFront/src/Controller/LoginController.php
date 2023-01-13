@@ -15,7 +15,7 @@ class LoginController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils, ConfigAppService $configAppService): Response
     {
         if ($configAppService->needToBeSetup()) {
-            return $configAppService->setupApp();
+            return $this->redirectToRoute("app_checkPass");
         }
 
         if ($this->getUser()) {

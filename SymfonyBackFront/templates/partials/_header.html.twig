@@ -5,18 +5,23 @@
                 <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                     <div class="flex-shrink-0 flex items-center">
                         <a href="{{ path('app_accueil') }}" aria-label="Home">
-                            <img class="block h-10 w-auto" src="{{asset('build/images/logo.svg')}}"
-                                alt="Step_post">
+                            <img class="block h-10 w-auto" src="{{asset('build/images/logo.svg')}}" alt="Step_post">
                         </a>
                     </div>
 
                 </div>
                 <div class="absolute inset-y-0 flex items-center sm:static sm:inset-auto sm:ml-6 ">
                     {% if app.user %}
-                    <h1 class="text-black text-xl font-bold mr-3" id="dropdownDefault" data-dropdown-toggle="dropdown">
-                        {{app.user.nom|title}}</h1>
+                    {% if 'ROLE_MAIRIE' in app.user.roles == false %}
+                    <h1 class="text-black text-xl font-bold mr-3" id="dropdownDefault" data-dropdown-toggle="dropdown"> {{app.user.nom|title}}</h1>
+                    {% endif %}
+                    {% if 'ROLE_GESTION' in app.user.roles %}
                     <a data-turbo="false" href="{{ path('app_statistiques') }}" class="mr-3">Statistiques</a>
+                    {% endif %}
                     <a href="{{ path('app_logout') }}">Déconnexion</a>
+                    {% endif %}
+                    {% if 'ROLE_MAIRIE' in app.user.roles ?? 'LOGOUT' %}
+                    <img class="block h-10 w-auto ml-10" src="{{asset('build/images/logo_pau.png')}}" alt="logo_pau">
                     {% endif %}
                 </div>
             </div>

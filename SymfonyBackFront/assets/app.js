@@ -18,5 +18,7 @@ import './img/favicon.ico';
 
 import './img/logo.png'
 
+import './img/logo_pau.png'
+
 // start the Stimulus application
 import './bootstrap';

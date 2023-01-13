@@ -72,7 +72,7 @@
                                 </a>
                             </td>
                             <td class="px-6 py-4">
-                                {{ include('expediteur/_delete_form.html.twig') }}
+                                <a href="{{ path('app_deleteExpediteur', {id: expediteur.id, mode: 'temp'}) }}" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</a>
                             </td>
                             <td class="px-6 py-4">
                                 {% if expediteur.pswLength > 1 %}
@@ -169,7 +169,7 @@
                 'actif' %}
                 {% if role == 'actif' %}
                 <tr class="bg-white border-b">
-                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 ">
+                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 break-words">
                         {% if isSearch == true %}
                         {% if checkBoxExact == false %}
                         {{ expediteur.raisonSociale ? expediteur.raisonSociale | title : 'Non défini' }}
@@ -210,7 +210,7 @@
                             <p class="text-white">Êtes-vous sûr de vouloir supprimer cet expéditeur ? </p>
                             <button id="hideButton"
                                 class="bg-red-100 border-2 border-black rounded-lg p-0.5 mx-12 text-red-800">Annuler</button>
-                            <a href="{{ path('app_deleteExpediteur', {id: expediteur.id}) }}"
+                            <a href="{{ path('app_deleteExpediteur', {id: expediteur.id, mode: 'temp'}) }}"
                                 class="bg-red-700 border-2 border-black rounded-lg p-1 mx-4 text-white whitespace-nowrap">Confirmer</a>
                         </div>
                     </td>

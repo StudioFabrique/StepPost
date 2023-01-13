@@ -11,7 +11,8 @@
     <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Administrateurs</h1>
     <section class="flex justify-between items-center" style="padding-bottom:2%;">
         <div class="absolute right-0 mx-20">
-            <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" href="{{ path('app_admin_add') }}">Ajouter</a>
+            <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" href="{{ path('app_admin_add') }}">Ajouter gestionnaire</a>
+            <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" href="{{ path('app_admin_add', {isMairie:true}) }}">Ajouter utilisateur Mairie</a>
             <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
         </div>
     </section>
@@ -47,13 +48,13 @@
                 {% for user in admins %}
                 {% set role = 'ROLE_SUPERADMIN' in user.roles ? 'Administrateur' : 'Gestionnaire' %}
                 <tr class="bg-white border-b ">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         {{ role }}
-                    </th>
-                    <th scope="row" class="px-6 py-4">
+                    </td>
+                    <td scope="row" class="px-6 py-4">
                         {{ user.fonction | title }}
-                    </th>
-                    <td class="px-6 py-4">
+                    </td>
+                    <td class="px-6 py-4 break-words">
                         {{ user.email }}
                     </td>
                     <td class="px-6 py-4">

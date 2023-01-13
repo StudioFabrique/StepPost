@@ -10,19 +10,20 @@
 
 <main class="w-[95%] m-auto">
     <div class="my-5">
-        <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Liste et gestion des courriers</h1>
+        <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Liste des courriers {{ 'ROLE_MAIRIE' in app.user.roles ?
+            ' de la mairie'}}</h1>
     </div>
     <div class="flex justify-between space-x-2">
         <div></div>
         <div>
+            {% if 'ROLE_GESTION' in app.user.roles %}
             <a class="text-white bg-[#1d71d0] hover:bg-[#042e5e] p-2 rounded"
-                href="{{ path('app_expediteur') }}">Gestion
-                expéditeurs</a>
+                href="{{ path('app_expediteur') }}">Gestion expéditeurs</a>
             <a class="text-white bg-[#939a16] hover:bg-[#545804] p-2 rounded" href="{{ path('app_facteur') }}">Gestion
                 facteurs</a>
             <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded"
-                href="{{ path('app_raisonSociale') }}">Gestion raisons
-                sociales</a>
+                href="{{ path('app_raisonSociale') }}">Gestion raisons sociales</a>
+            {% endif %}
             {% if 'ROLE_SUPERADMIN' in app.user.roles %}
             <a class="text-white bg-[#298b7a] hover:bg-[#0c5246] p-2 rounded" href="{{ path('app_admin') }}">Gestion
                 administrateurs</a>
@@ -107,7 +108,7 @@
                         {{courrier.date | date('d-m-Y H:i', "Europe/Paris") }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ (courrier.raison ?? 'non définie') | title }}
+                        {{ 'ROLE_MAIRIE' in app.user.roles ? (courrier.nomExpediteur ?? 'non définie') : (courrier.raison ?? 'non définie') }}
                         <hr class="border-y-2 my-2 border-blue-300">
                         <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white"
                             href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur, recherche: recherche ?? null, redirectTo: 'app_accueil'}) }}">
@@ -116,7 +117,7 @@
                     </td>
                     <td class="px-6 py-4">
                         {% for statut in statuts %}
-                        {{ courrier.statut == statut.statutCode ? statut.etat : NULL }}
+                        {{ courrier.statut == statut.statutCode ? statut.etat|title : NULL }}
                         {% endfor %}
                         <hr class="border-y-2 my-2 border-blue-300">
                         <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white"

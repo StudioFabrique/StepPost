@@ -19,13 +19,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/', name: 'app_')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_GESTION')]
 class FacteurController extends AbstractController
 {
 
-    /* 
-        Retourne un template twig avec la liste de tous les facteurs
-    */
+    /**
+     * Retourne un template twig avec la liste de tous les facteurs
+     */
     #[Route('/facteurs', name: 'facteur')]
     public function showFacteurs(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, Request $request, ExpediteurRepository $expediteurRepository): Response
     {
@@ -52,9 +52,9 @@ class FacteurController extends AbstractController
     }
 
 
-    /* 
-        La méthode newFacteur affiche la page de création de facteur
-    */
+    /**
+     * Affiche la page de création de facteur
+     */
     #[Route('/nouveauFacteur', 'newFacteur')]
     public function showNewFacteur(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
@@ -67,7 +67,6 @@ class FacteurController extends AbstractController
         $messageErreur = $messages["Messages Erreurs"]["Facteur"]["Création"];
 
         return $this->renderForm('facteur/form.html.twig', [
-            // 'form' => $form,
             'title' => 'Créer un facteur',
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
@@ -77,6 +76,9 @@ class FacteurController extends AbstractController
         ]);
     }
 
+    /**
+     * Modifie un facteur
+     */
     #[Route('/modifierFacteur', 'editFacteur')]
     public function editFacteur(FacteurRepository $facteurRepo, Request $request, EntityManagerInterface $em, ExpediteurRepository $expediteurRepository): Response
     {
@@ -124,8 +126,11 @@ class FacteurController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprime un facteur
+     */
     #[Route('/supprimerFacteur', 'deleteFacteur')]
-    public function deleteFacteur(Request $request, FacteurRepository $facteurRepo): Response
+    public function deleteFacteur(Request $request, FacteurRepository $facteurRepo, EntityManagerInterface $em): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -139,18 +144,19 @@ class FacteurController extends AbstractController
         $facteur = $facteurRepo->find($idFacteur);
 
         try {
-            $facteurRepo->remove($facteur, true);
+            $facteur->setRoles(['ROLE_INACTIF']);
+            $em->persist($facteur);
+            $em->flush();
             return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $message)]);
         } catch (Exception) {
             return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $messageErreur), 'isError' => true]);
         }
     }
 
-    /* 
-        newFacteur est une api qui permet de créer un facteur.
-        La méthode est en POST et récupère les requêtes suivantes :
-        email, nom, password
-    */
+    /**
+     * Api qui permet de créer un facteur.
+     * @param Request $request POST : email, nom, prenom
+     */
     #[Route(path: '/api/newFacteur', name: 'api_newFacteur')]
     public function newFacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
     {
@@ -179,6 +185,10 @@ class FacteurController extends AbstractController
         }
     }
 
+    /**
+     * Api qui permet de modifier un facteur.
+     * @param Request $request POST : email, nom, prenom
+     */
     #[Route(path: '/api/editPasswordFacteur', name: 'api_editPasswordFacteur')]
     public function editPasswordacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
     {

@@ -6,7 +6,6 @@ use App\Entity\Client;
 use App\Form\ClientType;
 use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -19,7 +18,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 #[Route('/RaisonSociale', name: 'app_')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_GESTION')]
 class RaisonSocialeController extends AbstractController
 {
     /* 

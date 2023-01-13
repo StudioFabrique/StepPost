@@ -15,7 +15,7 @@
 
 {% block body %}
 
-{% if showUpdateButton %}
+{% if showUpdateButton and 'ROLE_GESTION' in app.user.roles %}
 <div id="boxContent" class="flex-col  fixed bg-[#91c8cf] rounded-lg p-2 right-28 top-36">
     {% for statut in statutsRestants %}
     <div><a class="m-1" href="{{ path('app_statut_add', { courrierId: courrierId, statutId: statut.id }) }}">{{
@@ -32,7 +32,7 @@
             </h1>
         </div>
         <div class="flex gap-x-2">
-            {% if showUpdateButton %}<button id="button"
+            {% if showUpdateButton and 'ROLE_GESTION' in app.user.roles %}<button id="button"
                 class="text-white bg-green-500 hover:bg-green-700 p-2 rounded">Mettre à jour le statut</button>{% endif
             %}
             <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil', {recherche: recherche ?? null, dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Retour</a>
@@ -48,9 +48,10 @@
             </div>
             <div class="flex justify-between">
                 <p>
-                    {{ statut.statut ? statut.statut.etat }} {{statut.facteur != null ? 'par ' ~ statut.facteur.nom|title}} 
+                    {{ statut.statut ? statut.statut.etat }} {{statut.facteur != null ? 'par ' ~ statut.facteur.nom|title }} {% if 'ROLE_INACTIF' in statut.facteur.roles and 'ROLE_GESTION' in app.user.roles %}(facteur inactif){% endif %}
+                    
                 </p>
-                {% if statut.statut.statutCode >= 3 %}
+                {% if statut.statut.statutCode >= 3 and 'ROLE_GESTION' in app.user.roles %}
                 <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded"
                     href="{{ path('app_delete_statut', { courrierId: statut.courrier.id, statutId: statut.id }) }}">Supprimer</a>
                 {% endif %}
@@ -59,12 +60,6 @@
         {% endfor %}
     </section>
     <div class="flex justify-between my-10">
-        <div>
-            {% if facteur != null %}
-            <p class="text-gray-500">Facteur :</p>
-            <p>{{ facteur|title }}</p>
-            {% endif %}
-        </div>
         {% if showSignature %}
         <div class="w-[30%]">
             <p class="text-xl text-gray-500">signature :</p>

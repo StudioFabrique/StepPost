@@ -8,6 +8,7 @@ use App\Repository\UserRepository;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class DataFinder
 {
@@ -26,15 +27,16 @@ class DataFinder
         $this->expediteurRepo = $expediteurRepo;
     }
 
-    public function GetCourriers(Request $request): array
+    public function GetCourriers(Request $request, UserInterface $user): array
     {
+        $raison = in_array('ROLE_MAIRIE', $user->getRoles()) ? 'mairie de pau' : null;
         $data = $this->statutCourrierRepo->findCourriers(
             $request->get('order') ?? "DESC",
             $request->get('recherche'),
             $this->dateMaker->convertDateDefault($request->get('dateMin')),
-            $this->dateMaker->convertDateDefault($request->get('dateMax'))
+            $this->dateMaker->convertDateDefault($request->get('dateMax')),
+            $raison
         );
-
         return $data;
     }
 
@@ -74,7 +76,6 @@ class DataFinder
             $data,
             $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
         );
-
         return $courriers;
     }
 }

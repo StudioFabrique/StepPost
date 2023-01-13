@@ -6,7 +6,7 @@
 
 {% block body %}
 <main class="w-[95%] m-auto">
-    <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Détails de l'expéditeur</h1>
+    <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Détails de l'expéditeur {% if 'ROLE_DELETED' in expediteur.roles %}(<span class="text-red-600">supprimé</span>){% endif %}</h1>
     <div class="flex justify-between">
         <div></div>
         <div>
@@ -45,7 +45,7 @@
         <hr class="border-y-1 my-10 border-gray-400">
         <div>
             <h2 class="text-xl font-semibold border-y-1 my-10 border-gray-400 text-[#140A82]">Contacts enregistrés par
-                {{ (expediteur.client.raisonSociale ?? 'non définie') | title }} - {{ expediteur.nom | title }} {{ expediteur.prenom | title }} :</h2>
+                {{ expediteur.nom | title }} {{ expediteur.prenom | title }} ({{ (expediteur.client.raisonSociale ?? 'non définie') | title }}) :</h2>
             {% for destinataire in expediteur.destinataires %}
             <div class="flex items-center m-4 shadow-lg rounded-lg px-2">
                 <svg class="w-5" xmlns="http://www.w3.org/2000/svg" width="43.36" height="43.36"

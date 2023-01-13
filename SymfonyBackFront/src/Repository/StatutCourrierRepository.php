@@ -65,9 +65,8 @@ class StatutCourrierRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    public function findCourriers($order, $rechercheCourrier = null, DateTime $dateMin = null, DateTime $dateMax = null)
+    public function findCourriers($order, $rechercheCourrier = null, DateTime $dateMin = null, DateTime $dateMax = null, string $raison = null)
     {
-
         if ($rechercheCourrier != null) {
             $qb = $dateMin == null || $dateMax == null ?
                 $this->createQueryBuilder('s')
@@ -97,7 +96,6 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 ->leftJoin('e.client', 'rs')
                 ->groupBy('c.id')
                 ->setParameter('valeur', '%' . $rechercheCourrier . '%')
-                ->getQuery()
 
                 :
 
@@ -130,8 +128,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 ->having("MAX(s.date) > :dateMin and MAX(s.date) < :dateMax")
                 ->setParameter('dateMin', $dateMin)
                 ->setParameter('dateMax', $dateMax)
-                ->setParameter('valeur', '%' . $rechercheCourrier . '%')
-                ->getQuery();
+                ->setParameter('valeur', '%' . $rechercheCourrier . '%');
         } else {
             $qb = $dateMin == null || $dateMax == null ?
                 $this->createQueryBuilder('s')
@@ -151,6 +148,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 c.civilite,
                 c.type,
                 e.id AS expediteur,
+                e.nom AS nomExpediteur,
                 rs.raisonSociale AS raison'
                 )
                 ->leftJoin('s.courrier', 'c')
@@ -159,7 +157,6 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 ->leftJoin('e.client', 'rs')
                 ->groupBy('c.id')
                 ->orderBy('date', $order)
-                ->getQuery()
 
                 :
 
@@ -191,12 +188,14 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 ->orderBy('date', $order)
                 ->having("MAX(s.date) > :dateMin and MAX(s.date) < :dateMax")
                 ->setParameter('dateMin', $dateMin)
-                ->setParameter('dateMax', $dateMax)
-                ->getQuery();
+                ->setParameter('dateMax', $dateMax);
         }
-
-
-        return $qb->getResult();
+        if ($raison != null) {
+            $qb
+                ->andWhere("rs.raisonSociale = :raison")
+                ->setParameter('raison', $raison);
+        }
+        return $qb->getQuery()->getResult();
     }
 
     public function findCourriersByLastStatut($statutId, $facteurId = null)

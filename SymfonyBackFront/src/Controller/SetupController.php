@@ -26,9 +26,13 @@ class SetupController extends AbstractController
     #[Route('/pass', name: 'checkPass')]
     public function checkPass(Request $request): Response
     {
+        if (!$this->configAppService->needToBeSetup()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         if ($request->isMethod("POST")) {
             if ($this->configAppService->checkPass($request)) {
-                return $this->redirectToRoute("app_setup");
+                return $this->redirectToRoute("app_setup", ['pass' => $_ENV["SETUP_PASS"]]);
             } else {
                 return $this->redirectToRoute("app_login");
             }
@@ -39,6 +43,10 @@ class SetupController extends AbstractController
     #[Route('/creerAdmin', name: 'setup')]
     public function makeSuperAdmin(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $hasher)
     {
+        if ($request->get('pass') != $_ENV["SETUP_PASS"] || !$this->configAppService->needToBeSetup()) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $form = $this->createForm(UserType::class, null, [
             "addUser" => true
         ])->handleRequest($request);
@@ -50,7 +58,7 @@ class SetupController extends AbstractController
                 ->setEmail($form->get("email")->getData())
                 ->setNom($form->get("nom")->getData())
                 ->setFonction($form->get("fonction")->getData())
-                ->setRoles(["ROLE_ADMIN", "ROLE_SUPERADMIN"])
+                ->setRoles(["ROLE_ADMIN", "ROLE_GESTION", "ROLE_SUPERADMIN"])
                 ->setPassword($password)
                 ->setCreatedAt(new DateTime('now'))
                 ->setUpdatedAt(new DateTime('now'));

@@ -1,4 +1,4 @@
-
+{% if 'ROLE_GESTION' in app.user.roles %}
 {% block javascripts %}
 <script>
   function RemoveBanner() {
@@ -54,3 +54,4 @@
   if(sessionStorage.getItem('isBannerRemoved') == 'true') RemoveBanner();
 </script>
 {% endblock %}
+{% endif %}
