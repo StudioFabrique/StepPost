@@ -148,9 +148,6 @@ class ExpediteurController extends AbstractController
                 if (strlen(intval($form->get('codePostal')->getData())) != 5) {
                     throw new Exception("Le code postal est incorrect");
                 }
-                if (strlen(intval(str_replace(" ", "", $form->get('telephone')->getData()))) < 9) {
-                    throw new Exception("Le numéro de téléphone est incorrect");
-                }
             } catch (Exception $e) {
                 return $this->redirectToRoute('app_editExpediteur', [
                     'errorMessage' => $e->getMessage(),
@@ -185,8 +182,8 @@ class ExpediteurController extends AbstractController
     /**
      * Supprime un expéditeur
      */
-    #[Route('/delete/{id}', name: 'deleteExpediteur')]
-    public function Delete(Request $request, Expediteur $expediteur, EntityManagerInterface $em, ExpediteurRepository $expediteurRepository): Response
+    #[Route('/delete', name: 'deleteExpediteur')]
+    public function Delete(Request $request, EntityManagerInterface $em, ExpediteurRepository $expediteurRepository): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -197,10 +194,10 @@ class ExpediteurController extends AbstractController
         $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Suppression"];
 
         try {
+            $expediteur = $expediteurRepository->find($request->get('id'));
             $request->get("mode") == "temp"
-                ? $expediteur->setRoles(["ROLE_DELETED"])
-                : $expediteurRepository->remove($expediteur, true);
-            $em->persist($expediteur);
+                ? $em->persist($expediteur->setRoles(["ROLE_DELETED"]))
+                : $expediteurRepository->remove($expediteur, false);
             $em->flush();
             return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message), Response::HTTP_SEE_OTHER]);
         } catch (Exception) {

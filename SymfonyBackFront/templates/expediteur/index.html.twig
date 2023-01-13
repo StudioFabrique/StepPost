@@ -72,7 +72,7 @@
                                 </a>
                             </td>
                             <td class="px-6 py-4">
-                                {{ include('expediteur/_delete_form.html.twig') }}
+                                <a href="{{ path('app_deleteExpediteur', {id: expediteur.id, mode: 'temp'}) }}" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</a>
                             </td>
                             <td class="px-6 py-4">
                                 {% if expediteur.pswLength > 1 %}
