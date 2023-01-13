@@ -144,7 +144,7 @@ class FacteurController extends AbstractController
         $facteur = $facteurRepo->find($idFacteur);
 
         try {
-            $facteurRepo->remove($facteur, true);
+            $facteur->setRoles(['ROLE_INACTIF']);
             return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $message)]);
         } catch (Exception) {
             return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $messageErreur), 'isError' => true]);
