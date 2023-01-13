@@ -13,12 +13,12 @@ use App\Services\ExportCSV;
 use App\Services\MessageService;
 use App\Services\RequestManager;
 
-/*
-Cette classe est le point d'entrée de l'application après que 
-l'utilisateur (Administrateur) se soit connecté à l'application.
-Par l'intermédiaire de cette classe, l'administrateur va pouvoir gérer les différents
-courriers présents dans la base données.
-*/
+/**
+ * Cette classe est le point d'entrée de l'application après que 
+ * l'utilisateur (Administrateur) se soit connecté à l'application.
+ * Par l'intermédiaire de cette classe, l'administrateur va pouvoir gérer les différents
+ * courriers présents dans la base données.
+ */
 
 #[Route('/accueil', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
