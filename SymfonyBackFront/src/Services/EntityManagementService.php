@@ -3,22 +3,34 @@
 namespace App\Services;
 
 use App\Entity\Client;
+use App\Entity\Expediteur;
 use App\Entity\User;
 use App\Repository\ClientRepository;
+use App\Repository\ExpediteurRepository;
 use App\Repository\UserRepository;
 use Exception;
 use Symfony\Component\Form\Form;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class EntityManagementService
 {
-    private $passwordHasher, $userRepo, $dateMaker, $clientRepo;
-    public function __construct(UserPasswordHasherInterface $passwordHasher, UserRepository $userRepo, DateMaker $dateMaker, ClientRepository $clientRepo)
-    {
+    private $passwordHasher, $userRepo, $dateMaker, $clientRepo, $expediteurRepo, $formattingService;
+    public function __construct(
+        UserPasswordHasherInterface $passwordHasher,
+        UserRepository $userRepo,
+        DateMaker $dateMaker,
+        ClientRepository $clientRepo,
+        ExpediteurRepository $expediteurRepo,
+        FormattingService $formattingService
+    ) {
         $this->passwordHasher = $passwordHasher;
         $this->userRepo = $userRepo;
         $this->dateMaker = $dateMaker;
         $this->clientRepo = $clientRepo;
+        $this->expediteurRepo = $expediteurRepo;
+        $this->formattingService = $formattingService;
     }
 
     public function MakeRaisonSociale($nom)
@@ -53,6 +65,31 @@ class EntityManagementService
         $admin->setRoles(!$isMairie ? ['ROLE_ADMIN', 'ROLE_GESTION'] : ['ROLE_ADMIN', 'ROLE_MAIRIE']);
         $this->userRepo->add($admin);
         return $admin;
+    }
+
+    public function MakeExpediteur(Form $form): array
+    {
+        $serializer = new Serializer([(new ObjectNormalizer())]);
+        $expediteur = $form->getData();
+        $expediteur->setClient(null);
+        $expediteurArray = $this->formattingService
+            ->stringToLowerObject(
+                $expediteur,
+                Expediteur::class,
+                array('client', 'createdAt', 'updatedAt'),
+                true
+            );
+
+
+        $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
+        $expediteur
+            ->setCreatedAt($this->dateMaker->createFromDateTimeZone())
+            ->setUpdatedAt($this->dateMaker->createFromDateTimeZone())
+            ->setRoles(['ROLE_INACTIF'])->setPassword(' ');
+        $this->expediteurRepo
+            ->add($expediteur->setClient($form->get("addClient")->getData()), true);
+
+        return $expediteurArray;
     }
 
     public function EditUser(Form $formData, bool $isSuperAdmin): User

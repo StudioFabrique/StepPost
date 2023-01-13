@@ -85,6 +85,13 @@ class RequestManager
                     'isError' => $request->get('isError') ?? false,
                 ];
                 break;
+            case "expediteur":
+                return [
+                    'form' => $form,
+                    'expediteursInactifs' => $this->expediteurRepo->findAllInactive(),
+                    'errorMessage' => $request->get('errorMessage') ?? null,
+                    'isError' => $request->get('isError') ?? false
+                ];
         }
     }
 
