@@ -5,6 +5,9 @@ namespace App\Services;
 use DateTime;
 use DateTimeZone;
 
+/**
+ * Service pour générer et convertir la date
+ */
 class DateMaker
 {
     public function createFromDateTimeZone($date = 'now', string $zone = "UTC"): ?DateTime

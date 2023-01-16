@@ -37,6 +37,9 @@ class DataFinder
         $this->clientRepo = $clientRepo;
     }
 
+    /**
+     * Obtenir tous les courriers selon le role de l'administrateur connecté.
+     */
     public function GetCourriers(Request $request, UserInterface $user): array
     {
         $raison = in_array('ROLE_MAIRIE', $user->getRoles()) ? 'mairie de pau' : null;
@@ -50,12 +53,18 @@ class DataFinder
         return $data;
     }
 
+    /**
+     * Obtenir tous les admins avec les id dans l'ordre décroissant
+     */
     public function GetAdmins(): array
     {
         $data = $this->userRepo->findAll([], ['id' => 'DESC']);
         return $data;
     }
 
+    /**
+     * Obtenir tous les expéditeurs actifs ou inatifs avec un formattage de la valeur temporaire de la raison sociale
+     */
     public function GetExpediteurs(Request $request, bool $inactives = false): array
     {
         if ($inactives) {
@@ -78,11 +87,17 @@ class DataFinder
         }
     }
 
+    /**
+     * Obtenir la liste de tous les clients actifs
+     */
     public function getRaisonSocialActive()
     {
         return $this->clientRepo->findActiveClients();
     }
 
+    /**
+     * Génération du composant de la pagination et le retourne
+     */
     public function Paginate($data, Request $request): PaginationInterface
     {
         $currentPage = $request->get('currentPage') ?? 1;

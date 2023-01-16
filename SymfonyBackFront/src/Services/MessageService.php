@@ -4,6 +4,9 @@ namespace App\Services;
 
 class MessageService
 {
+    /**
+     * Récupère le message de succès à partir du fichier en .json
+     */
     public function GetSuccessMessage(string $type, int $action, string $replace = ""): array
     {
         $messages = array();
@@ -15,6 +18,9 @@ class MessageService
         return ['errorMessage' => str_replace('[nom]', $replace, $messages[$action])];
     }
 
+    /**
+     * Récupère le message d'erreur à partir du fichier en .json
+     */
     public function GetErrorMessage(string $type, int $action, string $replace = ""): array
     {
         $messages = array();
@@ -26,7 +32,9 @@ class MessageService
         return ['errorMessage' => str_replace('[nom]', $replace, $messages[$action]), 'isError' => true];
     }
 
-    // Récupère et convertie le fichier json contenant les messages et le converti en tableau
+    /**
+     * Récupère et convertie le fichier json contenant les messages et le converti en tableau
+     */
     private function DecodeMessageArray(string $type): array
     {
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);

@@ -7,9 +7,15 @@ use App\Repository\StatutRepository;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Ce service propose des méthodes permettant de gérer les différentes requêtes
+ */
 class RequestManager
 {
     private $statutRepo, $expediteurRepo, $dataFinder;
+    /**
+     * Constructeur
+     */
     public function __construct(StatutRepository $statutRepo, ExpediteurRepository $expediteurRepo, DataFinder $dataFinder)
     {
         $this->statutRepo = $statutRepo;
@@ -17,6 +23,9 @@ class RequestManager
         $this->dataFinder = $dataFinder;
     }
 
+    /**
+     * Génére une requête sous forme de tableau pour le rendu
+     */
     public function GenerateRenderRequest(string $routeName, Request $request, $dataPagination = null, $data = null): array
     {
         switch ($routeName) {
@@ -74,6 +83,9 @@ class RequestManager
         }
     }
 
+    /**
+     * Génère une requête sous forme de tableau pour la redirection
+     */
     public function GenerateRenderFormRequest(string $routeName, Request $request, Form $form): array
     {
         switch ($routeName) {

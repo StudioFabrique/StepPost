@@ -6,16 +6,26 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
+
+/**
+ * Ce service contient les méthodes pour envoyer des mails à partir du mailer.
+ */
 class MailService
 {
     private $formattingService, $mailer;
 
+    /**
+     * Constructeur
+     */
     public function __construct(FormattingService $formattingService, MailerInterface $mailer)
     {
         $this->formattingService = $formattingService;
         $this->mailer = $mailer;
     }
 
+    /**
+     * Envoi un mail contenant le token fourni 5avec une durée d'expiration).
+     */
     public function sendMail($token, $nbHeureExp, Form $form)
     {
         $body = "
@@ -30,6 +40,9 @@ class MailService
         $this->mailer->send($mail);
     }
 
+    /**
+     * Récupère la signature
+     */
     private function getSignature(): string
     {
         return "<p>

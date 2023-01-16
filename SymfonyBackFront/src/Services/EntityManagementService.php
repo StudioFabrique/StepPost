@@ -39,6 +39,9 @@ class EntityManagementService
         $this->formattingService = $formattingService;
     }
 
+    /**
+     * Créer une raison sociale avec un nom
+     */
     public function MakeRaisonSociale($nom)
     {
         $raisonSocialeExist = false;
@@ -57,6 +60,9 @@ class EntityManagementService
         return true;
     }
 
+    /**
+     * Créer un utilisateur à partir d'un formulaire
+     */
     public function MakeUser(Form $formData, bool $isMairie = null): User
     {
         $admin = $formData->getData();
@@ -73,6 +79,9 @@ class EntityManagementService
         return $admin;
     }
 
+    /**
+     * Créer un expéditeur à partir d'un formulaire
+     */
     public function MakeExpediteur(Form $form): array
     {
         $serializer = new Serializer([(new ObjectNormalizer())]);
@@ -98,6 +107,9 @@ class EntityManagementService
         return $expediteurArray;
     }
 
+    /**
+     * Modifie les données d'un admin à partir d'un formulaire
+     */
     public function EditUser(Form $formData, bool $isSuperAdmin): User
     {
         $admin = $formData->getData();
@@ -107,6 +119,9 @@ class EntityManagementService
         return $admin;
     }
 
+    /**
+     * Modifie le mot de passe d'un admin à partir d'un formulaire
+     */
     public function EditPasswordUser(Form $formData): User
     {
         $admin = $formData->getData();

@@ -10,6 +10,9 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+/**
+ * Ce service contient les méthodes pour l'export en csv.
+ */
 class ExportCSV
 {
     private $parameters, $statutRepo;
@@ -22,6 +25,9 @@ class ExportCSV
         $this->statutRepo = $statutRepo;
     }
 
+    /**
+     * Créer un fichier en .csv à partir des données sous forme de tableau des courriers
+     */
     public function ExportFile($data)
     {
         $csvCourriers[0] = ['Date', 'Expéditeur', 'Statut', 'Bordereau', 'Type', 'Nom', 'Prénom', 'Adresse', 'Code Postal', 'Ville'];
@@ -53,6 +59,9 @@ class ExportCSV
         }
     }
 
+    /**
+     * Récupère le fichier en .csv et le retourne afin que le téléchargement soit proposé dans le navigateur de l'utilisateur
+     */
     public function GetFile()
     {
         $file = new BinaryFileResponse($this->parameters->get('csv_directory') . 'courriers.csv');
