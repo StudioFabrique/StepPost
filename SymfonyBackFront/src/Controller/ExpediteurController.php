@@ -231,7 +231,7 @@ class ExpediteurController extends AbstractController
         $client->setRaisonSociale(str_replace("tmp_", "", $client->getRaisonSociale()));
         $em->persist($client);
         $email = (new Email())
-            ->from('step.automaticmailservice@gmail.com')
+            ->from($this->formattingService->formatMailFromEnv())
             ->subject('Activation de votre compte Step Post')
             ->to($expediteur->getEmail())
             ->html("<p>Votre compte associé à l'adresse mail " . $expediteur->getEmail() . " a été activé. Vous pouvez donc vous connecter à adresse : </p><a href='https://step-post.fr'>https://step-post.fr</a>");

@@ -11,9 +11,16 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Service pour trouver des données d'entités.
+ */
 class DataFinder
 {
+
     private $statutCourrierRepo, $paginator, $userRepo, $dateMaker, $expediteurRepo, $clientRepo;
+    /**
+     * Constructeur
+     */
     public function __construct(
         StatutCourrierRepository $statutCourrierRepo,
         PaginatorInterface $paginator,

@@ -14,9 +14,15 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * Service pour créer, modifier et supprimer des entités.
+ */
 class EntityManagementService
 {
     private $passwordHasher, $userRepo, $dateMaker, $clientRepo, $expediteurRepo, $formattingService;
+    /**
+     * Constructeur
+     */
     public function __construct(
         UserPasswordHasherInterface $passwordHasher,
         UserRepository $userRepo,

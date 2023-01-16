@@ -9,18 +9,15 @@ use Symfony\Component\Serializer\Serializer;
 
 class FormattingService
 {
-    /* 
-        Cette méthode permet de tranformer tous les champs d'une entité (venant d'un formulaire par exemple) en lowercase.
-        Les données de types array et de type int sont automatiquement ignorées lors de la conversion
-        
-        Cette méthode accepte en paramètres :
-        - un objet de type Entité Symfony
-        - le nom de la classe (type) de l'objet pour la conversion en sortie
-        - (optionnel, null par defaut) un tableau (array) composé de chaînes de caractères (string) :
-            pour indiquer les données associées à ne pas convertir afin d'éviter les erreurs lors de la denormalization
-        - (optionnel, false par defaut) un type boolean pour extraire les valeurs sous formes de array au lieu d'un objet
+    /**
+     * Cette méthode permet de tranformer tous les champs d'une entité (venant d'un formulaire par exemple) en lowercase.
+     * Les données de types array et de type int sont automatiquement ignorées lors de la conversion
+     * @param Entity $object un objet de type Entité
+     * @param string $objectClass le nom de la classe (type) de l'objet pour la conversion en sortie
+     * @param array $exclude (optionnel, null par defaut) un tableau (array) composé de chaînes de caractères (string) pour indiquer les données associées à ne pas convertir afin d'éviter les erreurs lors de la denormalization
+     * @param bool $isArrayOut (optionnel, false par defaut) un type boolean pour extraire les valeurs sous formes de array au lieu d'un objet
+     * @return mixed si $isArrayOut est défini sur false alors retourne une entité sinon retourne un tableau
      */
-
     public function stringToLowerObject($object, string $objectClass, array $exclude = null, bool $isArrayOut = false)
     {
         $serializer = new Serializer([(new ObjectNormalizer())]);
@@ -38,8 +35,11 @@ class FormattingService
         return !$isArrayOut ? $serializer->denormalize($newArray, $objectClass, null, [ObjectNormalizer::OBJECT_TO_POPULATE => $object]) : $newArray;
     }
 
-    public function formatMailFromEnv(string $subject)
+    /**
+     * Formatte le mail renseigné dans le fichier d'environnement en adresse mail 
+     */
+    public function formatMailFromEnv()
     {
-        return str_replace('%40', '@', substr($subject, 13, strpos($subject, ":", 13)));
+        return str_replace('%40', '@', substr($_ENV["MAILER_DSN"], 13, strpos($_ENV["MAILER_DSN"], ":", 13)));
     }
 }

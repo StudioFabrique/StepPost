@@ -23,7 +23,7 @@ class MailService
             <p><a href='https://step-post.fr/profil/validation-nouveau-compte?token=" . $token . "'> Confirmer la création de mon compte client </a></p>
             <p> La confirmation va expirer dans " . $nbHeureExp . ($nbHeureExp == 1 ? " heure </p>" : " heures </p>") . $this->getSignature();
         $mail = (new Email())
-            ->from($this->formattingService->formatMailFromEnv($_ENV["MAILER_DSN"])) // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
+            ->from($this->formattingService->formatMailFromEnv()) // adresse de l'expéditeur de l'email ayant son email de configuré dans le .env
             ->to($form->get('email')->getData())
             ->subject('Création de votre compte client')
             ->html($body);

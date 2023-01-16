@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 class ExportCSV
 {
     private $parameters, $statutRepo;
+    /**
+     * Constructeur
+     */
     public function __construct(ParameterBagInterface $parameters, StatutRepository $statutRepo)
     {
         $this->parameters = $parameters;
