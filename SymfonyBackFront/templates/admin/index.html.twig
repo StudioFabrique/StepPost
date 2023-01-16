@@ -46,7 +46,7 @@
             <tbody>
                 {% set i = -1 %}
                 {% for user in admins %}
-                {% set role = 'ROLE_SUPERADMIN' in user.roles ? 'Administrateur' : 'Gestionnaire' %}
+                {% set role = 'ROLE_SUPERADMIN' in user.roles ? 'Administrateur' : ('ROLE_MAIRIE' in user.roles ? 'Mairie' : 'Gestionnaire') %}
                 <tr class="bg-white border-b ">
                     <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         {{ role }}
@@ -66,13 +66,13 @@
                             Modifier
                         </a>
                     </td>
-                    <td class="mr-10 py-4">
+                    <td class="px-6 py-4">
                         <a class="text-blue-800 bg-blue-100 p-2 rounded whitespace-nowrap"
                             href="{{ path('app_edit_password', {id: user.id}) }}">
                             Modifier le mot de passe
                         </a>
                     </td>
-                    <td class="">
+                    <td class="px-12 py-4">
                         {% if app.user.id != user.id %}
                             <button id="showButton" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
                             <div id="confirmBox" class="fixed -ml-32 bg-[#140A82] rounded-lg p-2">
