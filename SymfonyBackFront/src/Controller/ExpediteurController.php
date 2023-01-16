@@ -89,6 +89,9 @@ class ExpediteurController extends AbstractController
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
+        if (count($this->dataFinder->getRaisonSocialActive()) < 1) {
+            return $this->redirectToRoute('app_expediteur', $this->messageService->GetErrorMessage("Expéditeur", 6));
+        }
 
         $form = $this->createForm(ExpediteurType::class, null, ['type' => 'create']);
         $form->handleRequest($request);
@@ -131,6 +134,9 @@ class ExpediteurController extends AbstractController
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
+        }
+        if (count($this->dataFinder->getRaisonSocialActive()) < 1) {
+            return $this->redirectToRoute('app_expediteur', $this->messageService->GetErrorMessage("Expéditeur", 6));
         }
 
         $form = $this->createForm(ExpediteurType::class, $ancienExpediteur, [

@@ -23,9 +23,9 @@
             </div>
         </form>
         <div>
-            <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded"
+            <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded whitespace-nowrap"
                 href="{{ path('app_newFacteur', { isAdding: true, isEdit: false }) }}">Créer un facteur</a>
-            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
+            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded whitespace-nowrap" href="{{ path('app_accueil') }}">Retour</a>
         </div>
     </section>
     <section class="overflow-x-auto shadow-md sm:rounded-lg">
@@ -56,9 +56,6 @@
                     <th>
 
                     </th>
-                    <th>
-
-                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -78,21 +75,18 @@
                         {{facteur.updatedAt | date('d-m-Y H:i', "Europe/Paris") }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ role }}
-                    </td>
-                    <td class="py-4">
-                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded whitespace-nowrap"
                             href="{{ path('app_editFacteur', {id: facteur.id, isadding: false, isEdit: false}) }}">
                             Modifier
                         </a>
                     </td>
-                    <td class="py-4">
-                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                    <td class="py-4 whitespace-nowrap">
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded whitespace-nowrap"
                             href="{{ path('app_editFacteur', {id: facteur.id, isadding: false, isEdit: true}) }}">
                             Modifier le mot de passe
                         </a>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-12 py-4">
                         <button id="showButton" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
                         <div id="confirmBox" class="fixed -ml-36 bg-[#140A82] rounded-lg p-2">
                             <p class="text-white">Êtes-vous sûr de vouloir supprimer ce facteur ? </p>
@@ -103,7 +97,7 @@
                         </div>
                     </td>
                     <td class="px-6 py-4">
-                        <a class="text-green-800 bg-green-300 p-2 rounded"
+                        <a class="text-green-800 bg-green-300 p-2 rounded whitespace-nowrap"
                             href="{{ path('app_statistiques_facteur', {facteur: facteur.nom}) }}">
                             Statistiques
                         </a>
@@ -125,12 +119,12 @@
             (nbFacteursTotal / 10)|round %} {% if maxPages> 1 %}
             {% if currentPage != 1 %}
             <a href="{{ path('app_facteur', {currentPage: 1}) }}"
-                class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+                class="pt-3 text-white bg-[#140A82] rounded-lg px-2 whitespace-nowrap">1</a>
             {% endif %}
             <div class="bg-[#140A82]">{{ knp_pagination_render(facteurs) }} </div>
             {% if currentPage != maxPages %}
             <a href="{{ path('app_facteur', {currentPage: maxPages}) }}"
-                class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+                class="pt-3 text-white bg-[#140A82] rounded-lg px-2 whitespace-nowrap">{{maxPages}} </a>
             {% endif %}
             {% endif %}
     </div>

@@ -17,15 +17,15 @@
         <div></div>
         <div>
             {% if 'ROLE_GESTION' in app.user.roles %}
-            <a class="text-white bg-[#1d71d0] hover:bg-[#042e5e] p-2 rounded"
+            <a class="text-white bg-[#1d71d0] hover:bg-[#042e5e] p-2 rounded whitespace-nowrap"
                 href="{{ path('app_expediteur') }}">Gestion expéditeurs</a>
-            <a class="text-white bg-[#939a16] hover:bg-[#545804] p-2 rounded" href="{{ path('app_facteur') }}">Gestion
+            <a class="text-white bg-[#939a16] hover:bg-[#545804] p-2 rounded whitespace-nowrap" href="{{ path('app_facteur') }}">Gestion
                 facteurs</a>
-            <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded"
+            <a class="text-white bg-[#24A640] hover:bg-[#0e551d] p-2 rounded whitespace-nowrap"
                 href="{{ path('app_raisonSociale') }}">Gestion raisons sociales</a>
             {% endif %}
             {% if 'ROLE_SUPERADMIN' in app.user.roles %}
-            <a class="text-white bg-[#298b7a] hover:bg-[#0c5246] p-2 rounded" href="{{ path('app_admin') }}">Gestion
+            <a class="text-white bg-[#298b7a] hover:bg-[#0c5246] p-2 rounded whitespace-nowrap" href="{{ path('app_admin') }}">Gestion
                 administrateurs</a>
             {% endif %}
         </div>
@@ -110,7 +110,7 @@
                     <td class="px-6 py-4">
                         {{ 'ROLE_MAIRIE' in app.user.roles ? (courrier.nomExpediteur ?? 'non définie') : (courrier.raison ?? 'non définie') }}
                         <hr class="border-y-2 my-2 border-blue-300">
-                        <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white"
+                        <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white whitespace-nowrap"
                             href="{{ path('app_detailsExpediteur', {expediteurId: courrier.expediteur, recherche: recherche ?? null, redirectTo: 'app_accueil'}) }}">
                             details
                         </a>
@@ -120,7 +120,7 @@
                         {{ courrier.statut == statut.statutCode ? statut.etat|title : NULL }}
                         {% endfor %}
                         <hr class="border-y-2 my-2 border-blue-300">
-                        <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white"
+                        <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white whitespace-nowrap"
                             href="{{ path('app_suiviId', {id: courrier.courrier, courrierId: courrier.courrier, recherche: recherche ?? null}) }}">
                             détails
                         </a>
@@ -128,7 +128,7 @@
                     <td class="px-6 py-4">
                         {{courrier.bordereau}}
                     </td>
-                    <td scope="row" class="px-6 py-4 font-medium text-gray-900itespace-nowrap">
+                    <td scope="row" class="px-6 py-4 font-medium text-gray-900">
                         {{courrier.type == "0" ? "Lettre avec suivi" }} {{courrier.type == "1" ? "Lettre avec accusé de
                         reception" }} {{courrier.type == "2" ? "Colis" }}
                     </td>
@@ -163,14 +163,14 @@
             1 : (nbCourriersTotal / 10)|round %} {% if maxPages> 1 %}
             {% if currentPage != 1 %}
             <a href="{{ path('app_accueil', {currentPage: 1, recherche: recherche ?? null, dateMin: dateMin ?? null, dateMax: dateMax ?? null, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}"
-                class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+                class="pt-3 text-white bg-[#140A82] rounded-lg px-2 whitespace-nowrap">1</a>
             {% endif %}
             <div class="bg-[#140A82]">
                 {{ knp_pagination_render(courriers) }}
             </div>
             {% if currentPage != maxPages %}
             <a href="{{ path('app_accueil', {currentPage: maxPages, recherche: recherche ?? null, dateMin: dateMin ?? null, dateMax: dateMax ?? null, order: order == 'ASC' ? 'DESC' : 'ASC'}) }}"
-                class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+                class="pt-3 text-white bg-[#140A82] rounded-lg px-2 whitespace-nowrap">{{maxPages}} </a>
             {% endif %}
             {% endif %}
     </div>

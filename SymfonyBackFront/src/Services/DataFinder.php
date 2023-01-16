@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\UserRepository;
@@ -12,19 +13,21 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class DataFinder
 {
-    private $statutCourrierRepo, $paginator, $userRepo, $dateMaker, $expediteurRepo;
+    private $statutCourrierRepo, $paginator, $userRepo, $dateMaker, $expediteurRepo, $clientRepo;
     public function __construct(
         StatutCourrierRepository $statutCourrierRepo,
         PaginatorInterface $paginator,
         UserRepository $userRepo,
         DateMaker $dateMaker,
-        ExpediteurRepository $expediteurRepo
+        ExpediteurRepository $expediteurRepo,
+        ClientRepository $clientRepo
     ) {
         $this->statutCourrierRepo = $statutCourrierRepo;
         $this->paginator = $paginator;
         $this->userRepo = $userRepo;
         $this->dateMaker = $dateMaker;
         $this->expediteurRepo = $expediteurRepo;
+        $this->clientRepo = $clientRepo;
     }
 
     public function GetCourriers(Request $request, UserInterface $user): array
@@ -66,6 +69,11 @@ class DataFinder
             }
             return $data;
         }
+    }
+
+    public function getRaisonSocialActive()
+    {
+        return $this->clientRepo->findActiveClients();
     }
 
     public function Paginate($data, Request $request): PaginationInterface

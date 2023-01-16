@@ -12,8 +12,8 @@
     <div class="flex justify-between items-center">
         <div></div>
         <div class="my-5">
-            <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded" href="{{ path('app_addRaisonSociale') }}">Créer une raison sociale</a>
-            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
+            <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded whitespace-nowrap" href="{{ path('app_addRaisonSociale') }}">Créer une raison sociale</a>
+            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded whitespace-nowrap" href="{{ path('app_accueil') }}">Retour</a>
         </div>
     </div>
     <section class="overflow-x-auto shadow-md sm:rounded-lg">
@@ -47,7 +47,7 @@
                         <b>{{ raison.expediteurs|length }}</b>
                     </td>
                     <td class="px-2 py-4">
-                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded whitespace-nowrap"
                             href="{{ path('app_editRaisonSociale',{raisonId : raison.id}) }}">
                             Modifier
                         </a>
@@ -61,7 +61,7 @@
                         </div>
                     </td>
                     <td class="px-2 py-4">
-                        <a class="text-blue-100 bg-[#140A82] p-2 rounded"
+                        <a class="text-blue-100 bg-[#140A82] p-2 rounded whitespace-nowrap"
                             href="{{ path('app_clientsRaisonSociale',{raisonId : raison.id}) }}">Voir les expéditeurs
                             associés</a>
                     </td>
@@ -80,11 +80,11 @@
         {% set maxPages = (nbRaisonsTotal % 10) < 5 and (nbRaisonsTotal % 10) != 0 ? (nbRaisonsTotal / 10)|round + 1 : (nbRaisonsTotal / 10)|round %}
         {% if maxPages > 1 %}
             {% if currentPage != 1 %}
-                <a href="{{ path('app_raisonSociale', {currentPage: 1}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">1</a>
+                <a href="{{ path('app_raisonSociale', {currentPage: 1}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2 whitespace-nowrap">1</a>
             {% endif %}
             <div class="bg-[#140A82]">{{ knp_pagination_render(raisonsSociales) }} </div>
             {% if currentPage != maxPages %}
-                <a href="{{ path('app_raisonSociale', {currentPage: maxPages}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2">{{maxPages}} </a>
+                <a href="{{ path('app_raisonSociale', {currentPage: maxPages}) }}" class="pt-3 text-white bg-[#140A82] rounded-lg px-2 whitespace-nowrap">{{maxPages}} </a>
             {% endif %}
         {% endif %}
     </div>

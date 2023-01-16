@@ -33,9 +33,9 @@
         </div>
         <div class="flex gap-x-2">
             {% if showUpdateButton and 'ROLE_GESTION' in app.user.roles %}<button id="button"
-                class="text-white bg-green-500 hover:bg-green-700 p-2 rounded">Mettre à jour le statut</button>{% endif
+                class="text-white bg-green-500 hover:bg-green-700 p-2 rounded whitespace-nowrap">Mettre à jour le statut</button>{% endif
             %}
-            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil', {recherche: recherche ?? null, dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Retour</a>
+            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded whitespace-nowrap" href="{{ path('app_accueil', {recherche: recherche ?? null, dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Retour</a>
         </div>
     </div>
     <section>
@@ -52,7 +52,7 @@
                     
                 </p>
                 {% if statut.statut.statutCode >= 3 and 'ROLE_GESTION' in app.user.roles %}
-                <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded"
+                <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded whitespace-nowrap"
                     href="{{ path('app_delete_statut', { courrierId: statut.courrier.id, statutId: statut.id }) }}">Supprimer</a>
                 {% endif %}
             </div>

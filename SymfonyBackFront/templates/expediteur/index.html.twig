@@ -57,7 +57,7 @@
                                 {{ expediteur.raisonSociale ? expediteur.raisonSociale : 'Non défini' }}
                             </td>
                             <td class="px-6 py-4 break-words">
-                                {{ expediteur.email }}
+                                <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id, redirectTo:'app_expediteur'}) }}">{{ expediteur.email }}</a>
                             </td>
                             <td class="px-6 py-4 break-words">
                                 {{ expediteur.nom }}
@@ -66,20 +66,20 @@
                                 {{ expediteur.prenom }}
                             </td>
                             <td class="px-6 py-4">
-                                <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                                <a class="text-blue-800 bg-blue-100 p-2 rounded whitespace-nowrap"
                                     href="{{ path('app_editExpediteur', {id: expediteur.id}) }}">
                                     Modifier
                                 </a>
                             </td>
                             <td class="px-6 py-4">
-                                <a href="{{ path('app_deleteExpediteur', {id: expediteur.id, mode: 'temp'}) }}" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</a>
+                                <a href="{{ path('app_deleteExpediteur', {id: expediteur.id, mode: 'temp'}) }}" class="text-red-800 bg-red-100 p-2 rounded whitespace-nowrap">Supprimer</a>
                             </td>
                             <td class="px-6 py-4">
                                 {% if expediteur.pswLength > 1 %}
                                 <a href="{{ path('app_activateExpediteur', {expediteurId: expediteur.id}) }}"
                                     class="text-blue-800 bg-blue-100 p-2 rounded">Activer</a>
                                 {% else %}
-                                <a class="text-gray-100 bg-gray-200 p-2 rounded hover:cursor-no-drop">Activer</a>
+                                <a class="text-gray-100 bg-gray-200 p-2 rounded hover:cursor-no-drop whitespace-nowrap">Activer</a>
                                 {% endif %}
                             </td>
                         </tr>
@@ -93,7 +93,7 @@
     {% endif %}
     {% endif %}
     {% if isSearch != null ? true : false %}
-    <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
+    <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] p-2 rounded whitespace-nowrap">Annuler recherche</a>
     {% endif %}
     <section class="flex justify-between items-center m-2">
         <form class="flex">
@@ -130,7 +130,7 @@
                 </div>
             </div>
             {% endif %} #}
-            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_accueil') }}">Retour</a>
+            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded whitespace-nowrap" href="{{ path('app_accueil') }}">Retour</a>
         </div>
     </section>
     <section class="overflow-x-auto shadow-md sm:rounded-lg">
@@ -181,10 +181,7 @@
                         {% endif %}
                     </td>
                     <td class="px-6 py-4 break-words">
-                        <a
-                            href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id, redirectTo:'app_expediteur'}) }}">{{
-                            expediteur.email
-                            }}</a>
+                        <a href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id, redirectTo:'app_expediteur'}) }}">{{ expediteur.email }}</a>
                     </td>
                     <td class="px-6 py-4 break-words">
                         {{ expediteur.nom | title }}
