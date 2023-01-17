@@ -39,6 +39,7 @@
             </thead>
             <tbody>
                 {% for expediteur in clients %}
+                {% if not "ROLE_DELETED" in expediteur.roles %}
                 <tr class="bg-white border-b ">
                     <td class="px-6 py-4">
                         {{ expediteur.nom|title }}
@@ -53,6 +54,7 @@
                         </a>
                     </td>
                 </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>

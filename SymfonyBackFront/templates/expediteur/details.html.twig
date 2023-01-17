@@ -39,8 +39,9 @@
 
             <p class="text-gray-600">Ville : <span class="text-[#140A82]">{{ expediteur.ville | title }}</span></p>
         </div>
-        <div class="flex justify-center gap-x-10">
+        <div class="flex flex-col gap-x-10 items-center">
             <p class="text-gray-600">Téléphone : <span class="text-[#140A82]">{{ expediteur.telephone }}</span></p>
+            {% if 'ROLE_DELETED' in expediteur.roles and 'ROLE_SUPERADMIN' in app.user.roles %}<a href="{{ path('app_deleteExpediteur', {id: expediteur.id, mode: 'def'}) }}" class="text-red-600 text-xs mt-5">supprimer cet expéditeur définitivement</a>{% endif %}
         </div>
         <hr class="border-y-1 my-10 border-gray-400">
         <div>
