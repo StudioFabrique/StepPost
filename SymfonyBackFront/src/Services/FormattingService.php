@@ -34,12 +34,4 @@ class FormattingService
 
         return !$isArrayOut ? $serializer->denormalize($newArray, $objectClass, null, [ObjectNormalizer::OBJECT_TO_POPULATE => $object]) : $newArray;
     }
-
-    /**
-     * Formatte le mail renseigné dans le fichier d'environnement en adresse mail 
-     */
-    public function formatMailFromEnv()
-    {
-        return str_replace('%40', '@', substr($_ENV["MAILER_DSN"], 13, strpos($_ENV["MAILER_DSN"], ":", 13)));
-    }
 }
