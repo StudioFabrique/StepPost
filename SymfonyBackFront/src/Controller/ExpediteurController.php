@@ -6,6 +6,7 @@ use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
 use App\Services\DataFinder;
+use App\Services\DateMaker;
 use App\Services\EntityManagementService;
 use App\Services\FormattingService;
 use App\Services\FormVerification;
@@ -34,7 +35,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 #[IsGranted('ROLE_GESTION')]
 class ExpediteurController extends AbstractController
 {
-    private $requestManager, $dataFinder, $formattingService, $messageService, $mailService, $formVerification, $entityManagementService, $tokenManager;
+    private $requestManager, $dataFinder, $formattingService, $messageService, $mailService, $formVerification, $entityManagementService, $tokenManager, $dateMaker;
 
     /**
      * Constructeur
@@ -47,7 +48,8 @@ class ExpediteurController extends AbstractController
         MailService $mailService,
         FormVerification $formVerification,
         EntityManagementService $entityManagementService,
-        TokenManager $tokenManager
+        TokenManager $tokenManager,
+        DateMaker $dateMaker
     ) {
         $this->requestManager = $requestManager;
         $this->dataFinder = $dataFinder;
@@ -57,6 +59,7 @@ class ExpediteurController extends AbstractController
         $this->formVerification = $formVerification;
         $this->entityManagementService = $entityManagementService;
         $this->tokenManager = $tokenManager;
+        $this->dateMaker = $dateMaker;
     }
 
     /**
@@ -168,7 +171,7 @@ class ExpediteurController extends AbstractController
                     Expediteur::class,
                     array('client', 'password')
                 );
-                $em->persist($expediteur->setClient($form->get('addClient')->getData())->setPassword($ancienExpediteur->getPassword()));
+                $em->persist($expediteur->setUpdatedAt($this->dateMaker->createFromDateTimeZone())->setClient($form->get('addClient')->getData())->setPassword($ancienExpediteur->getPassword()));
                 $em->flush();
                 return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)], Response::HTTP_SEE_OTHER);
             } catch (Exception $e) {
@@ -237,7 +240,7 @@ class ExpediteurController extends AbstractController
             ->html("<p>Votre compte associé à l'adresse mail " . $expediteur->getEmail() . " a été activé. Vous pouvez donc vous connecter à adresse : </p><a href='https://step-post.fr'>https://step-post.fr</a>");
 
         try {
-            $em->persist($expediteur->setRoles(['ROLE_CLIENT']));
+            $em->persist($expediteur->setUpdatedAt($this->dateMaker->createFromDateTimeZone())->setRoles(['ROLE_CLIENT']));
             $em->flush();
             $mailer->send($email);
             return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)]);
