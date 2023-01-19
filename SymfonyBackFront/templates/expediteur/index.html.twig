@@ -48,6 +48,9 @@
                             <th scope="col" class="px-6 py-3">
 
                             </th>
+                            <th>
+                                Crée le
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -85,6 +88,9 @@
                                 <a
                                     class="text-gray-100 bg-gray-200 p-2 rounded hover:cursor-no-drop whitespace-nowrap">Activer</a>
                                 {% endif %}
+                            </td>
+                            <td class="px-6 py-4 break-words">
+                                {{expediteur.createdAt | date('d-m-Y H:i', "Europe/Paris") }}
                             </td>
                         </tr>
                         {% endfor %}
