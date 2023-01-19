@@ -90,3 +90,11 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             rsync -a --delete ${{ secrets.REMOTE_TARGET }} ${{ secrets.REMOTE_TARGET_DEPLOY }}
+
+  # documentation:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: PhpDocumentor
+  #       uses: gpupo/actions-phpDocumentor@1.0
+  #       with:
+  #       dir: './SymfonyBackFront/'
