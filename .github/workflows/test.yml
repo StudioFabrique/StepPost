@@ -27,11 +27,11 @@ jobs:
         run: php -v
       - name: Showing working directory
         run: pwd && ls
-        # documentation
+      # documentation
       - name: PhpDocumentor
         uses: gpupo/actions-phpDocumentor@1.0
         with:
-          dir: './SymfonyBackFront/'
+          dir: "./SymfonyBackFront/"
       # Composer
       - name: Validate composer.json and composer.lock
         run: composer validate --no-check-publish
