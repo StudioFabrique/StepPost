@@ -62,10 +62,10 @@
                 {% for facteur in facteurs %}
                 {% if 'ROLE_FACTEUR' in facteur.roles %}
                 <tr class="bg-white border-b00">
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 break-words">
                         {{facteur.email }}
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 break-words">
                         {{facteur.nom | title }}
                     </td>
                     <td class="px-6 py-4">
