@@ -6,7 +6,7 @@
 
 {% block body %}
 <main class="w-[95%] m-auto">
-    <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Détails de l'expéditeur {% if 'ROLE_DELETED' in expediteur.roles %}(<span class="text-red-600">supprimé</span>){% endif %}</h1>
+    <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">Détails de l'expéditeur {% if 'ROLE_DELETED' in expediteur.roles %}(<span class="text-red-600">supprimé</span>){% endif %}{% if 'ROLE_INACTIF' in expediteur.roles %}(<span class="text-orange-600">non activé</span>){% endif %}</h1>
     <div class="flex justify-between">
         <div></div>
         <div>
