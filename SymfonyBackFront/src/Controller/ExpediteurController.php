@@ -224,13 +224,12 @@ class ExpediteurController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
-        $message = $messages["Messages Informations"]["Expéditeur"]["Activation"];
-        $messageErreur = $messages["Messages Erreurs"]["Expéditeur"]["Activation"];
-
         $expediteurId = $request->get('expediteurId');
         $expediteur = $expediteurRepository->find($expediteurId);
         $client = $expediteur->getClient();
+        if (str_contains($client->getRaisonSociale(), 'tmp_')) {
+            return $this->redirectToRoute('app_expediteur', $this->messageService->GetErrorMessage('Expéditeur', 7, ''));
+        }
         $client->setRaisonSociale(str_replace("tmp_", "", $client->getRaisonSociale()));
         $em->persist($client);
         $email = (new Email())
@@ -243,9 +242,9 @@ class ExpediteurController extends AbstractController
             $em->persist($expediteur->setUpdatedAt($this->dateMaker->createFromDateTimeZone())->setRoles(['ROLE_CLIENT']));
             $em->flush();
             $mailer->send($email);
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)]);
+            return $this->redirectToRoute('app_expediteur', $this->messageService->GetSuccessMessage('Expéditeur', 4, ''));
         } catch (Exception $e) {
-            return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $messageErreur), 'isError' => true]);
+            return $this->redirectToRoute('app_expediteur', $this->messageService->GetErrorMessage('Expéditeur', 5, ''));
         }
     }
 }
