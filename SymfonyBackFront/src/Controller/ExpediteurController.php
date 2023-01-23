@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Client;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
@@ -218,17 +219,28 @@ class ExpediteurController extends AbstractController
      * Change le rôle d'un expéditeur à ROLE_CLIENT
      */
     #[Route('/activer', name: 'activateExpediteur')]
-    public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em, MailerInterface $mailer): RedirectResponse
+    public function Activate(Request $request, ExpediteurRepository $expediteurRepository, EntityManagerInterface $em, MailerInterface $mailer): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
+        }
+        if (count($this->dataFinder->getRaisonSocialActive()) < 1) {
+            return $this->redirectToRoute('app_expediteur', $this->messageService->GetErrorMessage("Expéditeur", 6));
         }
 
         $expediteurId = $request->get('expediteurId');
         $expediteur = $expediteurRepository->find($expediteurId);
         $client = $expediteur->getClient();
         if (str_contains($client->getRaisonSociale(), 'tmp_')) {
-            return $this->redirectToRoute('app_expediteur', $this->messageService->GetErrorMessage('Expéditeur', 7, ''));
+            $form = $this->createForm(ExpediteurType::class, $expediteur, ['type' => 'editRaison', 'nom' => strtoupper($expediteur->getNom()) . ' ' . $expediteur->getPrenom()])->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $expediteurRepository->add($expediteur->setClient($form->get('addClient')->getData()), true);
+            }
+            return $this->renderForm('expediteur/edit.html.twig', [
+                'form' => $form,
+                'errorMessage' => null,
+                'expediteursInactifs' => null
+            ]);
         }
         $client->setRaisonSociale(str_replace("tmp_", "", $client->getRaisonSociale()));
         $em->persist($client);

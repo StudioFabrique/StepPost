@@ -82,14 +82,12 @@
                             </td>
                             <td class="px-6 py-4">
                                 {% if expediteur.pswLength > 1 %}
-                                <a href="{{ path('app_activateExpediteur', {expediteurId: expediteur.id}) }}"
-                                    class="text-blue-800 bg-blue-100 p-2 rounded">Activer</a>
+                                <a href="{{ path('app_activateExpediteur', {expediteurId: expediteur.id}) }}" class="text-blue-800 bg-blue-100 p-2 rounded">Activer</a>
                                 {% else %}
-                                <a
-                                    class="text-gray-100 bg-gray-200 p-2 rounded hover:cursor-no-drop whitespace-nowrap">Activer</a>
+                                <a class="text-gray-100 bg-gray-200 p-2 rounded hover:cursor-no-drop whitespace-nowrap">Activer</a>
                                 {% endif %}
                             </td>
-                            <td class="px-6 py-4 break-words">
+                            <td class="py-4 break-words">
                                 {{expediteur.createdAt | date('d-m-Y H:i', "Europe/Paris") }}
                             </td>
                         </tr>
