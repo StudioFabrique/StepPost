@@ -234,7 +234,7 @@ class ExpediteurController extends AbstractController
         if (str_contains($client->getRaisonSociale(), 'tmp_')) {
             $form = $this->createForm(ExpediteurType::class, $expediteur, ['type' => 'editRaison', 'nom' => strtoupper($expediteur->getNom()) . ' ' . $expediteur->getPrenom()])->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $expediteurRepository->add($expediteur->setClient($form->get('addClient')->getData()), true);
+                $expediteurRepository->add($expediteur->setClient($form->get('addClient')->getData())->setRoles(['ROLE_CLIENT']), true);
             }
             return $this->renderForm('expediteur/edit.html.twig', [
                 'form' => $form,
