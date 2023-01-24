@@ -17,6 +17,6 @@ class DateMaker
 
     public function convertDateDefault($date = null): ?DateTime
     {
-        return $date != null ? $this->createFromDateTimeZone($date, 'EU') : null;
+        return $date != null ? date_modify($date, '+1 hour') : null;
     }
 }
