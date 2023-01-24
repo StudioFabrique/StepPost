@@ -10,7 +10,7 @@ use DateTimeZone;
  */
 class DateMaker
 {
-    public function createFromDateTimeZone($date = 'now', string $zone = "UTC"): ?DateTime
+    public function createFromDateTimeZone($date = 'now', string $zone = "EU"): ?DateTime
     {
         return new DateTime($date, new DateTimeZone($zone));
     }
