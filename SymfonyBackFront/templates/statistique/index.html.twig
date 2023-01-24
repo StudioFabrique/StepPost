@@ -156,9 +156,11 @@
 						<p>suggestion facteurs :</p>
 					</div>
 					{% for facteur in listeFacteurs %}
+						{% if facteur.statutsCourrier|length > 0 %}
 						<div class="text-[#140A82]">
 							<a href="{{ path('app_statistiques', { search: facteur.nom }) }}">{{ facteur.nom }}</a>
 						</div>
+						{% endif %}
 					{% endfor %}
 				</div>
 			{% else %}
