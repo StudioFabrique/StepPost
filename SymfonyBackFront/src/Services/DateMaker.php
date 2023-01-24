@@ -17,6 +17,7 @@ class DateMaker
 
     public function convertDateDefault($date = null): ?DateTime
     {
-        return $date != null ? date_modify($date, '+1 hour') : null;
+        $date = $date != null ? date_create($date) : null;
+        return $date;
     }
 }
