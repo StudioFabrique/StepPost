@@ -47,8 +47,7 @@
             </div>
             <div class="flex justify-between">
                 <p>
-                    {{ statut.statut ? statut.statut.etat }} {{statut.facteur != null ? 'par ' ~ statut.facteur.nom|title }} {% if 'ROLE_INACTIF' in statut.facteur.roles and 'ROLE_GESTION' in app.user.roles %}(facteur inactif){% endif %}
-                    
+                    {{ statut.statut ? statut.statut.etat }} {% if statut.facteur != null %}{{'par ' ~ statut.facteur.nom|title }} {% if 'ROLE_INACTIF' in statut.facteur.roles and 'ROLE_GESTION' in app.user.roles %}(facteur inactif){% endif %}{% endif %}
                 </p>
                 {% if statut.statut.statutCode >= 3 and 'ROLE_GESTION' in app.user.roles %}
                 <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded whitespace-nowrap"
