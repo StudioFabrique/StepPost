@@ -208,7 +208,7 @@ class StatutCourrierRepository extends ServiceEntityRepository
                 f.id
                 '
             )
-            ->leftJoin('s.facteur', 'f')
+            ->innerJoin('s.facteur', 'f')
             ->join('s.statut', 'd')
             ->groupBy('s.courrier')
             ->having($facteurId == null ? ("MAX(d.statutCode) = :statutid") : ("MAX(d.statutCode) = :statutid and f.id = :facteurid"))

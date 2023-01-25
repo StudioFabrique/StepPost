@@ -190,7 +190,7 @@ class FacteurController extends AbstractController
      * @param Request $request POST : email, nom, prenom
      */
     #[Route(path: '/api/editPasswordFacteur', name: 'api_editPasswordFacteur')]
-    public function editPasswordacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
+    public function editPasswordFacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
     {
         $timezone = new DateTimeZone('UTC');
 
