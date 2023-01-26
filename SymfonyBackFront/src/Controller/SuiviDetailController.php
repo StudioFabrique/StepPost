@@ -40,7 +40,9 @@ class SuiviDetailController extends AbstractController
         }
 
         $courrierId = $request->get('id');
-        $signature = $courrierRepository->find($courrierId)->getSignature() ?? null;
+        $courrier = $courrierRepository->find($courrierId);
+        $signature = $courrier->getSignature() ?? null;
+        $procuration = $courrier->getProcuration();
         $signatureBase64 = $signature != null ? base64_decode(base64_encode(stream_get_contents($signature))) : null;
 
         $statuts = array();
@@ -72,7 +74,8 @@ class SuiviDetailController extends AbstractController
             'facteur' => $nomFacteur,
             'recherche' => $request->get('recherche'),
             'dateMin' => $request->get('dateMin'),
-            'dateMax' => $request->get('dateMax')
+            'dateMax' => $request->get('dateMax'),
+            'procuration' => $procuration ?? null
         ]);
     }
 
