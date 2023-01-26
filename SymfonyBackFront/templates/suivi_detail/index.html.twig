@@ -59,7 +59,7 @@
     </section>
     <div class="flex justify-between my-10">
         {% if procuration != null %}
-            <p>procuration du destinataire : <span class="text-gray-500">{{procuration}}</span></p>
+            <p>Procuration du destinataire : <span class="text-gray-500">{{procuration|title}}</span></p>
         {% endif %}
         {% if showSignature %}
         <div class="w-[30%]">
