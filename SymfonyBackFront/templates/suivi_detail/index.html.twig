@@ -33,21 +33,26 @@
         </div>
         <div class="flex gap-x-2">
             {% if showUpdateButton and 'ROLE_GESTION' in app.user.roles %}<button id="button"
-                class="text-white bg-green-500 hover:bg-green-700 p-2 rounded whitespace-nowrap">Mettre à jour le statut</button>{% endif
+                class="text-white bg-green-500 hover:bg-green-700 p-2 rounded whitespace-nowrap">Mettre à jour le
+                statut</button>{% endif
             %}
-            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded whitespace-nowrap" href="{{ path('app_accueil', {recherche: recherche ?? null, dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Retour</a>
+            <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded whitespace-nowrap"
+                href="{{ path('app_accueil', {recherche: recherche ?? null, dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Retour</a>
         </div>
     </div>
     <section>
         {% for statut in statutsCourrier %}
         <div class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 mb-4">
             <div class="flex justify-between">
-                <h5 class="mb-2 text-xl font-bold tracking-tight text-[#FF5E1A]">{{ statut.date|date_modify("+1 hour")|date('d-m-Y H:i:s') }}</h5>
+                <h5 class="mb-2 text-xl font-bold tracking-tight text-[#FF5E1A]">{{ statut.date|date_modify("+1
+                    hour")|date('d-m-Y H:i:s') }}</h5>
                 <p class="font-normal text-[#25BA00]">{{statut.statut ? statut.statut.etat }}</p>
             </div>
             <div class="flex justify-between">
                 <p>
-                    {{ statut.statut ? statut.statut.etat }} {% if statut.facteur != null %}{{'par ' ~ statut.facteur.nom|title }} {% if 'ROLE_INACTIF' in statut.facteur.roles and 'ROLE_GESTION' in app.user.roles %}(facteur inactif){% endif %}{% endif %}
+                    {{ statut.statut ? statut.statut.etat }} {% if statut.facteur != null %}{{'par ' ~
+                    statut.facteur.nom|title }} {% if 'ROLE_INACTIF' in statut.facteur.roles and 'ROLE_GESTION' in
+                    app.user.roles %}(facteur inactif){% endif %}{% endif %}
                 </p>
                 {% if statut.statut.statutCode >= 3 and 'ROLE_GESTION' in app.user.roles %}
                 <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded whitespace-nowrap"
@@ -59,7 +64,7 @@
     </section>
     <div class="flex justify-between my-10">
         {% if procuration != null %}
-            <p>Procuration du destinataire : <span class="text-gray-500">{{procuration|title}}</span></p>
+        <p>Distribué avec procuration à : <span class="text-gray-500">{{procuration|title}}</span></p>
         {% endif %}
         {% if showSignature %}
         <div class="w-[30%]">
