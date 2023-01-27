@@ -8,7 +8,7 @@
 
 {% set statutsTermine = false %}
 {% for statut in statutsCourrier %}
-{% if statut.statut.statutCode == 5 %} {% set statutsTermine = true %} {% endif %}
+{% if statut.statut.statutCode == 5 or statut.statut.statutCode == 9 %} {% set statutsTermine = true %} {% endif %}
 {% endfor %}
 
 {% set showUpdateButton = statutsCourrier|length >= 7 or statutsTermine ? false : true %}
