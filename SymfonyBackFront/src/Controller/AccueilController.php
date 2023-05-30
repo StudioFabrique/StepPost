@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Services\DataFinder;
 use App\Services\ExportCSV;
+use App\Services\ExportXLS;
 use App\Services\MessageService;
 use App\Services\RequestManager;
 
@@ -24,13 +25,14 @@ use App\Services\RequestManager;
 #[IsGranted('ROLE_ADMIN')]
 class AccueilController extends AbstractController
 {
-    private $dataFinder, $exportCsv, $messageService, $requestManager;
+    private $dataFinder, $exportCsv, $messageService, $requestManager, $exportXls;
     /**
      * Constructeur
      */
     public function __construct(
         DataFinder $dataFinder,
         ExportCSV $exportCsv,
+        ExportXLS $exportXls,
         MessageService $messageService,
         RequestManager $requestManager
     ) {
@@ -38,6 +40,7 @@ class AccueilController extends AbstractController
         $this->messageService = $messageService;
         $this->exportCsv = $exportCsv;
         $this->requestManager = $requestManager;
+        $this->exportXls = $exportXls;
     }
 
     /**
@@ -78,15 +81,20 @@ class AccueilController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
 
-    #[Route('/export', name: 'export_csv')]
+    #[Route('/export', name: 'export')]
     public function export(Request $request)
     {
+        $exportType = $request->get('type');
         $data = $this->dataFinder->GetCourriers($request, $this->getUser());
 
         try {
-            $this->exportCsv->ExportFile($data);
-            return $this->exportCsv->GetFile();
-        } catch (Exception) {
+            if ($exportType === 'Csv' || $exportType === 'Xls') {
+                $this->{'export' . $exportType}->ExportFile($data); // like : call_user_func(array($this, 'export' . $exportType))->exportFile($data);
+                return $this->{'export' . $exportType}->GetFile();
+            }
+            throw new Exception("Unknow exportation problem", 1);
+        } catch (Exception $e) {
+            var_dump($e);
             return $this->redirectToRoute('app_accueil', $this->messageService->GetErrorMessage("Exportation CSV", 1), Response::HTTP_SEE_OTHER);
         }
     }
