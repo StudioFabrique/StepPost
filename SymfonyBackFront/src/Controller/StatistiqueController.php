@@ -205,7 +205,8 @@ class StatistiqueController extends AbstractController
                             'rgb(43, 222, 211)',
                             'rgb(16, 36, 200)',
                             'rgb(99, 67, 175)',
-                            'rgb(238, 155, 49)',
+                            'rgb(99, 67, 175)',
+                            'rgb(69,126,23)',
                             'rgb(193, 52, 21)'
                         ]
                     ]
