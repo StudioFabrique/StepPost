@@ -94,8 +94,7 @@ class AccueilController extends AbstractController
             }
             throw new Exception("Unknow exportation problem", 1);
         } catch (Exception $e) {
-            var_dump($e);
-            return $this->redirectToRoute('app_accueil', $this->messageService->GetErrorMessage("Exportation CSV", 1), Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_accueil', ['errorMessage' => $e, 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
 }
