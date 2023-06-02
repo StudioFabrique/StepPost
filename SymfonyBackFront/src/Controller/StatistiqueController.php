@@ -201,12 +201,13 @@ class StatistiqueController extends AbstractController
                             count($statutCourrierRepository->findCourriersByLastStatut(7))
                         ],
                         'backgroundColor' => [
-                            'rgb(255, 204, 64)',
-                            'rgb(43, 222, 211)',
-                            'rgb(16, 36, 200)',
-                            'rgb(99, 67, 175)',
-                            'rgb(238, 155, 49)',
-                            'rgb(193, 52, 21)'
+                            'rgb(228,26,28)',
+                            'rgb(55,126,184)',
+                            'rgb(77,175,74)',
+                            'rgb(152,78,163)',
+                            'rgb(255,127,0)',
+                            'rgb(255,255,51)',
+                            'rgb(166,86,40)'
                         ]
                     ]
                 ]

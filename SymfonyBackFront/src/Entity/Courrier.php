@@ -55,6 +55,9 @@ class Courrier
     #[ORM\Column(type: Types::BLOB, nullable: true)]
     private $signature = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $procuration = null;
+
     public function __construct()
     {
         $this->statutsCourrier = new ArrayCollection();
@@ -240,6 +243,18 @@ class Courrier
     public function setSignature($signature): self
     {
         $this->signature = $signature;
+
+        return $this;
+    }
+
+    public function getProcuration(): ?string
+    {
+        return $this->procuration;
+    }
+
+    public function setProcuration(?string $procuration): self
+    {
+        $this->procuration = $procuration;
 
         return $this;
     }

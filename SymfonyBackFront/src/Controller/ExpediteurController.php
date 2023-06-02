@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Client;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
@@ -25,7 +24,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 /**
@@ -36,7 +34,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 #[IsGranted('ROLE_GESTION')]
 class ExpediteurController extends AbstractController
 {
-    private $requestManager, $dataFinder, $formattingService, $messageService, $mailService, $formVerification, $entityManagementService, $tokenManager, $dateMaker;
+    private $requestManager, $dataFinder, $formattingService, $messageService, $formVerification, $entityManagementService, $tokenManager, $dateMaker;
 
     /**
      * Constructeur
@@ -46,7 +44,6 @@ class ExpediteurController extends AbstractController
         DataFinder $dataFinder,
         FormattingService $formattingService,
         MessageService $messageService,
-        MailService $mailService,
         FormVerification $formVerification,
         EntityManagementService $entityManagementService,
         TokenManager $tokenManager,
@@ -56,7 +53,6 @@ class ExpediteurController extends AbstractController
         $this->dataFinder = $dataFinder;
         $this->formattingService = $formattingService;
         $this->messageService = $messageService;
-        $this->mailService = $mailService;
         $this->formVerification = $formVerification;
         $this->entityManagementService = $entityManagementService;
         $this->tokenManager = $tokenManager;
@@ -88,7 +84,7 @@ class ExpediteurController extends AbstractController
      * @param Request $request
      */
     #[Route('/ajouter', name: 'addExpediteur')]
-    public function new(Request $request): Response
+    public function new(Request $request, MailService $mailService): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -119,7 +115,7 @@ class ExpediteurController extends AbstractController
             }
 
             try {
-                $this->mailService->sendMail($this->tokenManager->generateToken($expediteurArray, 24), 24, $form);
+                $mailService->sendMail($this->tokenManager->generateToken($expediteurArray, 24), 24, $form);
                 return $this->redirectToRoute('app_expediteur', $this->messageService->GetSuccessMessage("Expéditeur", 1));
             } catch (TransportExceptionInterface $e) {
                 // supprimer le compte expéditeur créé si envoi raté de l'email
