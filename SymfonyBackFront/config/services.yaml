@@ -6,6 +6,7 @@
 parameters:
   csv_directory: "%kernel.project_dir%/public/csv/"
   xls_directory: "%kernel.project_dir%/public/xlsx/"
+  timezone: "Europe/London"
 
 services:
   # default configuration for services in *this* file
@@ -25,6 +26,5 @@ services:
   Firebase\:
     resource: "../vendor/firebase/"
 
-  
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
