@@ -44,7 +44,7 @@
         {% for statut in statutsCourrier %}
         <div class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 mb-4">
             <div class="flex justify-between">
-                <h5 class="mb-2 text-xl font-bold tracking-tight text-[#FF5E1A]">{{ statut.date|date('d-m-Y H:i', 'Europe/Paris') }}</h5>
+                <h5 class="mb-2 text-xl font-bold tracking-tight text-[#FF5E1A]">{{ statut.date|date_modify("+1 hour")|date('d-m-Y H:i') }}</h5>
                 <p class="font-normal text-[#25BA00]">{{statut.statut ? statut.statut.etat }}</p>
             </div>
             <div class="flex justify-between">
