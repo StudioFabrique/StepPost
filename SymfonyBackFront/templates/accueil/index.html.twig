@@ -113,7 +113,7 @@
                 {% for courrier in courriers %}
                 <tr class="bg-white border-b00">
                     <td class="px-6 py-4">
-                        {{ courrier.date|date('d-m-Y H:i', 'Europe/London')|date('d-m-Y H:i', 'Europe/Paris') }}
+                        {{ courrier.date|date('d-m-Y H:i', 'Europe/London') }}
                     </td>
                     <td class="px-6 py-4">
                         {{ 'ROLE_MAIRIE' in app.user.roles ? (courrier.nomExpediteur ?? 'non définie') :
