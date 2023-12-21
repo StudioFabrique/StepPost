@@ -6,7 +6,6 @@
 parameters:
   csv_directory: "%kernel.project_dir%/public/csv/"
   xls_directory: "%kernel.project_dir%/public/xlsx/"
-  timezone: "Europe/London"
 
 services:
   # default configuration for services in *this* file
