@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Courrier;
-use App\Entity\Statut;
 use App\Entity\StatutCourrier;
 use App\Repository\CourrierRepository;
 use App\Repository\ExpediteurRepository;
