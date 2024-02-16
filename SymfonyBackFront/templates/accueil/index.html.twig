@@ -127,11 +127,12 @@
                         {% endif %}
                     </td>
                     <td class="px-6 py-4">
-                        {% for statut in statuts %}
-                        {{ courrier.statut == statut.statutCode ? statut.etat|title : NULL }} {{ statut.statutCode == 9
-                        and
-                        courrier.statut == statut.statutCode ? "/ procuration" }}
-                        {% endfor %}
+                        <span>
+                            {% for statut in statuts %}
+                                {{ courrier.statut == statut.statutCode ? statut.etat|title : NULL }} 
+                            {% endfor %} 
+                            {{ courrier.procuration ? "/ procuration" }}
+                        </span>
                         <hr class="border-y-2 my-2 border-blue-300">
                         <a class="text-xs bg-blue-900 py-1 px-2 rounded-md text-white whitespace-nowrap"
                             href="{{ path('app_suiviId', {id: courrier.courrier, courrierId: courrier.courrier, recherche: recherche ?? null}) }}">

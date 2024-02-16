@@ -94,7 +94,7 @@ class TestFixtures extends Fixture
             $date1 = new DateTime('2018-01-01');
             $date2 = new DateTime('2018-01-02');
             $statutCourrier1 = (new StatutCourrier)
-                ->setStatut($statut1)
+                ->setStatut($statut5)
                 ->setDate($date1)
                 ->setFacteur($facteur);
             $manager->persist($statutCourrier1);
@@ -115,7 +115,8 @@ class TestFixtures extends Fixture
                 ->setTelephone('0607060706')
                 ->setExpediteur($expediteur)
                 ->addStatutsCourrier($statutCourrier1)
-                ->addStatutsCourrier($statutCourrier2);
+                ->addStatutsCourrier($statutCourrier2)
+                ->setProcuration($courrierActuel < 10 || $courrierActuel > 80 ? "Antoine Dupont" : null);
             $manager->persist($courrier);
         }
 
