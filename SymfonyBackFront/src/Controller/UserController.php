@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /*
 Cette classe donne la possiblité de créer, modifier, activer et supprimer un admin.
@@ -71,9 +70,9 @@ class UserController extends AbstractController
             try {
                 $admin = $this->entityManagementService->MakeUser($form, $request->get('isMairie'));
                 if ($request->get('isMairie'))  $this->entityManagementService->MakeRaisonSociale('mairie de pau');
-                return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 1, $admin->getNom()), Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 1, $admin->getNom()));
             } catch (Exception) {
-                return $this->redirectToRoute('app_admin_add', $this->messageService->GetErrorMessage("Administrateur", 1), Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin_add', $this->messageService->GetErrorMessage("Administrateur", 1));
             }
         }
 
@@ -99,9 +98,9 @@ class UserController extends AbstractController
 
             try {
                 $admin = $this->entityManagementService->EditUser($form, in_array('ROLE_SUPERADMIN', $admin->getRoles()) ? true : false);
-                return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 2, $admin->getNom()), Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 2, $admin->getNom()));
             } catch (Exception) {
-                return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", 2, $admin->getNom()), Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", 2, $admin->getNom()));
             }
         }
 
@@ -112,7 +111,7 @@ class UserController extends AbstractController
         La méthode editPassword permet de modifier le mot de passe d'un administrateur
     */
     #[Route(name: 'edit_password', path: '/editPassword')]
-    public function editPassword(Request $request, UserRepository $adminRepository, UserPasswordHasherInterface $passwordHasher): Response
+    public function editPassword(Request $request, UserRepository $adminRepository): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -121,15 +120,15 @@ class UserController extends AbstractController
         $adminId = $request->get('id');
         $admin = $adminRepository->find($adminId);
 
-        $form = $this->createForm(UserType::class, $admin, ['editPassword' => true]);
+        $form = $this->createForm(UserType::class, null, ['editPassword' => true]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $admin = $this->entityManagementService->EditPasswordUser($form);
-                return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 3, $admin->getNom()), Response::HTTP_SEE_OTHER);
+                $admin = $this->entityManagementService->EditPasswordUser($admin, $form->get("password")->getData());
+                return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 3, $admin->getNom()));
             } catch (Exception) {
-                return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", 3, $admin->getNom()), Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", 3, $admin->getNom()));
             }
         }
 
@@ -148,9 +147,9 @@ class UserController extends AbstractController
 
         try {
             $adminRepository->remove($admin);
-            return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 4, $admin->getNom()), Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 4, $admin->getNom()));
         } catch (Exception) {
-            return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", 4, $admin->getNom()), Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", 4, $admin->getNom()));
         }
     }
 }

@@ -55,7 +55,7 @@ class TestFixtures extends Fixture
         $admin = (new User())
             ->setEmail('test@test.fr')
             ->setNom('test')
-            ->setRoles(['ROLE_ADMIN', 'ROLE_SUPERADMIN'])
+            ->setRoles(['ROLE_ADMIN', 'ROLE_GESTION' ,'ROLE_SUPERADMIN'])
             ->setFonction('Développeur')
             ->setPassword('$2y$13$FXON7E987uD.ohgj2S4nzOBwfUK//1Jihjfm8FNx3zF7lAgtkak9a')
             ->setCreatedAt(new DateTime('now'))

@@ -9,17 +9,21 @@ use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
 use App\Repository\UserRepository;
 use Exception;
+use phpDocumentor\Reflection\Types\Null_;
+use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\Form\Form;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Service pour créer, modifier et supprimer des entités.
  */
 class EntityManagementService
 {
-    private $passwordHasher, $userRepo, $dateMaker, $clientRepo, $expediteurRepo, $formattingService;
+    private $passwordHasher, $userRepo, $dateMaker, $clientRepo, $expediteurRepo, $formattingService, $validator;
+
     /**
      * Constructeur
      */
@@ -29,7 +33,8 @@ class EntityManagementService
         DateMaker $dateMaker,
         ClientRepository $clientRepo,
         ExpediteurRepository $expediteurRepo,
-        FormattingService $formattingService
+        FormattingService $formattingService,
+        ValidatorInterface $validator
     ) {
         $this->passwordHasher = $passwordHasher;
         $this->userRepo = $userRepo;
@@ -37,6 +42,7 @@ class EntityManagementService
         $this->clientRepo = $clientRepo;
         $this->expediteurRepo = $expediteurRepo;
         $this->formattingService = $formattingService;
+        $this->validator = $validator;
     }
 
     /**
@@ -67,6 +73,10 @@ class EntityManagementService
     {
         $admin = $formData->getData();
         $pass = $formData->get('password')->getData();
+        $isPassValid = preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-!@#$%^&*])(?=.{8,})/", $pass);
+        if(!$isPassValid) {
+            throw new Exception("");
+        }
         $hashedPassword = $this->passwordHasher->hashPassword(
             $admin,
             $pass
@@ -75,6 +85,8 @@ class EntityManagementService
         $admin->setCreatedAt($this->dateMaker->createFromDateTimeZone());
         $admin->setUpdatedAt($this->dateMaker->createFromDateTimeZone());
         $admin->setRoles(!$isMairie ? ['ROLE_ADMIN', 'ROLE_GESTION'] : ['ROLE_ADMIN', 'ROLE_MAIRIE']);
+        $errors = $this->validator->validate($admin);
+        
         $this->userRepo->add($admin);
         return $admin;
     }
@@ -122,13 +134,15 @@ class EntityManagementService
     /**
      * Modifie le mot de passe d'un admin à partir d'un formulaire
      */
-    public function EditPasswordUser(Form $formData): User
+    public function EditPasswordUser(User $admin, string $password): ?User
     {
-        $admin = $formData->getData();
-        $pass = $formData->get('password')->getData();
+        $isPassValid = preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-!@#$%^&*])(?=.{8,})/", $password);
+        if(!$isPassValid) {
+            throw new Exception();
+        }
         $hashedPassword = $this->passwordHasher->hashPassword(
             $admin,
-            $pass
+            $password
         );
         $admin->setPassword($hashedPassword);
         $this->userRepo->add($admin);
