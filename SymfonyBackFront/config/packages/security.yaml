@@ -30,12 +30,22 @@ security:
                 # where to redirect after logout
                 target: app_login
 
+            login_throttling: true
+            
+            # login_throttling: true
+
+            
+                
+                 
+
+            
+            
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
-
+            
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
@@ -54,3 +64,20 @@ when@test:
                 cost: 5 # Lowest possible value for bcrypt
                 time_cost: 5 # Lowest possible value for argon
                 memory_cost: 5 # Lowest possible value for argon
+
+
+framework:
+    rate_limiter:
+        # define 2 rate limiters (one for username+IP, the other for IP)
+        username_ip_login:
+            policy: token_bucket
+            limit: 5
+            rate: { interval: '5 minutes' }
+
+        ip_login:
+            policy: sliding_window
+            limit: 50
+            interval: '15 minutes'
+
+
+

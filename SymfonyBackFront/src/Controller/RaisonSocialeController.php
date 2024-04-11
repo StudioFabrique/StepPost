@@ -2,20 +2,20 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\Client;
 use App\Form\ClientType;
 use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Exception;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/RaisonSociale', name: 'app_')]
 #[IsGranted('ROLE_GESTION')]

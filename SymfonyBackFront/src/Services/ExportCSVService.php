@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Repository\StatutRepository;
 use DateTime;
 use Exception;
+use App\Repository\StatutRepository;
 use League\Csv\Writer;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 /**
  * Ce service contient les méthodes pour l'export en csv.
  */
-class ExportCSV
+class ExportCSVService
 {
     private $parameters, $statutRepo;
     /**

@@ -94,7 +94,7 @@ class TestFixtures extends Fixture
             $date1 = new DateTime('2018-01-01');
             $date2 = new DateTime('2018-01-02');
             $statutCourrier1 = (new StatutCourrier)
-                ->setStatut($statut5)
+                ->setStatut($statut3)
                 ->setDate($date1)
                 ->setFacteur($facteur);
             $manager->persist($statutCourrier1);
