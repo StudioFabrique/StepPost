@@ -73,7 +73,7 @@ class EntityManagementService
         $pass = $formData->get('password')->getData();
         $isPassValid = preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-!@#$%^&*])(?=.{8,})/", $pass);
         if(!$isPassValid) {
-            throw new Exception("");
+            throw new Exception(code:3);
         }
         $hashedPassword = $this->passwordHasher->hashPassword(
             $admin,
@@ -122,7 +122,6 @@ class EntityManagementService
     public function EditUser(Form $formData): User
     {
         $admin = $formData->getData();
-        $admin->setRoles($isSuperAdmin ? ['ROLE_ADMIN', "ROLE_GESTION", 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN', "ROLE_GESTION"]);
         $admin->setUpdatedAt($this->dateMakerService->createFromDateTimeZone());
         $this->userRepo->add($admin);
         return $admin;
