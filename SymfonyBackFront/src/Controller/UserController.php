@@ -148,7 +148,7 @@ class UserController extends AbstractController
         }
 
         try {
-            if(!$config->needToBeSetup()) {
+            if(in_array("ROLE_SUPERADMIN",$admin->getRoles())) {
                 throw new Exception();
             }
             $adminRepository->remove($admin);
