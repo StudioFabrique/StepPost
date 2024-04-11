@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use DateTime;
-use DateTime;
 use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
 use App\Repository\StatutCourrierRepository;
@@ -15,18 +14,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
 
 #[Route('/statistiques', name: 'app_')]
 #[IsGranted('ROLE_GESTION')]
 class StatistiqueController extends AbstractController
 {
-    private $statistiqueService;
-
-    public function __construct(StatistiqueService $statistiqueService) {
-        $this->statistiqueService = $statistiqueService;
-    }
-
     private $statistiqueService;
 
     public function __construct(StatistiqueService $statistiqueService) {
