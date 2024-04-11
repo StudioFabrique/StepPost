@@ -9,8 +9,6 @@ use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
 use App\Repository\UserRepository;
 use Exception;
-use phpDocumentor\Reflection\Types\Null_;
-use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\Form\Form;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -85,7 +83,6 @@ class EntityManagementService
         $admin->setCreatedAt($this->dateMaker->createFromDateTimeZone());
         $admin->setUpdatedAt($this->dateMaker->createFromDateTimeZone());
         $admin->setRoles(!$isMairie ? ['ROLE_ADMIN', 'ROLE_GESTION'] : ['ROLE_ADMIN', 'ROLE_MAIRIE']);
-        $errors = $this->validator->validate($admin);
         
         $this->userRepo->add($admin);
         return $admin;
@@ -122,10 +119,9 @@ class EntityManagementService
     /**
      * Modifie les données d'un admin à partir d'un formulaire
      */
-    public function EditUser(Form $formData, bool $isSuperAdmin): User
+    public function EditUser(Form $formData): User
     {
         $admin = $formData->getData();
-        $admin->setRoles($isSuperAdmin ? ['ROLE_ADMIN', "ROLE_GESTION", 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN', "ROLE_GESTION"]);
         $admin->setUpdatedAt($this->dateMaker->createFromDateTimeZone());
         $this->userRepo->add($admin);
         return $admin;
@@ -138,7 +134,7 @@ class EntityManagementService
     {
         $isPassValid = preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-!@#$%^&*])(?=.{8,})/", $password);
         if(!$isPassValid) {
-            throw new Exception();
+            throw new Exception(code:3);
         }
         $hashedPassword = $this->passwordHasher->hashPassword(
             $admin,

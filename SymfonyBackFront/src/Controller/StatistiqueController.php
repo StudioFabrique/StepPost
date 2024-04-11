@@ -2,13 +2,15 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
 use App\Repository\StatutCourrierRepository;
-use DateTime;
+use App\Services\StatistiqueService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -18,6 +20,12 @@ use Symfony\UX\Chartjs\Model\Chart;
 #[IsGranted('ROLE_GESTION')]
 class StatistiqueController extends AbstractController
 {
+    private $statistiqueService;
+
+    public function __construct(StatistiqueService $statistiqueService) {
+        $this->statistiqueService = $statistiqueService;
+    }
+
     /* 
         Retourne un template twig avec des statistiques globales concernant les courriers et les expéditeurs
     */
@@ -56,64 +64,8 @@ class StatistiqueController extends AbstractController
 
         if (($date1 != null || $date2 != null) && ($year1 == null && $year2 == null)) {
 
-            $dateArray = array();
-            if ($date1 != null) {
-                array_push($dateArray, $date1);
-            }
-            if ($date2 != null) {
-                array_push($dateArray, $date2);
-            }
-
-            $i = 0;
-            $dateLabels = array();
-            $dataBordereaux = array();
-            $dataEnvoi = array();
-            $dataRecu = array();
-
-            foreach ($dateArray as $date) {
-                $dateLabels[$i] = date_format($date, 'M Y');
-                $dataBordereaux[$i] = count($statutCourrierRepository->findCourrierImpression($date));
-                $dataEnvoi[$i] = count($statutCourrierRepository->findCourrierEnvoi($date));
-                $dataRecu[$i] = count($statutCourrierRepository->findCourrierRecu($date));
-                $i++;
-            }
-
-            $chartByDate = $chartBuilderInterface->createChart(Chart::TYPE_BAR)
-                ->setData(
-                    [
-                        'labels' => $dateLabels,
-                        'datasets' => [
-                            [
-                                'label' => 'bordereaux générés',
-                                'data' => $dataBordereaux,
-                                'backgroundColor' => [
-                                    'rgb(255, 204, 64)'
-                                ]
-                            ],
-                            [
-                                'label' => 'courriers/colis pris en charges',
-                                'data' => $dataEnvoi,
-                                'backgroundColor' => [
-                                    'rgb(43, 222, 211)'
-                                ]
-                            ],
-                            [
-                                'label' => 'courriers/colis distribués',
-                                'data' => $dataRecu,
-                                'backgroundColor' => [
-                                    'rgb(16, 36, 200)'
-                                ]
-                            ]
-                        ]
-                    ]
-                )
-                ->setOptions([
-                    'plugins' => [
-                        'legend' => [
-                            'display' => false
-                        ]
-                    ]
-                ]);
+           $chartByDate = $this->statistiqueService->GenerateBarChart($date1, $date2, $year1, $year2);
+            
         } else if (($date1 == null || $date2 == null) && ($year1 != null || $year2 != null)) {
 
             /* 

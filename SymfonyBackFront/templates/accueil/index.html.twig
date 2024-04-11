@@ -37,7 +37,7 @@
     {% endif %}
     {% if courriers|length > 0 %}
     <section class="flex justify-between items-center mt-5">
-        <form class="" action="" method="get">
+        <form data-controller="date" class="" action="" method="get">
             <div class="mb-5 xl:w-50">
                 <div class="my-2">
                     <label for="Recherche" class="text-black opacity-50 italic"> Recherche par nom, prenom, client ou nº
@@ -49,9 +49,9 @@
                         placeholder="{{ recherche ?? "" }}" aria-label="" aria-describedby="button-addon2">
                 </div>
                 <label for="date" class="text-[#140A82]">Minimum</label>
-                <input type="date" class="px-4" name="dateMin">
+                <input id="DateMin" type="date" class="px-4" name="dateMin">
                 <label for="date" class="text-[#140A82]">Maximum</label>
-                <input type="date" class="px-4" name="dateMax">
+                <input id="DateMax" type="date" class="px-4" name="dateMax">
                 <input type="submit"
                     class="text-white bg-[#140A82] hover:bg-[#010a14] p-1 px-2 rounded my-1 cursor-pointer"
                     value="Rechercher">

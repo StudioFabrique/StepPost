@@ -47,7 +47,7 @@ class ExpediteurController extends AbstractController
         FormVerification $formVerification,
         EntityManagementService $entityManagementService,
         TokenManager $tokenManager,
-        DateMaker $dateMaker
+        DateMaker $dateMaker,
     ) {
         $this->requestManager = $requestManager;
         $this->dataFinder = $dataFinder;
@@ -170,7 +170,7 @@ class ExpediteurController extends AbstractController
                 );
                 $em->persist($expediteur->setUpdatedAt($this->dateMaker->createFromDateTimeZone())->setClient($form->get('addClient')->getData())->setPassword($ancienExpediteur->getPassword()));
                 $em->flush();
-                return $this->redirectToRoute('app_expediteur', ['errorMessage' => str_replace('[nom]', $expediteur->getNom(), $message)], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_expediteur', ['errorMessage' => $this->messageService->GetErrorMessage('Expéditeur', 3, $expediteur->getNom())], Response::HTTP_SEE_OTHER);
             } catch (Exception $e) {
                 return $this->redirectToRoute('app_editExpediteur', ['errorMessage' => str_replace('[nom]', $ancienExpediteur->getNom(), $messageErreur), 'isError' => true, 'id' => $ancienExpediteur->getId()], Response::HTTP_SEE_OTHER);
             }
@@ -244,7 +244,7 @@ class ExpediteurController extends AbstractController
             ->from('steppost64@gmail.com')
             ->subject('Activation de votre compte Step Post')
             ->to($expediteur->getEmail())
-            ->html("<p>Votre compte associé à l'adresse mail " . $expediteur->getEmail() . " a été activé. Vous pouvez donc vous connecter à adresse : </p><a href='https://step-post.fr'>https://step-post.fr</a>");
+            ->html("<p>Votre compte associé à l'adresse mail " . $expediteur->getEmail() . " a été activé. Vous pouvez donc vous connecter à l'adresse : </p><a href='https://step-post.fr'>https://step-post.fr</a>");
 
         try {
             $em->persist($expediteur->setUpdatedAt($this->dateMaker->createFromDateTimeZone())->setRoles(['ROLE_CLIENT']));

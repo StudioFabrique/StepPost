@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Services\ConfigAppService;
 use App\Services\DataFinder;
 use App\Services\EntityManagementService;
 use App\Services\MessageService;
@@ -71,8 +72,8 @@ class UserController extends AbstractController
                 $admin = $this->entityManagementService->MakeUser($form, $request->get('isMairie'));
                 if ($request->get('isMairie'))  $this->entityManagementService->MakeRaisonSociale('mairie de pau');
                 return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 1, $admin->getNom()));
-            } catch (Exception) {
-                return $this->redirectToRoute('app_admin_add', $this->messageService->GetErrorMessage("Administrateur", 1));
+            } catch (Exception $e) {
+                return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", $e->getCode() === 3 ? 3 : 1));
             }
         }
 
@@ -97,7 +98,7 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             try {
-                $admin = $this->entityManagementService->EditUser($form, in_array('ROLE_SUPERADMIN', $admin->getRoles()) ? true : false);
+                $admin = $this->entityManagementService->EditUser($form);
                 return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 2, $admin->getNom()));
             } catch (Exception) {
                 return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", 2, $admin->getNom()));
@@ -127,8 +128,8 @@ class UserController extends AbstractController
             try {
                 $admin = $this->entityManagementService->EditPasswordUser($admin, $form->get("password")->getData());
                 return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 3, $admin->getNom()));
-            } catch (Exception) {
-                return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", 3, $admin->getNom()));
+            } catch (Exception $e) {
+                return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", $e->getCode() === 3 ? 3 : 2, $admin->getNom()));
             }
         }
 
@@ -139,13 +140,16 @@ class UserController extends AbstractController
         La méthode delete permet de supprimer un administrateur
     */
     #[Route('/delete/{id}', name: 'admin_delete')]
-    public function delete(User $admin, UserRepository $adminRepository): Response
+    public function delete(User $admin, UserRepository $adminRepository, ConfigAppService $config): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
 
         try {
+            if(!$config->needToBeSetup()) {
+                throw new Exception();
+            }
             $adminRepository->remove($admin);
             return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 4, $admin->getNom()));
         } catch (Exception) {

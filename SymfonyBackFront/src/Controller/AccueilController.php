@@ -25,7 +25,7 @@ use App\Services\RequestManager;
 #[IsGranted('ROLE_ADMIN')]
 class AccueilController extends AbstractController
 {
-    private $dataFinder, $exportCsv, $messageService, $requestManager, $exportXls;
+    private $dataFinder, $exportCsv, $messageService, $requestManager, $exportXls, $testService;
     /**
      * Constructeur
      */
@@ -34,7 +34,7 @@ class AccueilController extends AbstractController
         ExportCSV $exportCsv,
         ExportXLS $exportXls,
         MessageService $messageService,
-        RequestManager $requestManager
+        RequestManager $requestManager,
     ) {
         $this->dataFinder = $dataFinder;
         $this->messageService = $messageService;

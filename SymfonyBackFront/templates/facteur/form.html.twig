@@ -7,8 +7,10 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
+<div>
 {% if isAdding == true %}
-    <main class="w-[95%] m-auto" data-controller="facteur" data-mode="add">
+
+    <form class="w-[95%] m-auto" data-controller="facteur" data-mode="add">
         <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
         <div class="flex justify-between items-center">
             <div></div>
@@ -22,9 +24,9 @@
             <label for="password">Password</label>
             <input type="password" name="password" id="password" class = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'>
             <button id="facteur_submit" class="text-white bg-[#24A640] p-2 rounded">Sauvegarder</button>
-    </main>
+    </form>
 {% elseif isEdit == true %}
-    <main class="w-[95%] m-auto" data-controller="facteur" data-id={{ facteurId }} data-mode="editPassword">
+    <form class="w-[95%] m-auto" data-controller="facteur" data-id={{ facteurId }} data-mode="editPassword">
         <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
         <div class="flex justify-between items-center">
             <div></div>
@@ -33,16 +35,16 @@
             <label for="password">Password</label>
             <input type="password" name="password" id="password" class = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'>
             <button id="facteur_submit" class="text-white bg-[#24A640] p-2 rounded">Sauvegarder</button>
-    </main>
-{% else %} 
-    <main class="w-[95%] m-auto" data-controller="facteur">
+    </form>
+{% else %}
+    <form class="w-[95%] m-auto" data-controller="facteur">
         <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
         <div class="flex justify-between items-center">
             <div></div>
             <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
         </div>
         {{ form(form) }}
-    </main>
+    </form>
 {% endif %}
-
+</div>
 {% endblock %}
