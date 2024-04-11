@@ -14,10 +14,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * Service pour trouver des données d'entités.
  */
-class DataFinder
+class DataFinderService
 {
 
-    private $statutCourrierRepo, $paginator, $userRepo, $dateMaker, $expediteurRepo, $clientRepo;
+    private $statutCourrierRepo, $paginator, $userRepo, $dateMakerService, $expediteurRepo, $clientRepo;
     /**
      * Constructeur
      */
@@ -25,14 +25,14 @@ class DataFinder
         StatutCourrierRepository $statutCourrierRepo,
         PaginatorInterface $paginator,
         UserRepository $userRepo,
-        DateMaker $dateMaker,
+        DateMakerService $dateMakerService,
         ExpediteurRepository $expediteurRepo,
         ClientRepository $clientRepo
     ) {
         $this->statutCourrierRepo = $statutCourrierRepo;
         $this->paginator = $paginator;
         $this->userRepo = $userRepo;
-        $this->dateMaker = $dateMaker;
+        $this->dateMakerService = $dateMakerService;
         $this->expediteurRepo = $expediteurRepo;
         $this->clientRepo = $clientRepo;
     }
@@ -46,8 +46,8 @@ class DataFinder
         $data = $this->statutCourrierRepo->findCourriers(
             $request->get('order') ?? "DESC",
             $request->get('recherche'),
-            $this->dateMaker->convertDateDefault($request->get('dateMin')),
-            $this->dateMaker->convertDateDefault($request->get('dateMax')),
+            $this->dateMakerService->convertDateDefault($request->get('dateMin')),
+            $this->dateMakerService->convertDateDefault($request->get('dateMax')),
             $raison
         );
         return $data;

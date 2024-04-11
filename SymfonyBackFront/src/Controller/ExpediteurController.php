@@ -5,15 +5,15 @@ namespace App\Controller;
 use App\Entity\Expediteur;
 use App\Form\ExpediteurType;
 use App\Repository\ExpediteurRepository;
-use App\Services\DataFinder;
-use App\Services\DateMaker;
+use App\Services\DataFinderService;
+use App\Services\DateMakerService;
 use App\Services\EntityManagementService;
 use App\Services\FormattingService;
-use App\Services\FormVerification;
+use App\Services\FormVerificationService;
 use App\Services\MessageService;
 use App\Services\MailService;
-use App\Services\RequestManager;
-use App\Services\TokenManager;
+use App\Services\RequestManagerService;
+use App\Services\TokenManagerService;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -34,29 +34,29 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 #[IsGranted('ROLE_GESTION')]
 class ExpediteurController extends AbstractController
 {
-    private $requestManager, $dataFinder, $formattingService, $messageService, $formVerification, $entityManagementService, $tokenManager, $dateMaker;
+    private $requestManagerService, $dataFinderService, $formattingService, $messageService, $formVerificationService, $entityManagementService, $tokenManagerService, $dateMakerService;
 
     /**
      * Constructeur
      */
     public function __construct(
-        RequestManager $requestManager,
-        DataFinder $dataFinder,
+        RequestManagerService $requestManagerService,
+        DataFinderService $dataFinderService,
         FormattingService $formattingService,
         MessageService $messageService,
-        FormVerification $formVerification,
+        FormVerificationService $formVerificationService,
         EntityManagementService $entityManagementService,
-        TokenManager $tokenManager,
-        DateMaker $dateMaker,
+        TokenManagerService $tokenManagerService,
+        DateMakerService $dateMakerService
     ) {
-        $this->requestManager = $requestManager;
-        $this->dataFinder = $dataFinder;
+        $this->requestManagerService = $requestManagerService;
+        $this->dataFinderService = $dataFinderService;
         $this->formattingService = $formattingService;
         $this->messageService = $messageService;
-        $this->formVerification = $formVerification;
+        $this->formVerificationService = $formVerificationService;
         $this->entityManagementService = $entityManagementService;
-        $this->tokenManager = $tokenManager;
-        $this->dateMaker = $dateMaker;
+        $this->tokenManagerService = $tokenManagerService;
+        $this->dateMakerService = $dateMakerService;
     }
 
     /**
@@ -72,11 +72,11 @@ class ExpediteurController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $data = $this->dataFinder->GetExpediteurs($request);
+        $data = $this->dataFinderService->GetExpediteurs($request);
 
-        $dataPagination = $this->dataFinder->Paginate($data, $request);
+        $dataPagination = $this->dataFinderService->Paginate($data, $request);
 
-        return $this->render('expediteur/index.html.twig', $this->requestManager->GenerateRenderRequest("expediteur", $request, $dataPagination, $data));
+        return $this->render('expediteur/index.html.twig', $this->requestManagerService->GenerateRenderRequest("expediteur", $request, $dataPagination, $data));
     }
 
     /**
@@ -89,18 +89,19 @@ class ExpediteurController extends AbstractController
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
-        if (count($this->dataFinder->getRaisonSocialActive()) < 1) {
+        if (count($this->dataFinderService->getRaisonSocialActive()) < 1) {
             return $this->redirectToRoute('app_expediteur', $this->messageService->GetErrorMessage("Expéditeur", 6));
         }
 
         $form = $this->createForm(ExpediteurType::class, null, ['type' => 'create']);
         $form->handleRequest($request);
-
+        
+        
         if ($form->isSubmitted() && $form->isValid()) {
 
             // vérification du code postal et numéro téléphone
             try {
-                $this->formVerification->verifyField($form, 'add');
+                $this->formVerificationService->verifyField($form, 'add');
             } catch (Exception $e) {
                 return $this->redirectToRoute('app_addExpediteur', [
                     'errorMessage' => $e->getMessage(),
@@ -115,7 +116,7 @@ class ExpediteurController extends AbstractController
             }
 
             try {
-                $mailService->sendMail($this->tokenManager->generateToken($expediteurArray, 24), 24, $form);
+                $mailService->sendMail($this->tokenManagerService->generateToken($expediteurArray, 24), 24, $form);
                 return $this->redirectToRoute('app_expediteur', $this->messageService->GetSuccessMessage("Expéditeur", 1));
             } catch (TransportExceptionInterface $e) {
                 // supprimer le compte expéditeur créé si envoi raté de l'email
@@ -123,7 +124,7 @@ class ExpediteurController extends AbstractController
             }
         }
 
-        return $this->renderForm('expediteur/new.html.twig', $this->requestManager->GenerateRenderFormRequest('expediteur', $request, $form));
+        return $this->renderForm('expediteur/new.html.twig', $this->requestManagerService->GenerateRenderFormRequest('expediteur', $request, $form));
     }
 
     /**
@@ -135,7 +136,7 @@ class ExpediteurController extends AbstractController
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
-        if (count($this->dataFinder->getRaisonSocialActive()) < 1) {
+        if (count($this->dataFinderService->getRaisonSocialActive()) < 1) {
             return $this->redirectToRoute('app_expediteur', $this->messageService->GetErrorMessage("Expéditeur", 6));
         }
 
@@ -168,7 +169,7 @@ class ExpediteurController extends AbstractController
                     Expediteur::class,
                     array('client', 'password')
                 );
-                $em->persist($expediteur->setUpdatedAt($this->dateMaker->createFromDateTimeZone())->setClient($form->get('addClient')->getData())->setPassword($ancienExpediteur->getPassword()));
+                $em->persist($expediteur->setUpdatedAt($this->dateMakerService->createFromDateTimeZone())->setClient($form->get('addClient')->getData())->setPassword($ancienExpediteur->getPassword()));
                 $em->flush();
                 return $this->redirectToRoute('app_expediteur', ['errorMessage' => $this->messageService->GetErrorMessage('Expéditeur', 3, $expediteur->getNom())], Response::HTTP_SEE_OTHER);
             } catch (Exception $e) {
@@ -220,7 +221,7 @@ class ExpediteurController extends AbstractController
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
-        if (count($this->dataFinder->getRaisonSocialActive()) < 1) {
+        if (count($this->dataFinderService->getRaisonSocialActive()) < 1) {
             return $this->redirectToRoute('app_expediteur', $this->messageService->GetErrorMessage("Expéditeur", 6));
         }
 
@@ -247,7 +248,7 @@ class ExpediteurController extends AbstractController
             ->html("<p>Votre compte associé à l'adresse mail " . $expediteur->getEmail() . " a été activé. Vous pouvez donc vous connecter à l'adresse : </p><a href='https://step-post.fr'>https://step-post.fr</a>");
 
         try {
-            $em->persist($expediteur->setUpdatedAt($this->dateMaker->createFromDateTimeZone())->setRoles(['ROLE_CLIENT']));
+            $em->persist($expediteur->setUpdatedAt($this->dateMakerService->createFromDateTimeZone())->setRoles(['ROLE_CLIENT']));
             $em->flush();
             $mailer->send($email);
             return $this->redirectToRoute('app_expediteur', $this->messageService->GetSuccessMessage('Expéditeur', 4, ''));

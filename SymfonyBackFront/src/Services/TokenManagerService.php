@@ -7,7 +7,7 @@ use Firebase\JWT\JWT;
 /**
  * Service pour la gestion de token
  */
-class TokenManager
+class TokenManagerService
 {
     /**
      * Génère un token en fonction des données et du temps d'expiration

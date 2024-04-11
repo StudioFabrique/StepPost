@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
+use Exception;
 use App\Entity\Client;
 use App\Entity\Expediteur;
 use App\Entity\User;
 use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
 use App\Repository\UserRepository;
-use Exception;
 use Symfony\Component\Form\Form;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class EntityManagementService
 {
-    private $passwordHasher, $userRepo, $dateMaker, $clientRepo, $expediteurRepo, $formattingService, $validator;
+    private $passwordHasher, $userRepo, $dateMakerService, $clientRepo, $expediteurRepo, $formattingService, $validator;
 
     /**
      * Constructeur
@@ -28,7 +28,7 @@ class EntityManagementService
     public function __construct(
         UserPasswordHasherInterface $passwordHasher,
         UserRepository $userRepo,
-        DateMaker $dateMaker,
+        DateMakerService $dateMakerService,
         ClientRepository $clientRepo,
         ExpediteurRepository $expediteurRepo,
         FormattingService $formattingService,
@@ -36,7 +36,7 @@ class EntityManagementService
     ) {
         $this->passwordHasher = $passwordHasher;
         $this->userRepo = $userRepo;
-        $this->dateMaker = $dateMaker;
+        $this->dateMakerService = $dateMakerService;
         $this->clientRepo = $clientRepo;
         $this->expediteurRepo = $expediteurRepo;
         $this->formattingService = $formattingService;
@@ -80,8 +80,8 @@ class EntityManagementService
             $pass
         );
         $admin->setPassword($hashedPassword);
-        $admin->setCreatedAt($this->dateMaker->createFromDateTimeZone());
-        $admin->setUpdatedAt($this->dateMaker->createFromDateTimeZone());
+        $admin->setCreatedAt($this->dateMakerService->createFromDateTimeZone());
+        $admin->setUpdatedAt($this->dateMakerService->createFromDateTimeZone());
         $admin->setRoles(!$isMairie ? ['ROLE_ADMIN', 'ROLE_GESTION'] : ['ROLE_ADMIN', 'ROLE_MAIRIE']);
         
         $this->userRepo->add($admin);
@@ -107,8 +107,8 @@ class EntityManagementService
 
         $expediteur = $serializer->denormalize($expediteurArray, Expediteur::class);
         $expediteur
-            ->setCreatedAt($this->dateMaker->createFromDateTimeZone())
-            ->setUpdatedAt($this->dateMaker->createFromDateTimeZone())
+            ->setCreatedAt($this->dateMakerService->createFromDateTimeZone())
+            ->setUpdatedAt($this->dateMakerService->createFromDateTimeZone())
             ->setRoles(['ROLE_INACTIF'])->setPassword(' ');
         $this->expediteurRepo
             ->add($expediteur->setClient($form->get("addClient")->getData()), true);
@@ -122,7 +122,8 @@ class EntityManagementService
     public function EditUser(Form $formData): User
     {
         $admin = $formData->getData();
-        $admin->setUpdatedAt($this->dateMaker->createFromDateTimeZone());
+        $admin->setRoles($isSuperAdmin ? ['ROLE_ADMIN', "ROLE_GESTION", 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN', "ROLE_GESTION"]);
+        $admin->setUpdatedAt($this->dateMakerService->createFromDateTimeZone());
         $this->userRepo->add($admin);
         return $admin;
     }

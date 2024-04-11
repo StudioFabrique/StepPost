@@ -8,7 +8,7 @@ use DateTimeZone;
 /**
  * Service pour générer et convertir la date
  */
-class DateMaker
+class DateMakerService
 {
     public function createFromDateTimeZone($date = 'now', string $zone = "UTC"): ?DateTime
     {

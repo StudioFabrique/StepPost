@@ -2,20 +2,21 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Services\ConfigAppService;
-use App\Services\DataFinder;
+use App\Services\DataFinderService;
 use App\Services\EntityManagementService;
 use App\Services\MessageService;
-use App\Services\RequestManager;
-use Exception;
+use App\Services\RequestManagerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 /*
 Cette classe donne la possiblité de créer, modifier, activer et supprimer un admin.
@@ -27,10 +28,10 @@ Seul le super admin a les droits d'accès aux différentes méthodes de cette cl
 
 class UserController extends AbstractController
 {
-    private $requestManager, $entityManagementService, $messageService;
-    public function __construct(RequestManager $requestManager, EntityManagementService $entityManagementService, MessageService $messageService)
+    private $requestManagerService, $entityManagementService, $messageService;
+    public function __construct(RequestManagerService $requestManagerService, EntityManagementService $entityManagementService, MessageService $messageService)
     {
-        $this->requestManager = $requestManager;
+        $this->requestManagerService = $requestManagerService;
         $this->entityManagementService = $entityManagementService;
         $this->messageService = $messageService;
     }
@@ -40,7 +41,7 @@ class UserController extends AbstractController
     */
     #[Route('/', name: 'admin')]
     public function index(
-        DataFinder $dataFinder,
+        DataFinderService $dataFinderService,
         Request $request
     ): Response {
 
@@ -48,11 +49,11 @@ class UserController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $data = $dataFinder->GetAdmins();
+        $data = $dataFinderService->GetAdmins();
 
-        $dataPagination = $dataFinder->Paginate($data, $request);
+        $dataPagination = $dataFinderService->Paginate($data, $request);
 
-        return $this->render('admin/index.html.twig', $this->requestManager->GenerateRenderRequest('admin', $request, $dataPagination, $data));
+        return $this->render('admin/index.html.twig', $this->requestManagerService->GenerateRenderRequest('admin', $request, $dataPagination, $data));
     }
 
     /*
@@ -77,7 +78,7 @@ class UserController extends AbstractController
             }
         }
 
-        return $this->renderForm('admin/new.html.twig', $this->requestManager->GenerateRenderFormRequest('admin', $request, $form));
+        return $this->renderForm('admin/new.html.twig', $this->requestManagerService->GenerateRenderFormRequest('admin', $request, $form));
     }
 
     /*
@@ -105,7 +106,7 @@ class UserController extends AbstractController
             }
         }
 
-        return $this->renderForm('admin/edit.html.twig', $this->requestManager->GenerateRenderFormRequest('admin', $request, $form));
+        return $this->renderForm('admin/edit.html.twig', $this->requestManagerService->GenerateRenderFormRequest('admin', $request, $form));
     }
 
     /*
@@ -133,7 +134,7 @@ class UserController extends AbstractController
             }
         }
 
-        return $this->renderForm('admin/edit.html.twig', $this->requestManager->GenerateRenderFormRequest('admin', $request, $form));
+        return $this->renderForm('admin/edit.html.twig', $this->requestManagerService->GenerateRenderFormRequest('admin', $request, $form));
     }
 
     /*

@@ -10,17 +10,17 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Ce service propose des méthodes permettant de gérer les différentes requêtes
  */
-class RequestManager
+class RequestManagerService
 {
-    private $statutRepo, $expediteurRepo, $dataFinder;
+    private $statutRepo, $expediteurRepo, $dataFinderService;
     /**
      * Constructeur
      */
-    public function __construct(StatutRepository $statutRepo, ExpediteurRepository $expediteurRepo, DataFinder $dataFinder)
+    public function __construct(StatutRepository $statutRepo, ExpediteurRepository $expediteurRepo, DataFinderService $dataFinderService)
     {
         $this->statutRepo = $statutRepo;
         $this->expediteurRepo = $expediteurRepo;
-        $this->dataFinder = $dataFinder;
+        $this->dataFinderService = $dataFinderService;
     }
 
     /**
@@ -58,7 +58,7 @@ class RequestManager
             case "expediteur":
                 return [
                     'expediteurs' => $dataPagination,
-                    'expediteursInactifs' => $this->dataFinder->getExpediteurs($request, true),
+                    'expediteursInactifs' => $this->dataFinderService->getExpediteurs($request, true),
                     'isSearch' => $request->get('recherche'),
                     'openDetails' => $request->get('openDetails') ?? false,
                     'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $request->get('currentPage') ?? 1,
