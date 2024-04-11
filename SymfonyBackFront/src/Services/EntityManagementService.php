@@ -83,7 +83,6 @@ class EntityManagementService
         $admin->setCreatedAt($this->dateMakerService->createFromDateTimeZone());
         $admin->setUpdatedAt($this->dateMakerService->createFromDateTimeZone());
         $admin->setRoles(!$isMairie ? ['ROLE_ADMIN', 'ROLE_GESTION'] : ['ROLE_ADMIN', 'ROLE_MAIRIE']);
-        $errors = $this->validator->validate($admin);
         
         $this->userRepo->add($admin);
         return $admin;
@@ -120,7 +119,7 @@ class EntityManagementService
     /**
      * Modifie les données d'un admin à partir d'un formulaire
      */
-    public function EditUser(Form $formData, bool $isSuperAdmin): User
+    public function EditUser(Form $formData): User
     {
         $admin = $formData->getData();
         $admin->setRoles($isSuperAdmin ? ['ROLE_ADMIN', "ROLE_GESTION", 'ROLE_SUPERADMIN'] : ['ROLE_ADMIN', "ROLE_GESTION"]);
@@ -136,7 +135,7 @@ class EntityManagementService
     {
         $isPassValid = preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-!@#$%^&*])(?=.{8,})/", $password);
         if(!$isPassValid) {
-            throw new Exception();
+            throw new Exception(code:3);
         }
         $hashedPassword = $this->passwordHasher->hashPassword(
             $admin,

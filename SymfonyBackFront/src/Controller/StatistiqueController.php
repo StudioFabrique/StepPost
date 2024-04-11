@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use DateTime;
+use DateTime;
 use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Services\StatistiqueService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +21,12 @@ use Symfony\UX\Chartjs\Model\Chart;
 #[IsGranted('ROLE_GESTION')]
 class StatistiqueController extends AbstractController
 {
+    private $statistiqueService;
+
+    public function __construct(StatistiqueService $statistiqueService) {
+        $this->statistiqueService = $statistiqueService;
+    }
+
     private $statistiqueService;
 
     public function __construct(StatistiqueService $statistiqueService) {
@@ -63,6 +71,8 @@ class StatistiqueController extends AbstractController
 
         if (($date1 != null || $date2 != null) && ($year1 == null && $year2 == null)) {
 
+           $chartByDate = $this->statistiqueService->GenerateBarChart($date1, $date2, $year1, $year2);
+            
            $chartByDate = $this->statistiqueService->GenerateBarChart($date1, $date2, $year1, $year2);
             
         } else if (($date1 == null || $date2 == null) && ($year1 != null || $year2 != null)) {

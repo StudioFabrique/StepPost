@@ -16,7 +16,7 @@
 {% block body %}
 
 {% if showUpdateButton and 'ROLE_GESTION' in app.user.roles %}
-<div id="boxContent" class="flex-col  fixed bg-[#91c8cf] rounded-lg p-2 right-28 top-36">
+<div id="boxContent" class="flex-col absolute bg-[#91c8cf] rounded-lg p-2 right-28 top-36">
     {% for statut in statutsRestants %}
     <div><a class="m-1" href="{{ path('app_statut_add', { courrierId: courrierId, statutId: statut.id }) }}">{{
             statut.etat }}</a></div>
@@ -28,14 +28,12 @@
 
     <div class="flex justify-between right-0 my-10" data-controller="statut">
         <div>
-            <h1 class="text-xl font-bold italic text-[#25BA00] mb-2">Le suivi n° {{ courrierId.bordereau }} en detail
-            </h1>
+            <h1 class="text-xl font-bold italic text-[#25BA00] mb-2">Le suivi n° {{ courrierId.bordereau }} en detail</h1>
         </div>
         <div class="flex gap-x-2">
             {% if showUpdateButton and 'ROLE_GESTION' in app.user.roles %}<button id="button"
-                class="text-white bg-green-500 hover:bg-green-700 p-2 rounded whitespace-nowrap">Mettre à jour le
-                statut</button>{% endif
-            %}
+                class="text-white bg-green-500 hover:bg-green-700 p-2 rounded whitespace-nowrap">Mettre à jour le statut</button>
+            {% endif %}
             <a class="text-white bg-red-500 hover:bg-red-700 p-2 rounded whitespace-nowrap"
                 href="{{ path('app_accueil', {recherche: recherche ?? null, dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Retour</a>
         </div>
