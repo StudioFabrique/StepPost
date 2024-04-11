@@ -1,0 +1,67 @@
+{
+  "Messages Informations": {
+    "Administrateur": {
+      "Création": "L'administrateur [nom] a été créé",
+      "Modification": "L'administrateur [nom] a été modifié",
+      "Modification mot de passe": "Le mot de passe de l'administrateur [nom] a été modifié",
+      "Suppression": "L'administrateur [nom] a été supprimé"
+    },
+    "Expéditeur": {
+      "Création": "L'expéditeur [nom] a été créé et un email de confirmation lui a été envoyé",
+      "Modification": "L'expéditeur [nom] a été modifié",
+      "Suppression": "L'expéditeur [nom] a bien été supprimé",
+      "Activation": "L'expéditeur [nom] a bien été activé et il a été informé par mail"
+    },
+    "Facteur": {
+      "Création": "Le facteur [nom] a été créé",
+      "Modification": "Le facteur [nom] a été modifié",
+      "Suppression": "Le facteur [nom] a été supprimé"
+    },
+    "Raison sociale": {
+      "Création": "La raison sociale [nom] a été créé",
+      "Modification": "La raison sociale [nom] a été modifié",
+      "Suppression": "La raison sociale [nom] a été supprimé",
+      "Ajout expéditeur": "L'expéditeur [nom] a été ajouté à cette raison sociale",
+      "Supression expéditeur": "L'expéditeur [nom] a bien été détaché de cette raison sociale"
+    },
+    "Statut courrier": {
+      "Mise à jour": "Le statut a été mis à jour",
+      "Suppression": "Le statut a bien été supprimé"
+    }
+  },
+  "Messages Erreurs": {
+    "Administrateur": {
+      "Création": "L'adresse mail saisie est déjà associée à un administrateur existant",
+      "Modification": "L'email saisie est déjà attribuée à un autre administrateur",
+      "Modification mot de passe": "Le mot de passe doit comporter au moins 8 caractères, une majuscule, une miniscule et un caractère spécial",
+      "Suppression": "L'administrateur [nom] n'a pas pu être supprimé"
+    },
+    "Expéditeur": {
+      "Création": "L'adresse mail saisie est déjà associée à un expéditeur existant",
+      "CréationBis": "Une erreur s'est produite lors de l'envoi du mail",
+      "Modification": "Une erreur s'est produite lors de la modification de l'expéditeur [nom]",
+      "Suppression": "L'expéditeur [nom] n'a pas pu être supprimé",
+      "Activation": "L'activation du compte de l'expéditeur n'a pas pu être effectué",
+      "6,Raison Sociale": "Impossible de créer ou modifier un expediteur car aucune raison sociale n'existe. Veuillez en créer une depuis la section Gestion Raison Sociale"
+    },
+    "Facteur": {
+      "Création": "L'adresse mail saisie est déjà associée à un facteur existant",
+      "Modification": "Le facteur [nom] n'a pas pu être modifié",
+      "Suppression": "Le facteur [nom] n'a pas pu être supprimé"
+    },
+    "Raison sociale": {
+      "Création": "La raison sociale [nom] n'a pas pu être créé car elle existe déjà",
+      "Modification": "La raison sociale [nom] n'a pas pu être modifié",
+      "Suppression": "La raison sociale [nom] n'a pas pu être supprimé",
+      "Ajout expéditeur": "L'expéditeur [nom] n'a pas pu être ajouté",
+      "Supression expéditeur": "L'expéditeur [nom] n'a pas pu être détaché"
+    },
+    "Statut courrier": {
+      "Mise à jour": "Impossible de mettre le statut à jour",
+      "Suppression": "Impossible de supprimer le statut"
+    },
+    "Exportation CSV": {
+      "Exportation": "L'exportation en .csv a échoué"
+    }
+  }
+}
