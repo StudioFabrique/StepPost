@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CourrierRepository::class)]
 class Courrier
@@ -38,12 +39,14 @@ class Courrier
     private $complement;
 
     #[ORM\Column(name: 'codePostal', type: 'string', length: 255)]
+    #[Assert\Length(min: 5, max: 5)]
     private $codePostal;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $ville;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(min: 9, max: 10)]
     private $telephone;
 
     #[ORM\ManyToOne(targetEntity: Expediteur::class, inversedBy: 'courriers')]

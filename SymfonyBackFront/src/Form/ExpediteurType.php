@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 
 class ExpediteurType extends AbstractType
 {
@@ -65,6 +66,7 @@ class ExpediteurType extends AbstractType
                     ],
                 ])
                 ->add('codePostal', TextType::class, [
+                    'constraints' => new Length(min: 5, max: 5),
                     'label' => 'Code Postal *',
                     'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                     'attr' => [
@@ -79,6 +81,7 @@ class ExpediteurType extends AbstractType
                     ],
                 ])
                 ->add('telephone', TextType::class, [
+                    'constraints' => new Length(min: 9, max: 10),
                     'label' => 'Telephone *',
                     'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                     'attr' => [

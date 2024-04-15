@@ -16,6 +16,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\MakerBundle\Validator;
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 /*
@@ -28,12 +31,13 @@ Seul le super admin a les droits d'accès aux différentes méthodes de cette cl
 
 class UserController extends AbstractController
 {
-    private $requestManagerService, $entityManagementService, $messageService;
-    public function __construct(RequestManagerService $requestManagerService, EntityManagementService $entityManagementService, MessageService $messageService)
+    private $requestManagerService, $entityManagementService, $messageService, $validator;
+    public function __construct(RequestManagerService $requestManagerService, EntityManagementService $entityManagementService, MessageService $messageService, ValidatorInterface $validator)
     {
         $this->requestManagerService = $requestManagerService;
         $this->entityManagementService = $entityManagementService;
         $this->messageService = $messageService;
+        $this->validator = $validator;
     }
 
     /*

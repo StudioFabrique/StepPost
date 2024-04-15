@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\DestinataireRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DestinataireRepository::class)]
 class Destinataire
@@ -32,12 +33,14 @@ class Destinataire
     private $complement;
 
     #[ORM\Column(name: 'codePostal', type: 'string', length: 255)]
+    #[Assert\Length(min: 5, max: 5)]
     private $codePostal;
 
     #[ORM\Column(type: 'string', length: 255)]
     private $ville;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(min: 9, max: 10)]
     private $telephone;
 
     #[ORM\ManyToOne(targetEntity: Expediteur::class, inversedBy: 'destinataires')]

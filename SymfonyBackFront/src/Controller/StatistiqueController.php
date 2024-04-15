@@ -13,7 +13,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 
 #[Route('/statistiques', name: 'app_')]
 #[IsGranted('ROLE_GESTION')]
@@ -33,7 +32,6 @@ class StatistiqueController extends AbstractController
     public function index(
         Request $request,
         ExpediteurRepository $expediteurRepository,
-        ChartBuilderInterface $chartBuilderInterface,
         StatutCourrierRepository $statutCourrierRepository,
         FacteurRepository $facteurRepository
     ): Response {
@@ -65,8 +63,6 @@ class StatistiqueController extends AbstractController
 
            $chartByDate = $this->statistiqueService->GenerateBarChart($date1, $date2, $year1, $year2);
             
-           $chartByDate = $this->statistiqueService->GenerateBarChart($date1, $date2, $year1, $year2);
-            
         } else if (($date1 == null || $date2 == null) && ($year1 != null || $year2 != null)) {
 
             $chartByYear = $this->statistiqueService->GenerateLineChart($year1, $year2);
@@ -74,11 +70,6 @@ class StatistiqueController extends AbstractController
         }
 
         $courrierStatutsChart = $this->statistiqueService->GenerateDoughnutChart();
-
-        /* 
-            BAR CHART TOP EXPEDITEUR
-            Ce graphique affiche le top 10 des expéditeurs (clients) ayant envoyé le plus de courriers avec le nombre de courrier associés
-        */
 
         $topExpediteurs = $this->statistiqueService->GenerateTopExpiditeur();
             

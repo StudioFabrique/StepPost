@@ -45,7 +45,6 @@ class Expediteur implements UserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $telephone;
 
-    #[Assert\Regex('/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-!@#$%^&*])(?=.{8,})/')]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $password;
 
