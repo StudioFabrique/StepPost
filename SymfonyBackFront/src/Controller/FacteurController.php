@@ -52,14 +52,14 @@ class FacteurController extends AbstractController
         return $this->facteurService->EditFacteurService($request, $facteur);
     }
 
-    #[Route('/supprimerFacteur', 'deleteFacteur')]
-    public function deleteFacteur(Request $request, EntityManagerInterface $em): Response
-    {
-        if (!$this->getUser()) {
-            return $this->redirectToRoute('app_login');
-        }
-        return $this->facteurService->DeleteFacteurService($request, $em);
-    }
+    // #[Route('/supprimerFacteur', 'deleteFacteur')]
+    // public function deleteFacteur(Request $request, EntityManagerInterface $em): Response
+    // {
+    //     if (!$this->getUser()) {
+    //         return $this->redirectToRoute('app_login');
+    //     }
+    //     return $this->facteurService->DeleteFacteurService($request, $em);
+    // }
 
     #[Route(path: '/api/newFacteur', name: 'api_newFacteur')]
     public function newFacteur(Request $request): JsonResponse
@@ -72,4 +72,11 @@ class FacteurController extends AbstractController
     {
         return $this->facteurService->EditPasswordFacteurService($request);
 }
+
+    #[Route(path:'/toggleFacteur/{id}', name:'togglefacteur')]
+    public function togglefacteur(Request $request, Facteur $facteur, EntityManagerInterface $em)
+    {
+        return $this->facteurService->togglefacteurService($request, $facteur, $em);
+
+    }
 }

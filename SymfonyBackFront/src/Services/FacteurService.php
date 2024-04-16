@@ -10,11 +10,13 @@ use App\Form\FacteurType;
 use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
 
 class FacteurService extends AbstractController
 {
@@ -118,24 +120,24 @@ class FacteurService extends AbstractController
      * Supprime un facteur
      */
 
-     function DeleteFacteurService(Request $request, EntityManager $em):Response {
+    //  function DeleteFacteurService(Request $request, EntityManager $em):Response {
 
-        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
-        $message = $messages["Messages Informations"]["Facteur"]["3,Suppression"];
-        $messageErreur = $messages["Messages Erreurs"]["Facteur"]["3,Suppression"];
+    //     $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+    //     $message = $messages["Messages Informations"]["Facteur"]["3,Suppression"];
+    //     $messageErreur = $messages["Messages Erreurs"]["Facteur"]["3,Suppression"];
 
-        $idFacteur = $request->get('id');
-        $facteur = $this->facteurRepo->find($idFacteur);
+    //     $idFacteur = $request->get('id');
+    //     $facteur = $this->facteurRepo->find($idFacteur);
 
-        try {
-            $facteur->setRoles(['ROLE_INACTIF']);
-            $em->persist($facteur);
-            $em->flush();
-            return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $message)]);
-        } catch (Exception) {
-            return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $messageErreur), 'isError' => true]);
-        }
-     }
+    //     try {
+    //         $facteur->setRoles(['ROLE_INACTIF']);
+    //         $em->persist($facteur);
+    //         $em->flush();
+    //         return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $message)]);
+    //     } catch (Exception) {
+    //         return $this->redirectToRoute('app_facteur', ['errorMessage' => str_replace('[nom]', $facteur->getNom(), $messageErreur), 'isError' => true]);
+    //     }
+    //  }
 
      /**
      * Api qui permet de créer un facteur.
@@ -153,6 +155,8 @@ class FacteurService extends AbstractController
         if (!$this->getUser() || $email == null || $nom == null || $password == null) {
             return new JsonResponse("Authentification échoué");
         }
+        
+        
 
         $facteur = (new Facteur())
             ->setEmail($email)
@@ -161,6 +165,7 @@ class FacteurService extends AbstractController
             ->setCreatedAt(new DateTime(), $timezone)
             ->setUpdatedAt(new DateTime(), $timezone)
             ->setRoles(['ROLE_FACTEUR']);
+        
         try {
             $this->facteurRepository->add($facteur, true);
             return new JsonResponse('facteur créé');
@@ -194,6 +199,15 @@ class FacteurService extends AbstractController
         } catch (Exception $e) {
             return new JsonResponse('erreur');
         }
+    }
+
+    function togglefacteurService(Request $request, Facteur $facteur, EntityManagerInterface $em){
+        
+        $isFacteur = $request->request->get('toggle', 'off') === 'on'; 
+        $facteur->setRoles($isFacteur ? ['ROLE_FACTEUR'] : ['ROLE_INACTIF']);
+        $em->persist($facteur);
+        $em->flush();
+        return $this->redirectToRoute('app_facteur');
     }
 
 }

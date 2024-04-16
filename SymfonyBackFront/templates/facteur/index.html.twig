@@ -6,8 +6,13 @@
 
 {% block title %}Gestion des facteurs{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
+{% endblock %}
+
 {% block body %}
-<main data-controller="remove" class="w-[95%] m-auto">
+<main data-controller="remove" class="w-[95%] m-auto">   
     <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Liste et gestion des facteurs</h1>
     <section class="flex justify-between items-center">
         <form class="flex " action="" method="get">
@@ -29,7 +34,7 @@
         </div>
     </section>
     <section class="overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="w-full text-sm text-left text-gray-500 table-fixed">
+        <table class="w-full text-sm text-left text-gray-500 table-fixed bg-red-500">
             <thead class="text-white uppercase bg-[#140A82]">
                 <tr>
                     <th scope="col" class="px-6 py-3">
@@ -44,23 +49,25 @@
                     <th scope="col" class="px-6 py-3">
                         Mise à jour
                     </th>
-                    <th scope="col" class=" py-3">
+                    <th scope="col" class=" px-6 py-3">
                         Statut du compte
                     </th>
+                    <th >
+                        
+                    </th>
+                    
                     <th>
 
                     </th>
                     <th>
 
                     </th>
-                    <th>
-
-                    </th>
+                    
                 </tr>
             </thead>
             <tbody>
                 {% for facteur in facteurs %}
-                {% if 'ROLE_FACTEUR' in facteur.roles %}
+                {% if 'ROLE_FACTEUR' or 'ROLE_INACTIF' in facteur.roles %}
                 <tr class="bg-white border-b00">
                     <td class="px-6 py-4 break-words">
                         {{facteur.email }}
@@ -74,7 +81,16 @@
                     <td class="px-6 py-4">
                         {{facteur.updatedAt|date_modify("+1 hour")|date('d-m-Y H:i') }}
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4" >
+                        <form action="{{ path('app_togglefacteur', {id: facteur.id}) }}" method="post">
+                            <label class="switch" >
+                                <input type="checkbox" name="toggle" onchange="this.form.submit()" {{ facteur.roles == ["ROLE_FACTEUR"] ? 'checked' : '' }} >
+                            <span></span>
+                            </label>
+                        </form>
+                </form>
+                    </td>
+                    <td class="px-6 py-4" >
                         <a class="text-blue-800 bg-blue-100 p-2 rounded whitespace-nowrap"
                             href="{{ path('app_editFacteur', {id: facteur.id, isadding: false, isEdit: false}) }}">
                             Modifier
@@ -86,7 +102,7 @@
                             Modifier le mot de passe
                         </a>
                     </td>
-                    <td class="px-12 py-4">
+                    {# <td class="px-12 py-4">
                         <button id="showButton" class="text-red-800 bg-red-100 p-2 rounded">Supprimer</button>
                         <div id="confirmBox" class="absolute -ml-36 bg-[#140A82] rounded-lg p-2">
                             <p class="text-white">Êtes-vous sûr de vouloir supprimer ce facteur ? </p>
@@ -95,7 +111,7 @@
                             <a href="{{ path('app_deleteFacteur', {id: facteur.id}) }}"
                                 class="bg-red-700 border-2 border-black rounded-lg p-1 mx-4 text-white whitespace-nowrap">Confirmer</a>
                         </div>
-                    </td>
+                    </td> #}
                     <td class="px-6 py-4">
                         <a class="text-green-800 bg-green-300 p-2 rounded whitespace-nowrap"
                             href="{{ path('app_statistiques_facteur', {facteur: facteur.nom}) }}">
