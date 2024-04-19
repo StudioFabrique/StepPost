@@ -36,6 +36,8 @@ class SuiviDetailService extends AbstractController{
 
     }
 
+    //Ceci va permettre d'update (mettre à jour) le statut d'un courrier
+
     function UpdateSuiviDetail(Request $request): Response{
         $timezone = new DateTimeZone('UTC');
 
@@ -68,6 +70,8 @@ class SuiviDetailService extends AbstractController{
         }
     }
 
+    //Ici, on va supprimer le statut de celui-ci 
+
     function DeleteSuiviDetail($request){
         $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
         $message = $messages["Messages Informations"]["Statut courrier"]["2,Suppression"];
@@ -83,6 +87,10 @@ class SuiviDetailService extends AbstractController{
             return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
         }
     }
+
+    /*
+    Retourne un template twig avec les différents statuts d'un courrier dans un template avec la possibiliter d'en ajouter ou en supprimer.
+    */
 
     function SuiviDetail2($request, $id){
         $courrierId = $request->get('id');

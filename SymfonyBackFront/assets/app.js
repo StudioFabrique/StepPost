@@ -12,6 +12,8 @@ import './img/logo.svg';
 
 import './img/arrow.svg';
 
+import './img/mail.svg';
+
 import './img/person.svg';
 
 import './img/favicon.ico';

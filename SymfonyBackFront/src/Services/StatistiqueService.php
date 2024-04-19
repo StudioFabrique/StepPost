@@ -2,12 +2,16 @@
 
 namespace App\Services;
 
+use App\Entity\Facteur;
+use App\Repository\ExpediteurRepository;
 use DateTime;
 use App\Repository\StatutCourrierRepository;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class StatistiqueService {
+class StatistiqueService extends AbstractController {
     private $statutCourrierRepository, $chartBuilderInterface, $chartBuilder;
 
     public function __construct(StatutCourrierRepository $statutCourrierRepository, ChartBuilderInterface $chartBuilderInterface, ChartBuilderInterface $chartBuilder,) {
@@ -179,8 +183,9 @@ class StatistiqueService {
             $dateMin->modify('+1 month');
             $dateMax->modify('+1 month');
         }
+        
 
-        return $this->chartBuilder->createChart(Chart::TYPE_LINE)
+        return $this->chartBuilder->createChart(Chart::TYPE_BAR)
             ->setData(
                 [
                     'labels' => $labelsMonth,
@@ -189,26 +194,96 @@ class StatistiqueService {
                             'label' => 'pris en charge',
                             'data' => $data1,
                             'borderColor' => [
-                                'rgb(43, 222, 211)'
+                                'rgb(55,126,184)'
                             ]
                         ],
                         [
                             'label' => 'distribués',
                             'data' => $data2,
                             'borderColor' => [
-                                'rgb(255, 204, 64)'
+                                'rgb(255,127,0)'
                             ]
+                            
                         ]
                     ]
                 ]
             )
             ->setOptions([
+                'scales' => [
+                    'x' => [
+                        'categoryPercentage' => 1.0,
+                        'barPercentage' => 2.0
+                    ]
+                ],
                 'plugins' => [
                     'legend' => [
                         'display' => false
                     ]
-                ]
+                ],
+                
             ]);
+
+    }
+
+    function ReturnDatas($facteur, $nomFacteur): Chart{
+        $data3 = array();
+        $data4 = array();
+        $dateMin2 = date_create($facteur->getCreatedAt()->format("Y-m-d"));
+        $dateMax2 = clone $dateMin2; // Crée une copie de $dateMin2
+        $dateMax2->modify('+1 year');
+        $dateDiff = date_diff(new DateTime('now'), $facteur->getCreatedAt());
+        $yearDiff = intval($dateDiff->format('%y'));
+        $labelYear=array();
+        $anneeDebut = $dateMin2->format('Y');
+        for($year = 0; $year<$yearDiff +1; $year++){
+            $data3[$anneeDebut + $year] = $this->statutCourrierRepository->countCourriersByFacteurAndStatut($nomFacteur, 2, $dateMin2, $dateMax2)[0]["nbCourrier"];
+            $data4[$anneeDebut + $year] = $this->statutCourrierRepository->countCourriersByFacteurAndStatut($nomFacteur, 5, $dateMin2, $dateMax2)[0]["nbCourrier"];
+            $labelYear[$year] = date_format($dateMin2, 'Y');
+            $dateMin2->modify('+1 year');
+            $dateMax2->modify('+1 year');
+        }
+
+        return $this->chartBuilder->createChart(Chart::TYPE_BAR)
+            ->setData(
+                [
+                    'labels' => $labelYear,
+                    'datasets' => [
+                        [
+                            'label' => 'pris en charge',
+                            'data' => $data3,
+                            'borderColor' => [
+                                'rgb(55,126,184)'
+                            ]
+                        ],
+                        [
+                            'label' => 'distribués',
+                            'data' => $data4,
+                            'borderColor' => [
+                                'rgb(255,127,0)'
+                            ]
+                            
+                        ]
+                    ]
+                ]
+            )
+            ->setOptions([
+                'scales' => [
+                    'x' => [
+                        'categoryPercentage' => 1.0,
+                        'barPercentage' => 2.0
+                    ]
+                ],
+                'plugins' => [
+                    'legend' => [
+                        'display' => false
+                    ]
+                ],
+                
+            ]);
+        
+
+        
+
     }
 
 

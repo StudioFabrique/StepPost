@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Facteur;
 use DateTime;
 use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
@@ -34,6 +35,7 @@ class StatistiqueController extends AbstractController
         ExpediteurRepository $expediteurRepository,
         StatutCourrierRepository $statutCourrierRepository,
         FacteurRepository $facteurRepository
+
     ): Response {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -72,6 +74,8 @@ class StatistiqueController extends AbstractController
         $courrierStatutsChart = $this->statistiqueService->GenerateDoughnutChart();
 
         $topExpediteurs = $this->statistiqueService->GenerateTopExpiditeur();
+
+        
             
         return $this->render('statistique/index.html.twig', [
             'errorMessage' => $request->get('errorMessage') ?? null,
@@ -94,11 +98,13 @@ class StatistiqueController extends AbstractController
     /* 
         Retourne un template twig avec des statistiques concernant un facteur
     */
+    
     #[Route(name: 'statistiques_facteur', path: '/facteur')]
     public function ShowFacteur(
         Request $request,
         ExpediteurRepository $expediteurRepository,
-        FacteurRepository $facteurRepository
+        FacteurRepository $facteurRepository,
+        StatutCourrierRepository $statutCourrierRepository
     ): Response {
         $nomFacteur = $request->get('facteur') ?? null;
         $facteur = $facteurRepository->findOneBy(['nom' => $nomFacteur]);
@@ -106,7 +112,10 @@ class StatistiqueController extends AbstractController
             return $this->redirectToRoute('app_statistiques', ['errorMessage' => 'Le nom du facteur saisi est incorrect', 'isError' => true]);
         }
 
+
         $chartFacteur = $this->statistiqueService->GenerateLineChart2($facteur, $nomFacteur);
+
+        $chartFacteur2 = $this->statistiqueService->ReturnDatas($facteur, $nomFacteur);
 
         $courrierStatutsChart = $this->statistiqueService->StatutFacteur($facteur);
           
@@ -117,7 +126,9 @@ class StatistiqueController extends AbstractController
             'facteurInfo' => 'infos',
             'chart1' => $chartFacteur,
             'chart2' => $courrierStatutsChart,
+            'chart3' => $chartFacteur2,
             'facteur' => $facteur
+            
         ]);
     }
 }

@@ -71,7 +71,7 @@ class FacteurController extends AbstractController
     public function editPasswordFacteur(Request $request): JsonResponse
     {
         return $this->facteurService->EditPasswordFacteurService($request);
-}
+    }
 
     #[Route(path:'/toggleFacteur/{id}', name:'togglefacteur')]
     public function togglefacteur(Request $request, Facteur $facteur, EntityManagerInterface $em)

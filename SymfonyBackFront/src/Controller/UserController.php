@@ -6,7 +6,6 @@ use Exception;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
-use App\Services\ConfigAppService;
 use App\Services\DataFinderService;
 use App\Services\EntityManagementService;
 use App\Services\MessageService;
@@ -17,10 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\MakerBundle\Validator;
-use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 
 /*
 Cette classe donne la possiblité de créer, modifier, activer et supprimer un admin.
@@ -42,29 +38,106 @@ class UserController extends AbstractController
         $this->userControllerService = $userControllerService;
     }
 
+    /*
+    Retourne un template twig avec la liste des admins avec une pagination.
+    */
+
     #[Route('/', name: 'admin')]
     public function index(DataFinderService $dataFinderService, Request $request ): Response {
-        return $this->userControllerService->indexService($dataFinderService, $request);
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $data = $dataFinderService->GetAdmins();
+
+        $dataPagination = $dataFinderService->Paginate($data, $request);
+
+        return $this->render('admin/index.html.twig', $this->requestManagerService->GenerateRenderRequest('admin', $request, $dataPagination, $data));
+        
  }
+
+    /*
+    La méthode new permet de créer un administrateur ayant comme rôle ROLE_ADMIN
+    */
 
     #[Route('/ajouter', name: 'admin_add')]
     public function new(Request $request,): Response
     {
-        return $this->userControllerService->newUserControllerService($request);
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $form = $this->createForm(UserType::class, null, ['addUser' => true])->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $admin = $this->entityManagementService->MakeUser($form, $request->get('isMairie'));
+                if ($request->get('isMairie'))  $this->entityManagementService->MakeRaisonSociale('mairie de pau');
+                return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 1, $admin->getNom()));
+            } catch (Exception $e) {
+                return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", $e->getCode() === 3 ? 3 : 1));
+            }
+        }
+
+        return $this->renderForm('admin/new.html.twig', $this->requestManagerService->GenerateRenderFormRequest('admin', $request, $form));
     }
 
+    /*
+    La méthode edit permet de modifier les informations d'un administrateur
+    */
    
     #[Route('/edit/{id}', name: 'admin_edit')]
     public function edit(Request $request, UserRepository $adminRepository): Response
     {
-        return $this->userControllerService->editUserControllerService($request, $adminRepository);
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $adminId = $request->get('id');
+        $admin = $adminRepository->find($adminId);
+        $form = $this->createForm(UserType::class, $admin);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            try {
+                $admin = $this->entityManagementService->EditUser($form);
+                return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 2, $admin->getNom()));
+            } catch (Exception) {
+                return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", 2, $admin->getNom()));
+            }
+        }
+
+        return $this->renderForm('admin/edit.html.twig', $this->requestManagerService->GenerateRenderFormRequest('admin', $request, $form));
     }
 
+    /*
+    La méthode editPassword permet de modifier le mot de passe d'un administrateur
+    */
     
     #[Route(name: 'edit_password', path: '/editPassword')]
     public function editPassword(Request $request, UserRepository $adminRepository): Response
     {
-        return $this->userControllerService->editPasswordUserControllerService($request, $adminRepository);
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $adminId = $request->get('id');
+        $admin = $adminRepository->find($adminId);
+
+        $form = $this->createForm(UserType::class, null, ['editPassword' => true]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $admin = $this->entityManagementService->EditPasswordUser($admin, $form->get("password")->getData());
+                return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 3, $admin->getNom()));
+            } catch (Exception $e) {
+                return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", $e->getCode() === 3 ? 3 : 2, $admin->getNom()));
+            }
+        }
+
+        return $this->renderForm('admin/edit.html.twig', $this->requestManagerService->GenerateRenderFormRequest('admin', $request, $form));
     }
 
     

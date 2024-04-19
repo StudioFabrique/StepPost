@@ -15,24 +15,61 @@
 
 {% block body %}
 	<main class="w-[95%] m-auto">
-		<div class="flex justify-between">
+		<div class="flex justify-between mt-5">
 			<div></div>
 			<div>
 				<a data-turbo="false" class="text-white bg-red-500 hover:bg-red-700 p-2 rounded" href="{{ path('app_statistiques') }}">Retour</a>
 			</div>
 		</div>
-		<div class="flex justify-center">
-			<div class="w-[55%] p-10">
-				<p class="text-center m-5 text-xl my-10">
-					Nombre de courriers gérés par <span class="text-[#140A82]">{{ facteur.nom|title }}</span>
-				</p>
-				<p>{{ render_chart(chart1) }}</p>
+		<div>
+			<p class=" m-5 text-2xl my-10 font-bold text-[#140A82]">
+				<span class="text-[#140A82]">{{ facteur.nom|title }}</span>
+			</p>
+			<div class="flex justify-between  ">
+				<div class="border-2  border-[#8682ba] rounded-lg shadow-md w-[60%] p-5">
+						<p class="text-[#140A82] text-center mb-5">Nombre de courrier gérés par mois </p>
+						<p>{{ render_chart(chart1) }}</p>
+				</div>
+				
+				<div class="border-2  border-[#8682ba] rounded-lg shadow-md w-[35%] p-10">
+					<div class="">
+						<p class="text-[#140A82] text-center mb-5">Répartition des types de courrier gérés</p>
+						<p>{{ render_chart(chart2) }}</p>
+					</div>
+					<div class="grid grid-cols-3 justify-between  gap-y-10 m-5">
+						
+							{# <div class="bg-[rgb(228,26,28)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">en attente</p>
+							</div> #}
+							<div class="bg-[rgb(55,126,184)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">pris en charge</p>
+							</div>
+							{# <div class="bg-[rgb(77,175,74)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">avisé</p>
+							</div> #}
+						
+						
+							{# <div class="bg-[rgb(152,78,163)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">mis en instance</p>
+							</div> #}
+							<div class="bg-[rgb(255,127,0)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">distribué</p>
+							</div>
+							{# <div class="bg-[rgb(255,245,51)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">NPAI</p>
+							</div> #}
+						
+							{# <div class="bg-[rgb(166,86,40)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">non réclamé</p>
+							</div> #}
+					</div>
+				</div>
 			</div>
-			<div class="max-w-sm p-10">
-				<p class="text-center m-5 text-xl my-10">
-					Statuts actuels des courriers gérés par <span class="text-[#140A82]">{{ facteur.nom|title }}</span>
-				</p>
-				<p>{{ render_chart(chart2) }}</p>
+			<div class="flex justify-between  mt-10">
+				<div class="border-2  border-[#8682ba] rounded-lg shadow-md w-[60%] p-5">
+					<p class ="text-[#140A82] text-center mb-5"> Nombre de courrier gérés par an</p>
+					<p>{{ render_chart(chart3) }}</p>
+				</div>
 			</div>
 		</div>
 	</main>

@@ -26,6 +26,8 @@ class SuiviDetailController extends AbstractController
 
     }
 
+
+
     #[Route('/suivi/{id}', name: 'suiviId')]
     public function indexbyid(
         Courrier $id,
