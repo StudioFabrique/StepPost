@@ -22,5 +22,9 @@ import './img/logo.png'
 
 import './img/logo_pau.png'
 
+import './img/search.svg'
+
+import './img/recherche.svg'
+
 // start the Stimulus application
 import './bootstrap';
