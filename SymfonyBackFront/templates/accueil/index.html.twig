@@ -173,15 +173,13 @@
                                         {% set styleClass = 'bg-[rgb(255,127,0)]' %}
                                     {% elseif statut.statutCode == 6 %}
                                         {% set styleClass = ' bg-[rgb(255,245,51)]' %}
-                                    
                                     {% elseif statut.statutCode == 7 %}
-                                        {% set styleClass = ' bg-[rgb(166,86,40)]' %}
-                                    
+                                        {% set styleClass = ' bg-red-700' %}
                                     {% elseif statut.statutCode == 8 %}
-                                        {% set styleClass = 'bg-red-700' %}
+                                        {% set styleClass ='bg-red-700' %}
                                     {% endif %}
         
-                                    <span class="flex {{ styleClass }} text-[#140A82] rounded-md font-semibold text-xs py-1 px-1">
+                                    <span class="flex {{ styleClass }} text-white rounded-md font-semibold text-xs py-1 px-1">
                                         {{ statut.etat|title }}
                                     </span>
                                     <a class="text-xs px-2  rounded-md text-white whitespace-nowrap"
