@@ -95,14 +95,18 @@ class SuiviDetailService extends AbstractController{
     function SuiviDetail2($request, $id){
         $courrierId = $request->get('id');
         $courrier = $this->courrierRepository->find($courrierId);
-        $signature = $courrier->getSignature() ?? null;
-        $procuration = $courrier->getProcuration();
-        $signatureBase64 = $signature != null ? base64_decode(base64_encode(stream_get_contents($signature))) : null;
 
+        $signature = $courrier->getSignature(); // Supposant que c'est déjà une chaîne Base64
+    
+        $procuration = $courrier->getProcuration();
+    
+       
+        $signatureBase64 = $signature != null ? base64_decode(base64_encode(stream_get_contents($signature))) : null;
+     
         $statuts = array();
         $statutsExistants = array();
         $nomFacteur = null;
-
+        
         $statutsCourrier = $this->statutsCourrierRepo->findBy(["courrier" => $id], ["date" => "DESC"]);
 
         foreach ($statutsCourrier as $statut) {
@@ -115,6 +119,7 @@ class SuiviDetailService extends AbstractController{
                 array_push($statuts, $statut);
             }
         }
+        
         return $this->render('suivi_detail/index.html.twig', [
             'courrierId' => $id,
             'statutsCourrier' => $statutsCourrier,
@@ -122,7 +127,7 @@ class SuiviDetailService extends AbstractController{
             'errorMessage' => $request->get('errorMessage') ?? null,
             'isError' => $request->get('isError') ?? false,
             'statutsRestants' => $statuts,
-            'signature' => $signatureBase64,
+            'signature' => $signatureBase64 ? 'data:image/png;base64,' . $signatureBase64 : null,
             'showSignature' => $signatureBase64 == null ? false : true,
             'facteur' => $nomFacteur,
             'recherche' => $request->get('recherche'),

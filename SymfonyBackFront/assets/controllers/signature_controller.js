@@ -24,14 +24,14 @@ export default class extends Controller {
         document.getElementById('save-canvas').addEventListener('click', function(){
 
           if (canvas) {
-            var data = canvas.toDataURL(),           
-            blob = new Blob([data], {type: "octet/stream"})
+            canvas.getElement().toBlob(  (blob)=>{
+
             
             var formData = new FormData();
+            console.log("test",blob);
             formData.append('image', blob, 'signature.png');
             formData.append("id",ok);
             // console.log("Le véritable ID:", this.element.dataset.id);
-            const courrierId = document.getElementById('save-canvas');
     
             // console.log(ok);
 
@@ -43,6 +43,7 @@ export default class extends Controller {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
+                window.location.reload();
                 return response.json();
             })
             .then(result => {
@@ -55,6 +56,8 @@ export default class extends Controller {
                 console.log("Problème serveur");
             });
         }
+            )
+      }
 })
       }
     }

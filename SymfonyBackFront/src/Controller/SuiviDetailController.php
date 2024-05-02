@@ -8,16 +8,15 @@ use App\Repository\StatutCourrierRepository;
 use App\Repository\StatutRepository;
 use App\Services\SuiviDetailService;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Id;
-use Exception;
-use PHPUnit\Util\Json;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+
+
 
 #[Route('/', name: 'app_')]
 #[IsGranted('ROLE_ADMIN')]
@@ -39,15 +38,19 @@ public function saveImage(Request $request, CourrierRepository $courrierReposito
     $id = $request->request->get('id');
 
     if ($imageFile && $id) {
+        // Read the binary content of the image
+        $imagePath = $imageFile->getRealPath(); // Temp file path
+        $imageContent = file_get_contents($imagePath);
+        $base64 = base64_encode($imageContent); // Properly encode to base64
+
         $courrier = $courrierRepository->find($id);
-        error_log("Le courrier est", $id);
-        $courrier->setSignature($imageFile);
+        $courrier->setSignature($base64);
         try {
             $courrierRepository->add($courrier, true);
-            return new JsonResponse('Signature enregistrer');
-            
-        } catch (Exception $e) {
-            return new JsonResponse('erreur');
+
+            return new JsonResponse("la signature a bien été prise en compte");
+        } catch (FileException $e) {
+            return new JsonResponse(['message' => 'Erreur lors de l\'enregistrement du fichier'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
         
         return new JsonResponse(['message' => 'Image saved successfully']);
@@ -55,6 +58,9 @@ public function saveImage(Request $request, CourrierRepository $courrierReposito
         return new JsonResponse(['message' => 'Image saved unsuccessfully']);
     }
 }
+
+
+    
 
 
     #[Route('/suivi/{id}', name: 'suiviId')]
