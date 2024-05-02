@@ -17,7 +17,6 @@ class Client
     private int $id;
 
     #[Assert\Regex(pattern:"/^[\p{L}0-9\s&'.,()-]+$/")]
-    #[Assert\NotBlank()]
     #[ORM\Column(name: 'raisonSociale', length: 255, unique: true)]
     private string $raisonSociale;
 

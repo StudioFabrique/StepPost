@@ -6,6 +6,7 @@ use App\Repository\StatutRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: StatutRepository::class)]
 class Statut
@@ -15,12 +16,16 @@ class Statut
     #[ORM\Column(type: 'integer')]
     private $id;
 
+
+    #[Assert\Regex(pattern:"/^[a-zA-Z\s]*$/", message:"L'état est composé de lettres seulement")]
+    #[Assert\Length(min:2, max:50)]
     #[ORM\Column(type: 'string', length: 50)]
     private $etat;
 
     #[ORM\OneToMany(mappedBy: 'statut', targetEntity: StatutCourrier::class)]
     private Collection $statutsCourrier;
 
+    #[Assert\Regex(pattern:"/^[0-9]*$/", message:"Le code ne peut contenir des chiffres")]
     #[ORM\Column(name: 'statutCode', nullable: false)]
     private ?int $statutCode = null;
 

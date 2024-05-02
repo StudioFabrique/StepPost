@@ -57,6 +57,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
+        $passwordRegex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/";
+
+        if (!preg_match($passwordRegex, $newHashedPassword)) {
+            throw new \InvalidArgumentException("Le nouveau mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial, et doit avoir entre 8 et 20 caractères.");
+        }
+        
         $user->setPassword($newHashedPassword);
         $this->_em->persist($user);
         $this->_em->flush();

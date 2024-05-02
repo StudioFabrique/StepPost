@@ -28,3 +28,4 @@ import './img/recherche.svg'
 
 // start the Stimulus application
 import './bootstrap';
+

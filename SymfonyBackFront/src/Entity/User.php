@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -15,6 +16,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    #[Assert\Regex(pattern:"/^[a-zA-Z0-9._-]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/")]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $email;
 
@@ -24,9 +26,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
+    #[Assert\Regex(pattern:"/^[a-zA-Z\s\é]*$/")]
     #[ORM\Column(type: 'string', length: 255)]
     private $fonction;
 
+    #[Assert\Regex(pattern:"/^[a-zA-Z\s\-']+$/", message:"Le nom ne peut contenir que des lettres, des tirets (-) ou des apostrophes (').")]
+    #[Assert\Length(min:2, max:255)]
     #[ORM\Column(type: 'string', length: 255)]
     private $nom;
 

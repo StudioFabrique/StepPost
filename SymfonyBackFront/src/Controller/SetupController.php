@@ -2,10 +2,6 @@
 
 namespace App\Controller;
 
-use DateTime;
-use Exception;
-use App\Entity\User;
-use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Services\ConfigAppService;
 use App\Services\SetupService;
