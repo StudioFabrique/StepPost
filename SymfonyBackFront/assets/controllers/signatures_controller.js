@@ -9,6 +9,13 @@ export default class extends Controller {
         var canvas = this.canvas = new fabric.Canvas('signatureCanvas', {
             isDrawingMode: true
         });
+        document.getElementById('clear-canva').addEventListener('click', () => {
+            if (canvas) {
+              canvas.clear();
+            } else {
+              console.log("Canvas not loaded");
+            }
+          });
         this.editButton = document.getElementById('editerSignatureButton');
         this.imageElement = document.getElementById('imageCanvas');
         this.editButton.addEventListener('click', () => this.editImage());
@@ -75,6 +82,7 @@ export default class extends Controller {
             document.getElementById('tests').style.display="none";
             document.getElementById('save-canva').style.display="block";
             document.getElementById('editerSignatureButton').style.display="none";
+            document.getElementById('clear-canva').style.display="block";
             
         })
     }
