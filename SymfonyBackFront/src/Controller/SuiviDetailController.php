@@ -96,4 +96,9 @@ public function saveImage(Request $request, CourrierRepository $courrierReposito
 
         return $this->suiviDetailService->DeleteSuiviDetail($request);
     }
+    #[Route('/supprimerSignature', 'delete_signature')]
+    public function DeleteSignature(Request $request):Response
+    {
+        return $this->suiviDetailService->DeleteSignature($request);
+    }
 }

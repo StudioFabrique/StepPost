@@ -54,20 +54,20 @@
                     
                     {% if statut.statut.statutCode >= 3 and 'ROLE_GESTION' in app.user.roles %}
                     <a class="text-white bg-red-500 hover:bg-red-700 p-1 rounded whitespace-nowrap"
-                        href="{{ path('app_delete_statut', { courrierId: statut.courrier.id, statutId: statut.id }) }}">Supprimer</a>
+                        href="{{ path('app_delete_statut', { courrierId: statut.courrier.id, statutId: statut.id }) }}">Delete</a>
                     {% endif %}
                 </div>
                 {% if statut.statut.etat == "distribué" and showSignature == false %}
                     <div data-controller="signature">
-                        <button id="signature" class="text-white bg-[#25BA00] hover:bg-green-600 p-1 rounded whitespace-nowrap" style="display:block">à signé</button>
+                        <button id="signature" class="text-white bg-[#25BA00] hover:bg-green-600 p-1 rounded whitespace-nowrap" style="display:block"> To Sign</button>
                     </div>
                     <div data-controller="signature" style="display:none;" id="canvastest">
                         <canvas data-signature-target="canvas" id="c" width="400" height="200" style="border: 1px solid black;"></canvas>
                     </div>
                     <div data-controller="signature" data-id={{ courrierId }} id="canvastests" style="display:none">
-                        <button id="clear-canvas">Clear</button>
-                        <button id="save-canvas">Save</button>
-                    </div>
+                        <button id="clear-canvas" class="text-white bg-red-500 hover:bg-red-700 p-1 mt-5 mr-5 rounded whitespace-nowrap">Clear</button>
+                        <button id="save-canvas" class="mt-5 mb-5 text-white rounded bg-green-500 hover:bg-green-800 p-1">Save</button>
+                    </div> 
                 {% endif %}
                 
             </div>
@@ -81,8 +81,20 @@
         {% if showSignature %}
         <div class="w-[30%]">
         
-            <p class="text-xl text-gray-500">signature :</p>
-            <img class="border-2 border-gray-200 shadow-md" src="{{ signature }}" width="100%" alt="Signature">
+            <p class="text-xl text-gray-500">Signature :</p>
+            <div data-controller="signatures" data-id={{ courrierId }}>
+                <div id="cacher" style="display:block">
+                    <img class="border-2 border-gray-200 shadow-md" src="{{ signature }}" width="90%" alt="Signature" style="display:block" id="imageCanvas">
+                </div>
+                 <div style="display:flex">
+                <a class="text-white bg-red-500 hover:bg-red-700 p-1 mt-5 mr-5 rounded whitespace-nowrap" id="tests" href="{{ path('app_delete_signature', {id: courrierId}) }}">Delete</a>
+                <button id="editerSignatureButton" style="display:block" class="text-white bg-blue-500 hover:bg-blue-700 p-1 mt-5 mr-5 rounded">Edit</button>
+                <button id="save-canva" style="display:none" class="mt-5 mb-5 text-white rounded bg-green-500 hover:bg-green-800 p-1" >Save</button>
+                </div>
+                <div style="display:none" id="affichercanva">
+                    <canvas id="signatureCanvas" width="500" height="300" class="border-gray-200 shadow-md" style=" border: 1px solid "></canvas>
+                </div>
+            </div>
        </div>
         {% endif %}
     </div>

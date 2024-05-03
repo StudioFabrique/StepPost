@@ -88,6 +88,22 @@ class SuiviDetailService extends AbstractController{
         }
     }
 
+    function DeleteSignature($request){
+        $messages = json_decode(file_get_contents(__DIR__ . "/messages.json"), true);
+        $message = $messages["Messages Informations"]["Statut courrier"]["2,Suppression"];
+        $messageErreur = $messages["Messages Erreurs"]["Statut courrier"]["2,Suppression"];
+        $courrierId = $request->get('id');
+        $courrier = $this->courrierRepository->find($courrierId);
+        $courrier->setSignature(NULL);
+        try{
+            $this->courrierRepository->add($courrier, true);
+            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => $message], Response::HTTP_SEE_OTHER);
+        }catch(Exception $e){
+            return $this->redirectToRoute('app_suiviId', ['id' => $courrierId, 'errorMessage' => $messageErreur, 'isError' => true], Response::HTTP_SEE_OTHER);
+        }
+
+    }
+
     /*
     Retourne un template twig avec les différents statuts d'un courrier dans un template avec la possibiliter d'en ajouter ou en supprimer.
     */
