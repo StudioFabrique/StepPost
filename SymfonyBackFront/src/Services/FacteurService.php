@@ -21,12 +21,13 @@ use Symfony\Component\HttpFoundation\Response;
 class FacteurService extends AbstractController
 {
 
-    private $facteurRepo, $paginatorInterface, $expediteurRepository, $facteurRepository;
+    private $dataFinderService, $facteurRepo, $paginatorInterface, $expediteurRepository, $facteurRepository;
 
-    function __construct(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, ExpediteurRepository $expediteurRepository, FacteurRepository $facteurRepository){
+    function __construct(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, ExpediteurRepository $expediteurRepository, DataFinderService $dataFinderService, FacteurRepository $facteurRepository){
         $this->facteurRepository = $facteurRepository;
         $this->facteurRepo = $facteurRepo;
         $this->paginatorInterface = $paginatorInterface;
+        $this->dataFinderService = $dataFinderService;
         $this->expediteurRepository = $expediteurRepository;
 }
 
@@ -36,7 +37,7 @@ class FacteurService extends AbstractController
 
     function ShowFacteurService(Request $request):Response {
         $currentPage = $request->get('currentPage') ?? 1;
-        $data = $this->facteurRepo->findAll();
+        $data = $this->dataFinderService->getFacteur($request);
 
         $facteurs = $this->paginatorInterface->paginate(
             $data,

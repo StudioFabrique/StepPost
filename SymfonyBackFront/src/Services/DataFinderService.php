@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
+use App\Repository\FacteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\UserRepository;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -17,11 +18,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class DataFinderService
 {
 
-    private $statutCourrierRepo, $paginator, $userRepo, $dateMakerService, $expediteurRepo, $clientRepo;
+    private $statutCourrierRepo, $paginator, $userRepo, $dateMakerService, $expediteurRepo, $clientRepo, $facteurRepo;
     /**
      * Constructeur
      */
     public function __construct(
+        FacteurRepository $facteurRepo,
         StatutCourrierRepository $statutCourrierRepo,
         PaginatorInterface $paginator,
         UserRepository $userRepo,
@@ -29,6 +31,7 @@ class DataFinderService
         ExpediteurRepository $expediteurRepo,
         ClientRepository $clientRepo
     ) {
+        $this->facteurRepo = $facteurRepo;
         $this->statutCourrierRepo = $statutCourrierRepo;
         $this->paginator = $paginator;
         $this->userRepo = $userRepo;
@@ -93,6 +96,18 @@ class DataFinderService
     public function getRaisonSocialActive()
     {
         return $this->clientRepo->findActiveClients();
+    }
+
+    public function getFacteur(Request $request)
+    {
+        $recherchefacteur = $request->get('recherche');
+        if($recherchefacteur != null){
+            $data = $this->facteurRepo->findLike($recherchefacteur);
+
+        }else{
+            $data = $this->facteurRepo->findAll();
+        }
+        return $data;
     }
 
     /**
