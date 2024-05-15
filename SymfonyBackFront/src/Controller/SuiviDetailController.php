@@ -6,12 +6,15 @@ use App\Entity\Courrier;
 use App\Repository\CourrierRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\StatutRepository;
+use App\Services\EncryptiontestService;
 use App\Services\SuiviDetailService;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,36 +31,54 @@ class SuiviDetailController extends AbstractController
     function __construct(SuiviDetailService $suiviDetailService){
 
         $this->suiviDetailService = $suiviDetailService;
-
-    }
-
-    #[Route('/signature', name: 'signature')]
-public function saveImage(Request $request, CourrierRepository $courrierRepository): JsonResponse
-{
-    $imageFile = $request->files->get('image');
-    $id = $request->request->get('id');
-
-    if ($imageFile && $id) {
-        // Read the binary content of the image
-        $imagePath = $imageFile->getRealPath(); // Temp file path
-        $imageContent = file_get_contents($imagePath);
-        $base64 = base64_encode($imageContent); // Properly encode to base64
-
-        $courrier = $courrierRepository->find($id);
-        $courrier->setSignature($base64);
-        try {
-            $courrierRepository->add($courrier, true);
-
-            return new JsonResponse("la signature a bien été prise en compte");
-        } catch (FileException $e) {
-            return new JsonResponse(['message' => 'Erreur lors de l\'enregistrement du fichier'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
-        }
         
-        return new JsonResponse(['message' => 'Image saved successfully']);
-    } else {
-        return new JsonResponse(['message' => 'Image saved unsuccessfully']);
+
     }
-}
+
+    #[Route('/download/{id}', name: 'download_image')]
+    public function downloadImage($id, EntityManagerInterface $entityManager): Response
+    {
+        $courrier = $entityManager->getRepository(Courrier::class)->find($id);
+        if (!$courrier || !$courrier->getSignature()) {
+            throw $this->createNotFoundException('Image not found');
+        }
+
+        $blob = stream_get_contents($courrier->getSignature());
+
+        $response = new Response($blob);
+        $response->headers->set('Content-Type', 'image/png'); 
+        $response->headers->set('Content-Disposition', 'inline; filename="image.png"');
+
+        return $response;
+    }
+
+    #[Route('/upload/{id}', name: 'upload_image')]
+    public function uploadImage(Request $request, $id, EntityManagerInterface $entityManager): Response
+    {
+        $file = $request->files->get('file');
+        if ($file) {
+            try {
+                $blob = file_get_contents($file->getPathname());
+
+                
+                $courrier = $entityManager->getRepository(Courrier::class)->find($id);
+                if (!$courrier) {
+                    return new JsonResponse(['success' => false, 'error' => 'Courrier not found.']);
+                }
+
+                
+                $courrier->setSignature($blob);
+                $entityManager->persist($courrier);
+                $entityManager->flush();
+
+                return new JsonResponse(['success' => true]);
+            } catch (\Exception $e) {
+                return new JsonResponse(['success' => false, 'error' => $e->getMessage()]);
+            }
+        }
+
+        return new JsonResponse(['success' => false, 'error' => 'No file uploaded.']);
+    }
 
 
     

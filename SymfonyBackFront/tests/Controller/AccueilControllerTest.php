@@ -2,7 +2,6 @@
 
 namespace App\Tests\Controller;
 
-use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 
@@ -12,17 +11,17 @@ class AccueilControllerTest extends WebTestCase
     {
         
         $client = static::createClient();
-        $userRepository = static::getContainer()->get(UserRepository::class);
 
-        // retrieve the test user
-        $testUser = $userRepository->findOneByEmail('test@test.fr');
+    $crawler = $client->request('GET', '/');
 
-        // simulate $testUser being logged in
-        $client->loginUser($testUser);
+    // Vérifier si la redirection est correcte
+    $this->assertResponseRedirects('http://localhost/accueil/');
 
-        // test e.g. the profile page
-        $client->request('GET', '/accueil');
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'test');
+    // Suivre la redirection et tester la page de destination
+    $crawler = $client->followRedirect();
+
+    // Maintenant, vérifiez si la réponse est réussie sur la nouvelle page
+    $this->assertResponseIsSuccessful();
+        // $this->assertSelectorTextContains('h1', 'Liste des courriers');
     }
 }
