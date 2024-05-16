@@ -6,9 +6,8 @@ use App\Entity\Courrier;
 use App\Repository\CourrierRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\StatutRepository;
-use App\Services\EncryptiontestService;
+use App\Services\EncryptionServiceVersion2;
 use App\Services\SuiviDetailService;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 
@@ -26,10 +24,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class SuiviDetailController extends AbstractController
 {
 
-    private $suiviDetailService;
+    private $suiviDetailService, $encryptionServiceVersion2;
 
-    function __construct(SuiviDetailService $suiviDetailService){
+    function __construct(SuiviDetailService $suiviDetailService, EncryptionServiceVersion2 $encryptionServiceVersion2){
 
+        $this->encryptionServiceVersion2 = $encryptionServiceVersion2;
         $this->suiviDetailService = $suiviDetailService;
         
 
@@ -38,12 +37,16 @@ class SuiviDetailController extends AbstractController
     #[Route('/download/{id}', name: 'download_image')]
     public function downloadImage($id, EntityManagerInterface $entityManager): Response
     {
+        
         $courrier = $entityManager->getRepository(Courrier::class)->find($id);
-        if (!$courrier || !$courrier->getSignature()) {
-            throw $this->createNotFoundException('Image not found');
-        }
 
-        $blob = stream_get_contents($courrier->getSignature());
+        $encryptedBlob = stream_get_contents($courrier->getSignature());
+
+        $blob = $this->encryptionServiceVersion2->encrypt_decrypt('decrypt',$encryptedBlob);
+
+        if ($encryptedBlob === false) {
+            throw new \Exception('Déchiffrement échoué');
+        }
 
         $response = new Response($blob);
         $response->headers->set('Content-Type', 'image/png'); 
@@ -60,6 +63,7 @@ class SuiviDetailController extends AbstractController
             try {
                 $blob = file_get_contents($file->getPathname());
 
+                $encryptedBlob = $this->encryptionServiceVersion2->encrypt_decrypt('encrypt',$blob);
                 
                 $courrier = $entityManager->getRepository(Courrier::class)->find($id);
                 if (!$courrier) {
@@ -67,7 +71,7 @@ class SuiviDetailController extends AbstractController
                 }
 
                 
-                $courrier->setSignature($blob);
+                $courrier->setSignature($encryptedBlob);
                 $entityManager->persist($courrier);
                 $entityManager->flush();
 

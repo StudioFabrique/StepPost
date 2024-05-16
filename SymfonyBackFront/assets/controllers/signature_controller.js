@@ -78,7 +78,9 @@ export default class extends Controller {
         // window.location.reload(); 
       } else {
         console.error('Upload failed:', data.error);
+        
       }
+      
     })
     .catch(error => {
       console.error('Error uploading image:', error);
