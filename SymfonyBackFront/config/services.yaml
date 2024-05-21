@@ -14,15 +14,10 @@ services:
     autowire: true # Automatically injects dependencies in your services.
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
     bind:
-      $EncodeurPublicKey: '%env(ENCRYPTION_ENCODEUR_PUBLIC_KEY)%'
-      $DecodeurPublicKey: '%env(ENCRYPTION_DECODEUR_PUBLIC_KEY)%'
+      $secretIvs: '%env(ENCRYPTION_KEY_IV)%'
 
-      $EncodeurSecretKey: '%env(ENCRYPTION_ENCODEUR_SECRET_PATH)%'
-      $DecodeurSecretKey: '%env(ENCRYPTION_DECODEUR_SECRET_PATH)%'
-
-      $Nonce: '%env(ENCRYPTION_NONCE)%'
-
-      $Key: '%env(ENCRYPTION_KEY)%'
+      $secretKeys: '%env(ENCRYPTION_KEY_SECRET)%'
+      
       
 
   

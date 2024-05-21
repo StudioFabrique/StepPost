@@ -13,20 +13,25 @@
 
 {% block body %}
 <main data-controller="remove" class="w-[95%] m-auto">   
-    <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Liste et gestion des facteurs</h1>
-    <section class="flex justify-between items-center">
-        <form class="flex " action="" method="get">
-            <div class="mb-3 xl:w-50">
-                <div class=" input-group relative flex flex-wrap items-stretch w-full mb-4 ">
-                    <label for="Recherche" class="text-black opacity-50 italic"> Recherche par nom</label>
-                    <input name="recherche" type="search" class="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 
-                        text-base font-normal text-gray-700 bg-white bg-clip-padding border 
-                        border-solid border-gray-300 rounded transition ease-in-out m-0 
-                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="{{ recherche ?? "" }}"
-                        aria-label="" aria-describedby="button-addon2">
+    <h1 class=" mb-4 text-2xl font-semibold text-[#140A82] mt-3">Liste et gestion des facteurs</h1>
+    <section class="flex justify-between items-center mb-5">
+        <form class="flex w-[50%]" action="" method="get">
+                <div class="mb-3 xl:w-50 w-[50%]">
+                    
+                    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                        <div class="relative flex justify-center">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none left-0 ml-2 ">
+                                    <img  src="{{asset('build/images/inputsearch.svg')}}" alt="détail" width="25" height="25">
+                                </div>
+                        
+                        <input name="recherche" type="search" class="block w-full p-4 ps-10 text-sm text-gray-900 border font-semibold border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                            placeholder=" {{ recherche ?? "Rechercher par nom" }}"
+                            aria-label="" aria-describedby="button-addon2">
+                        <button type="submit" class="bg-blue-500 text-white right-0 mt-2 mr-3 absolute end-2.5 bottom-2.5   hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-colors">Search</button>
+                    
+                    </div> 
                 </div>
-            </div>
-        </form>
+            </form>
         <div>
             <a class="text-white bg-green-500 hover:bg-green-700 p-2 rounded whitespace-nowrap"
                 href="{{ path('app_newFacteur', { isAdding: true, isEdit: false }) }}">Créer un facteur</a>

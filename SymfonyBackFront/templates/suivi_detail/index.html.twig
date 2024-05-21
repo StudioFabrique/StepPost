@@ -19,9 +19,11 @@
 {% block body %}
 
 {% if showUpdateButton and 'ROLE_GESTION' in app.user.roles %}
-    <div id="boxContent" class="flex-col absolute bg-[#91c8cf] rounded-lg p-2 right-28 top-36">
+    <div id="boxContent" class="flex-col absolute  rounded-lg p-2 right-28 top-36 text-[#140A82] font-bold shadow-md bg-white">
         {% for statut in statutsRestants %}
-            <div><a class="m-1" href="{{ path('app_statut_add', { courrierId: courrierId, statutId: statut.id }) }}">{{statut.etat }}</a></div>
+            <div class="p-3 m-1">
+            <a class="  hover:text-[#25BA00] transition-colors duration-300" href="{{ path('app_statut_add', { courrierId: courrierId, statutId: statut.id }) }}">{{statut.etat }}</a>
+            </div>
         {% endfor %}
     </div>
 {% endif %}

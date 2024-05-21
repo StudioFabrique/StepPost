@@ -60,14 +60,14 @@ class StatistiqueService extends AbstractController {
                             'label' => 'courriers/colis pris en charges',
                             'data' => $dataEnvoi,
                             'backgroundColor' => [
-                                'rgb(43, 222, 211)'
+                                'rgb(55,126,184)'
                             ]
                         ],
                         [
                             'label' => 'courriers/colis distribués',
                             'data' => $dataRecu,
                             'backgroundColor' => [
-                                'rgb(16, 36, 200)'
+                                'rgb(77,175,74)'
                             ]
                         ]
                     ]
@@ -201,7 +201,7 @@ class StatistiqueService extends AbstractController {
                             'label' => 'distribués',
                             'data' => $data2,
                             'borderColor' => [
-                                'rgb(255,127,0)'
+                                'rgb(77,175,74)'
                             ]
                             
                         ]
@@ -259,7 +259,7 @@ class StatistiqueService extends AbstractController {
                             'label' => 'distribués',
                             'data' => $data4,
                             'borderColor' => [
-                                'rgb(255,127,0)'
+                                'rgb(77,175,74)'
                             ]
                             
                         ]
@@ -355,11 +355,11 @@ class StatistiqueService extends AbstractController {
                     'backgroundColor' => [
                         'rgb(228,26,28)',
                         'rgb(55,126,184)',
-                        'rgb(77,175,74)',
-                        'rgb(152,78,163)',
                         'rgb(255,127,0)',
-                        'rgb(255,255,51)',
-                        'rgb(166,86,40)'
+                        'rgb(152,78,163)',
+                        'rgb(77,175,74)',
+                        'rgb(20, 10, 130)',
+                        'rgb(197, 48, 48)'
                     ]
                 ]
             ]

@@ -134,20 +134,20 @@
 							<div class="bg-[rgb(55,126,184)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
 								<p class="text-[#140A82] text-right mt-5">pris en charge</p>
 							</div>
-							<div class="bg-[rgb(77,175,74)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+							<div class="bg-[rgb(255,127,0)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
 								<p class="text-[#140A82] text-right mt-5">avisé</p>
 							</div>
 							<div class="bg-[rgb(152,78,163)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
 								<p class="text-[#140A82] text-right mt-5">mis en instance</p>
 							</div>
-							<div class="bg-[rgb(255,127,0)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+							<div class="bg-[rgb(77,175,74)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
 								<p class="text-[#140A82] text-right mt-5">distribué</p>
 							</div>
-							<div class="bg-[rgb(255,245,51)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+							<div class="bg-[rgb(20,10,130)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
 								<p class="text-[#140A82] text-right mt-5">NPAI</p>
 							</div>
 						
-							<div class="bg-[rgb(166,86,40)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+							<div class="bg-[rgb(197,48,48)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
 								<p class="text-[#140A82] text-right mt-5">non réclamé</p>
 							</div>
 						
@@ -168,12 +168,12 @@
 			{% if listeFacteurs|length > 0 %}
 				<div id="facteurContent" class="flex flex-col justify-center bg-[#ffffffbe] text-center rounded-b-lg pt-2 -mt-1">
 					<div>
-						<p>suggestion facteurs :</p>
+						<p class="p-2">Suggestion facteurs :</p>
 					</div>
 					{% for facteur in listeFacteurs %}
 						{% if facteur.statutsCourrier|length > 0 %}
-						<div class="text-[#140A82]">
-							<a href="{{ path('app_statistiques', { search: facteur.nom }) }}">{{ facteur.nom }}</a>
+						<div class="text-[#140A82] p-2 ">
+							<a class="font-semibold hover:text-[#25BA00] transition-colors duration-300"href="{{ path('app_statistiques', { search: facteur.nom }) }}">{{ facteur.nom }}</a>
 						</div>
 						{% endif %}
 					{% endfor %}

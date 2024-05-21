@@ -8,6 +8,7 @@
 
 {% block body %}
 
+
 <main  class="w-[95%] m-auto">
     <div class="my-5">
         <h1 class=" mb-4 text-2xl font-semibold text-[#140A82]">Liste des courriers {{ 'ROLE_MAIRIE' in app.user.roles ?
@@ -36,26 +37,36 @@
     <a href="{{ path('app_accueil') }}" class="text-white bg-[#F24E1E] p-2 rounded">Annuler recherche</a>
     {% endif %}
     {% if courriers|length > 0 %}
-    <section class="  mt-5">
-        <form data-controller="date"  action="" method="get">
-            <div class="flex justify-between my-5 xl:w-50 ">
-                <div class="my-2 mr-10">
-                    <label for="Recherche" class="text-black opacity-50 italic"> Recherche par nom, prenom, client ou nº
-                        bordereau</label>
-                    <input name="recherche" type="search" class="form-control relative flex-auto min-w-0 px-3 py-1.5 
-                        text-base font-normal text-gray-700 bg-white bg-clip-padding border 
-                        border-solid border-gray-300 rounded transition ease-in-out m-0 
-                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                        placeholder="{{ recherche ?? "" }}" aria-label="" aria-describedby="button-addon2">
+    
+    <section class="  mt-5 w-[100%]">
+        
+        
+            <div class="flex  justify-between my-5 xl:w-50 ">
+                 <div class="my-2 mr-10 w-[30%]">
+                    <form class="max-w-md mx-auto w-[100%]">  
+                        <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                        <div class="relative flex justify-center">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none left-0 ml-2 ">
+                                <img  src="{{asset('build/images/inputsearch.svg')}}" alt="détail" width="25" height="25">
+                            </div>
+                        
+                            <input name="recherche" type="search" class="block w-full p-4 ps-10 text-sm text-gray-900 border font-semibold border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="{{ recherche ?? "Rechercher par nom, prénom ou bordereau " }}" aria-label="" aria-describedby="button-addon2" required >
+
+                            <button type="submit" class="bg-blue-500 text-white right-0 mt-2 mr-3 absolute end-2.5 bottom-2.5   hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-colors">Search</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="ml-10">
+                
+                <form data-controller="date"  action="" method="get">
+                <div class=" ">
                     <label for="date" class="text-[#3f3b66]">Minimum</label>
                     <input id="DateMin" type="date" class="px-4" name="dateMin">
                     <label for="date" class="text-[#140A82]">Maximum</label>
                     <input id="DateMax" type="date" class="px-4" name="dateMax" min="2024-01-03">
                     <input type="submit"
                         class="text-white bg-[#140A82] hover:bg-[#010a14] p-1 px-2 rounded my-1 cursor-pointer"
-                        value="Rechercher">
+                        value="Filtrer">
                     <div class="flex ">
                         <div class="flex items-center ">
                             <p class="text-center mr-10">Exporter la selection :</p>
@@ -162,30 +173,42 @@
                                 {% if courrier.statut == statut.statutCode %}
                                     {% set styleClass=''%}
                                     {% if statut.statutCode == 1 %}
-                                        {% set styleClass = ' bg-[rgb(228,26,28)]' %}
+                                        {# En attente #}
+                                        {% set styleClass = ' bg-[rgb(228,26,28)]' %} 
                                     {% elseif statut.statutCode == 2 %}
+                                        {# Pris en charge #}
                                         {% set styleClass = ' bg-[rgb(55,126,184)]' %}
                                     {% elseif statut.statutCode == 3 %}
-                                        {% set styleClass = ' bg-[rgb(77,175,74)]' %}
+                                        {# Avisé #}
+                                        {% set styleClass = ' bg-[rgb(255,127,0)]' %}
                                     {% elseif statut.statutCode == 4 %}
+                                        {# Mis en instance #}
                                         {% set styleClass = ' bg-[rgb(152,78,163)]' %}
                                     {% elseif statut.statutCode == 5 %}
-                                        {% set styleClass = 'bg-[rgb(255,127,0)]' %}
+                                        {# Distribué #}
+                                        {% set styleClass = 'bg-[rgb(77,175,74)]' %}
                                     {% elseif statut.statutCode == 6 %}
-                                        {% set styleClass = ' bg-[rgb(255,245,51)]' %}
+                                        {# NPAI #}
+                                        {% set styleClass = ' bg-[#140A82]' %}
                                     {% elseif statut.statutCode == 7 %}
+                                        {# Non réclamé #}
                                         {% set styleClass = ' bg-red-700' %}
                                     {% elseif statut.statutCode == 8 %}
-                                        {% set styleClass ='bg-red-700' %}
+                                        {# Erreur de libelé #}
+                                        {% set styleClass ='bg-red-500' %}
                                     {% endif %}
-        
-                                    <span class="flex flex-col {{ styleClass }} text-white rounded-md font-semibold text-xs py-1 px-1 justify-center">
+                            
+                               
+                                    <span class="flex flex-col {{ styleClass }} text-white rounded-md font-semibold text-xs py-1 px-1 justify-center w-3/4">
                                         {{ statut.etat|title }}
                                     </span>
+                                
+                               
                                     <a class="text-xs px-2  rounded-md text-white whitespace-nowrap"
                                         href="{{ path('app_suiviId', {id: courrier.courrier, courrierId: courrier.courrier, recherche: recherche ?? null}) }}">
                                         <img class="" src="{{asset('build/images/recherche.svg')}}" alt="détail" width="20" height="20">
                                         </a>
+                              
                                 {% endif %}
                             {% endfor %} 
                             </div>
