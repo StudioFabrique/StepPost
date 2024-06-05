@@ -2,20 +2,21 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
-use App\Services\ConfigAppService;
-use App\Services\DataFinder;
+use App\Services\DataFinderService;
 use App\Services\EntityManagementService;
 use App\Services\MessageService;
-use App\Services\RequestManager;
-use Exception;
+use App\Services\RequestManagerService;
+use App\Services\UserControllerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /*
 Cette classe donne la possiblité de créer, modifier, activer et supprimer un admin.
@@ -27,37 +28,38 @@ Seul le super admin a les droits d'accès aux différentes méthodes de cette cl
 
 class UserController extends AbstractController
 {
-    private $requestManager, $entityManagementService, $messageService;
-    public function __construct(RequestManager $requestManager, EntityManagementService $entityManagementService, MessageService $messageService)
+    private $requestManagerService, $entityManagementService, $messageService, $validator, $userControllerService;
+    public function __construct(RequestManagerService $requestManagerService, EntityManagementService $entityManagementService, MessageService $messageService, ValidatorInterface $validator, UserControllerService $userControllerService)
     {
-        $this->requestManager = $requestManager;
+        $this->requestManagerService = $requestManagerService;
         $this->entityManagementService = $entityManagementService;
         $this->messageService = $messageService;
+        $this->validator = $validator;
+        $this->userControllerService = $userControllerService;
     }
 
     /*
     Retourne un template twig avec la liste des admins avec une pagination.
     */
-    #[Route('/', name: 'admin')]
-    public function index(
-        DataFinder $dataFinder,
-        Request $request
-    ): Response {
 
+    #[Route('/', name: 'admin')]
+    public function index(DataFinderService $dataFinderService, Request $request ): Response {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
 
-        $data = $dataFinder->GetAdmins();
+        $data = $dataFinderService->GetAdmins();
 
-        $dataPagination = $dataFinder->Paginate($data, $request);
+        $dataPagination = $dataFinderService->Paginate($data, $request);
 
-        return $this->render('admin/index.html.twig', $this->requestManager->GenerateRenderRequest('admin', $request, $dataPagination, $data));
-    }
+        return $this->render('admin/index.html.twig', $this->requestManagerService->GenerateRenderRequest('admin', $request, $dataPagination, $data));
+        
+ }
 
     /*
-        La méthode new permet de créer un administrateur ayant comme rôle ROLE_ADMIN
+    La méthode new permet de créer un administrateur ayant comme rôle ROLE_ADMIN
     */
+
     #[Route('/ajouter', name: 'admin_add')]
     public function new(Request $request,): Response
     {
@@ -77,12 +79,13 @@ class UserController extends AbstractController
             }
         }
 
-        return $this->renderForm('admin/new.html.twig', $this->requestManager->GenerateRenderFormRequest('admin', $request, $form));
+        return $this->renderForm('admin/new.html.twig', $this->requestManagerService->GenerateRenderFormRequest('admin', $request, $form));
     }
 
     /*
-        La méthode edit permet de modifier les informations d'un administrateur
+    La méthode edit permet de modifier les informations d'un administrateur
     */
+   
     #[Route('/edit/{id}', name: 'admin_edit')]
     public function edit(Request $request, UserRepository $adminRepository): Response
     {
@@ -105,12 +108,13 @@ class UserController extends AbstractController
             }
         }
 
-        return $this->renderForm('admin/edit.html.twig', $this->requestManager->GenerateRenderFormRequest('admin', $request, $form));
+        return $this->renderForm('admin/edit.html.twig', $this->requestManagerService->GenerateRenderFormRequest('admin', $request, $form));
     }
 
     /*
-        La méthode editPassword permet de modifier le mot de passe d'un administrateur
+    La méthode editPassword permet de modifier le mot de passe d'un administrateur
     */
+    
     #[Route(name: 'edit_password', path: '/editPassword')]
     public function editPassword(Request $request, UserRepository $adminRepository): Response
     {
@@ -133,27 +137,13 @@ class UserController extends AbstractController
             }
         }
 
-        return $this->renderForm('admin/edit.html.twig', $this->requestManager->GenerateRenderFormRequest('admin', $request, $form));
+        return $this->renderForm('admin/edit.html.twig', $this->requestManagerService->GenerateRenderFormRequest('admin', $request, $form));
     }
 
-    /*
-        La méthode delete permet de supprimer un administrateur
-    */
+    
     #[Route('/delete/{id}', name: 'admin_delete')]
-    public function delete(User $admin, UserRepository $adminRepository, ConfigAppService $config): Response
+    public function delete(User $admin, UserRepository $adminRepository): Response
     {
-        if (!$this->getUser()) {
-            return $this->redirectToRoute('app_login');
-        }
-
-        try {
-            if(!$config->needToBeSetup()) {
-                throw new Exception();
-            }
-            $adminRepository->remove($admin);
-            return $this->redirectToRoute('app_admin', $this->messageService->GetSuccessMessage("Administrateur", 4, $admin->getNom()));
-        } catch (Exception) {
-            return $this->redirectToRoute('app_admin', $this->messageService->GetErrorMessage("Administrateur", 4, $admin->getNom()));
-        }
+        return $this->userControllerService->deleteUserControllerService($admin, $adminRepository);
     }
 }

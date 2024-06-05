@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FacteurRepository::class)]
 class Facteur
@@ -16,9 +17,12 @@ class Facteur
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Regex(pattern:"/^[a-zA-Z0-9._-]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/")]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
+    #[Assert\Regex(pattern:"/^[a-zA-Z\s\-']+$/", message:"Le nom ne peut contenir que des lettres, des tirets (-) ou des apostrophes (').")]
+    #[Assert\Length(min:2, max:255)]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $nom = null;
 

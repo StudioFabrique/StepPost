@@ -5,7 +5,7 @@ namespace App\Services;
 use Exception;
 use Symfony\Component\Form\Form;
 
-class FormVerification
+class FormVerificationService
 {
     public function verifyField(Form $form, string $type)
     {

@@ -8,10 +8,16 @@
 	Statistiques
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
+{% endblock %}
+
 {% block javascript %}
 	{{ parent() }}
 	<script src="/libs/chart.js/chart.min.js"></script>
 {% endblock %}
+
 
 {% block body %}
 	<main class="w-[95%] m-auto" data-controller="chart">
@@ -47,22 +53,22 @@
 			</div>
 			{% if chartByDate == null and chartByYear == null %}
 
-				<div class="flex justify-between text-gray-600 mt-20 my-10">
-					<div>
-						<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersImpression }}</p>
-						<p>{{ nbCourriersImpression > 1 ? 'bordereaux ont été générés' : 'bordereau a été généré' }}</p>
+				<div class="grid grid-cols-4 gap-4  text-gray-600 mt-10 my-10">
+					<div class="border-2  border-[#140A82] rounded-lg shadow-md p-5 m-5 hover:shadow-2xl hover:-translate-y-1 transition duration-300 py-8">
+						<p id="number" class="text-[#140A82] text-6xl pr-2 font-bold ">{{ nbCourriersImpression }}</p>
+						<p class="font-semibold">{{ nbCourriersImpression > 1 ? 'bordereaux ont été générés' : 'bordereau a été généré' }}</p>
 					</div>
-					<div>
-						<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersEnvoi }}</p>
-						<p>{{ nbCourriersImpression > 1 ? 'courriers/colis ont été pris en charges' : 'courrier/coli a été pris en charge' }}</p>
+					<div class="border-2 border-[#140A82] rounded-lg shadow-md p-5 m-5 hover:shadow-2xl hover:-translate-y-1 transition duration-300 py-8">
+						<p id="number" class="text-[#140A82] text-6xl pr-2 font-bold">{{ nbCourriersEnvoi }}</p>
+						<p class="font-semibold" > {{ nbCourriersImpression > 1 ? 'courriers/colis ont été pris en charges' : 'courrier/coli a été pris en charge' }}</p>
 					</div>
-					<div>
-						<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbCourriersRecu }}</p>
-						<p>{{ nbCourriersImpression > 1 ? 'courriers/colis ont été distribués' : 'courrier/coli a été distribué' }}</p>
+					<div class="border-2 border-[#140A82] rounded-lg shadow-md p-5 m-5 hover:shadow-2xl hover:-translate-y-1 transition duration-300 py-8">
+						<p id="number" class="text-[#140A82] text-6xl pr-2 font-bold">{{ nbCourriersRecu }} </p>
+						<p class="font-semibold">{{ nbCourriersImpression > 1 ? 'courriers/colis ont été distribués' : 'courrier/coli a été distribué' }}</p>
 					</div>
-					<div>
-						<p id="number" class="text-[#140A82] text-6xl pr-2">{{ nbExpediteurs }}</p>
-						<p>nombre d'<a class="text-black underline" href="{{ path('app_expediteur') }}">expéditeurs</a>
+					<div class="border-2 border-[#140A82] rounded-lg shadow-md p-5 m-5 hover:shadow-2xl hover:-translate-y-1 transition duration-300 py-8">
+						<p id="number" class="text-[#140A82] text-6xl pr-2 font-bold">{{ nbExpediteurs }}</p>
+						<p class="font-semibold">nombre d'<a class="text-black underline" href="{{ path('app_expediteur') }}">expéditeurs</a>
 						</p>
 					</div>
 				</div>
@@ -112,38 +118,44 @@
 			<a href="{{ path('app_statistiques') }}" class="bg-red-600 text-white p-1">Fermer</a>
 			{% endif %}
 	</section>
-	<hr class="border-y-1 my-10 border-gray-400">
 	<section>
-		<div class="flex justify-between gap-x-1 m-10">
-			<div class="w-80">
-				<p class="text-center m-5 text-xl my-10">Statuts actuels des courriers</p>
-				{{ render_chart(chart1) }}
+		<div class="flex justify-between gap-x-1  ">
+			<div class=" border-2  border-[#8682ba] rounded-lg shadow-md ml-5 my-5 p-10 ">
+				<p class="text-center m-5 text-xl my-10 font-bold">Statut actuels des courriers</p>
+				<div>
+					<div class="flex w-[70%] mx-20  ">
+						{{ render_chart(chart1) }}
+					</div>
+					<div class="grid grid-cols-3 justify-between  gap-y-10 m-5">
+						
+							<div class="bg-[rgb(228,26,28)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">en attente</p>
+							</div>
+							<div class="bg-[rgb(55,126,184)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">pris en charge</p>
+							</div>
+							<div class="bg-[rgb(255,127,0)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">avisé</p>
+							</div>
+							<div class="bg-[rgb(152,78,163)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">mis en instance</p>
+							</div>
+							<div class="bg-[rgb(77,175,74)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">distribué</p>
+							</div>
+							<div class="bg-[rgb(20,10,130)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">NPAI</p>
+							</div>
+						
+							<div class="bg-[rgb(197,48,48)] w-100 h-5 mt-4 pr-1 rounded-r-md m-5">
+								<p class="text-[#140A82] text-right mt-5">non réclamé</p>
+							</div>
+						
+					</div>
+				</div>
 			</div>
-			<div class="flex flex-col justify-center gap-y-10 ml-10">
-				<div class="bg-[rgb(228,26,28)] w-100 h-5 mt-4 pr-1 rounded-r-md">
-					<p class="text-[rgb(200,26,28)] text-right mt-5">en attente</p>
-				</div>
-				<div class="bg-[rgb(55,126,184)] w-100 h-5 mt-4 pr-1 rounded-r-md">
-					<p class="text-[rgb(55,100,100)] text-right mt-5">pris en charge</p>
-				</div>
-				<div class="bg-[rgb(77,175,74)] w-100 h-5 mt-4 pr-1 rounded-r-md">
-					<p class="text-[rgb(20,100,74)] text-right mt-5">avisé</p>
-				</div>
-				<div class="bg-[rgb(152,78,163)] w-100 h-5 mt-4 pr-1 rounded-r-md">
-					<p class="text-[rgb(100,78,120)] text-right mt-5">mis en instance</p>
-				</div>
-				<div class="bg-[rgb(255,127,0)] w-100 h-5 mt-4 pr-1 rounded-r-md">
-					<p class="text-[rgb(200,127,100))] text-right mt-5">distribué</p>
-				</div>
-				<div class="bg-[rgb(255,245,51)] w-100 h-5 mt-4 pr-1 rounded-r-md">
-					<p class="text-[rgb(255,170,51)] text-right mt-5">NPAI</p>
-				</div>
-				<div class="bg-[rgb(166,86,40)] w-100 h-5 mt-4 pr-1 rounded-r-md">
-					<p class="text-[rgb(166,86,40)] text-right mt-5">non réclamé</p>
-				</div>
-			</div>
-			<div class="w-[50%]">
-				<p class="text-center text-xl my-10">Classement des expéditeurs</p>
+			<div class="w-[60%] border-2  border-[#8682ba] rounded-lg shadow-md p-10 my-5 mr-5">
+				<p class="text-center text-xl my-10 font-bold">Classement des expéditeurs</p>
 				{{ render_chart(chart2) }}
 			</div>
 		</div>
@@ -156,12 +168,12 @@
 			{% if listeFacteurs|length > 0 %}
 				<div id="facteurContent" class="flex flex-col justify-center bg-[#ffffffbe] text-center rounded-b-lg pt-2 -mt-1">
 					<div>
-						<p>suggestion facteurs :</p>
+						<p class="p-2">Suggestion facteurs :</p>
 					</div>
 					{% for facteur in listeFacteurs %}
 						{% if facteur.statutsCourrier|length > 0 %}
-						<div class="text-[#140A82]">
-							<a href="{{ path('app_statistiques', { search: facteur.nom }) }}">{{ facteur.nom }}</a>
+						<div class="text-[#140A82] p-2 ">
+							<a class="font-semibold hover:text-[#25BA00] transition-colors duration-300"href="{{ path('app_statistiques', { search: facteur.nom }) }}">{{ facteur.nom }}</a>
 						</div>
 						{% endif %}
 					{% endfor %}

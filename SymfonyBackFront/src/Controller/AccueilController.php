@@ -4,15 +4,15 @@ namespace App\Controller;
 
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Services\DataFinder;
-use App\Services\ExportCSV;
-use App\Services\ExportXLS;
+use App\Services\DataFinderService;
+use App\Services\ExportCSVService;
+use App\Services\ExportXLSService;
 use App\Services\MessageService;
-use App\Services\RequestManager;
+use App\Services\RequestManagerService;
 
 /**
  * Cette classe est le point d'entrée de l'application après que 
@@ -25,22 +25,22 @@ use App\Services\RequestManager;
 #[IsGranted('ROLE_ADMIN')]
 class AccueilController extends AbstractController
 {
-    private $dataFinder, $exportCsv, $messageService, $requestManager, $exportXls, $testService;
+    private $dataFinderService, $exportCsvService, $messageService, $requestManagerService, $exportXlsService;
     /**
      * Constructeur
      */
     public function __construct(
-        DataFinder $dataFinder,
-        ExportCSV $exportCsv,
-        ExportXLS $exportXls,
+        DataFinderService $dataFinderService,
+        ExportCSVService $exportCsvService,
+        ExportXLSService $exportXlsService,
         MessageService $messageService,
-        RequestManager $requestManager,
+        RequestManagerService $requestManagerService
     ) {
-        $this->dataFinder = $dataFinder;
+        $this->dataFinderService = $dataFinderService;
         $this->messageService = $messageService;
-        $this->exportCsv = $exportCsv;
-        $this->requestManager = $requestManager;
-        $this->exportXls = $exportXls;
+        $this->exportCsvService = $exportCsvService;
+        $this->requestManagerService = $requestManagerService;
+        $this->exportXlsService = $exportXlsService;
     }
 
     /**
@@ -56,13 +56,13 @@ class AccueilController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $data = $this->dataFinder->GetCourriers($request, $this->getUser());
-        $dataPagination = $this->dataFinder->Paginate(
+        $data = $this->dataFinderService->GetCourriers($request, $this->getUser());
+        $dataPagination = $this->dataFinderService->Paginate(
             $data,
             $request
         );
 
-        return $this->render('accueil/index.html.twig', $this->requestManager->GenerateRenderRequest('accueil', $request, $dataPagination, $data));
+        return $this->render('accueil/index.html.twig', $this->requestManagerService->GenerateRenderRequest('accueil', $request, $dataPagination, $data));
     }
 
     /**
@@ -73,7 +73,7 @@ class AccueilController extends AbstractController
     #[Route('/detailsExpediteur', name: 'detailsExpediteur')]
     public function DetailsExpediteur(Request $request): Response
     {
-        return $this->render('expediteur/details.html.twig', $this->requestManager->GenerateRenderRequest('detailsExpediteur', $request));
+        return $this->render('expediteur/details.html.twig', $this->requestManagerService->GenerateRenderRequest('detailsExpediteur', $request));
     }
 
     /**
@@ -85,7 +85,7 @@ class AccueilController extends AbstractController
     public function export(Request $request)
     {
         $exportType = $request->get('type');
-        $data = $this->dataFinder->GetCourriers($request, $this->getUser());
+        $data = $this->dataFinderService->GetCourriers($request, $this->getUser());
 
         try {
             if ($exportType === 'Csv' || $exportType === 'Xls') {

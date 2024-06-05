@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Repository\StatutRepository;
 use DateTime;
 use Exception;
+use App\Repository\StatutRepository;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 /**
  * Ce service contient les méthodes pour l'export en csv.
  */
-class ExportXLS
+class ExportXLSService
 {
     private $parameters, $statutRepo;
     /**

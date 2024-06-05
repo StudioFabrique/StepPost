@@ -11,7 +11,7 @@
 {% if isAdding == true %}
 
     <form class="w-[95%] m-auto" data-controller="facteur" data-mode="add">
-        <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
+        <h1 class=" mt-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
         <div class="flex justify-between items-center">
             <div></div>
             <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
@@ -37,14 +37,15 @@
             <button id="facteur_submit" class="text-white bg-[#24A640] p-2 rounded">Sauvegarder</button>
     </form>
 {% else %}
-    <form class="w-[95%] m-auto" data-controller="facteur">
-        <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
-        <div class="flex justify-between items-center">
-            <div></div>
-            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
-        </div>
-        {{ form(form) }}
-    </form>
+    <div class="w-[95%] m-auto" data-controller="facteur">
+            <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
+            <div class="flex justify-between items-center">
+                <div></div>
+                <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
+            </div>
+            {{ form(form) }}
+    </div>
+    
 {% endif %}
 </div>
 {% endblock %}

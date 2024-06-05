@@ -1,15 +1,16 @@
-<?php
+<?php 
 
 namespace App\Controller;
 
+use DateTime;
+use DateTimeZone;
+use Exception;
 use App\Entity\Facteur;
 use App\Form\FacteurType;
 use App\Repository\ExpediteurRepository;
 use App\Repository\FacteurRepository;
-use DateTime;
-use DateTimeZone;
+use App\Services\FacteurService;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,40 +22,24 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/', name: 'app_')]
 #[IsGranted('ROLE_GESTION')]
 class FacteurController extends AbstractController
-{
+{   
+    private $facteurService;
 
-    /**
-     * Retourne un template twig avec la liste de tous les facteurs
-     */
+    public function __construct(FacteurService $facteurService){
+        $this->facteurService = $facteurService;
+    }
+
+
     #[Route('/facteurs', name: 'facteur')]
-    public function showFacteurs(FacteurRepository $facteurRepo, PaginatorInterface $paginatorInterface, Request $request, ExpediteurRepository $expediteurRepository): Response
+    public function showFacteurs(Request $request): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
 
-        $currentPage = $request->get('currentPage') ?? 1;
-        $data = $facteurRepo->findAll();
-
-        $facteurs = $paginatorInterface->paginate(
-            $data,
-            $request->query->getInt('page') < 2 ? $currentPage : $request->query->getInt('page')
-        );
-
-        return $this->render('facteur/index.html.twig', [
-            'facteurs' => $facteurs,
-            'expediteursInactifs' => $expediteurRepository->findAllInactive(),
-            'currentPage' => $request->query->getInt('page') > 1 ? $request->query->getInt('page') <= 2 : $currentPage,
-            'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false,
-            'nbFacteursTotal' => count($data)
-        ]);
+        return $this->facteurService->ShowFacteurService($request);
     }
 
-
-    /**
-     * Affiche la page de création de facteur
-     */
     #[Route('/nouveauFacteur', 'newFacteur')]
     public function showNewFacteur(Request $request, ExpediteurRepository $expediteurRepository): Response
     {
@@ -76,9 +61,6 @@ class FacteurController extends AbstractController
         ]);
     }
 
-    /**
-     * Modifie un facteur
-     */
     #[Route('/modifierFacteur', 'editFacteur')]
     public function editFacteur(FacteurRepository $facteurRepo, Request $request, EntityManagerInterface $em, ExpediteurRepository $expediteurRepository): Response
     {
@@ -119,16 +101,13 @@ class FacteurController extends AbstractController
             'title' => 'Modifier le facteur',
             'expediteursInactifs' => $expediteurRepository->findAllInactive(),
             'errorMessage' => $request->get('errorMessage') ?? null,
-            'isError' => $request->get('isError') ?? false,
+            'isError' => $request->get('isError') ?? null,
             'isAdding' => $request->get('isAdding'),
             'isEdit' => $request->get('isEdit'),
             'facteurId' => $request->get('id')
         ]);
     }
 
-    /**
-     * Supprime un facteur
-     */
     #[Route('/supprimerFacteur', 'deleteFacteur')]
     public function deleteFacteur(Request $request, FacteurRepository $facteurRepo, EntityManagerInterface $em): Response
     {
@@ -153,10 +132,6 @@ class FacteurController extends AbstractController
         }
     }
 
-    /**
-     * Api qui permet de créer un facteur.
-     * @param Request $request POST : email, nom, prenom
-     */
     #[Route(path: '/api/newFacteur', name: 'api_newFacteur')]
     public function newFacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
     {
@@ -185,10 +160,6 @@ class FacteurController extends AbstractController
         }
     }
 
-    /**
-     * Api qui permet de modifier un facteur.
-     * @param Request $request POST : email, nom, prenom
-     */
     #[Route(path: '/api/editPasswordFacteur', name: 'api_editPasswordFacteur')]
     public function editPasswordFacteur(Request $request, FacteurRepository $facteurRepository): JsonResponse
     {
@@ -210,5 +181,12 @@ class FacteurController extends AbstractController
         } catch (Exception $e) {
             return new JsonResponse('erreur');
         }
+    }
+
+    #[Route(path:'/toggleFacteur/{id}', name:'togglefacteur')]
+    public function togglefacteur(Request $request, Facteur $facteur, EntityManagerInterface $em)
+    {
+        return $this->facteurService->togglefacteurService($request, $facteur, $em);
+
     }
 }

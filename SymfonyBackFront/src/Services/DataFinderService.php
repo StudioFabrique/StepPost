@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repository\ClientRepository;
 use App\Repository\ExpediteurRepository;
+use App\Repository\FacteurRepository;
 use App\Repository\StatutCourrierRepository;
 use App\Repository\UserRepository;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -14,25 +15,27 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * Service pour trouver des données d'entités.
  */
-class DataFinder
+class DataFinderService
 {
 
-    private $statutCourrierRepo, $paginator, $userRepo, $dateMaker, $expediteurRepo, $clientRepo;
+    private $statutCourrierRepo, $paginator, $userRepo, $dateMakerService, $expediteurRepo, $clientRepo, $facteurRepo;
     /**
      * Constructeur
      */
     public function __construct(
+        FacteurRepository $facteurRepo,
         StatutCourrierRepository $statutCourrierRepo,
         PaginatorInterface $paginator,
         UserRepository $userRepo,
-        DateMaker $dateMaker,
+        DateMakerService $dateMakerService,
         ExpediteurRepository $expediteurRepo,
         ClientRepository $clientRepo
     ) {
+        $this->facteurRepo = $facteurRepo;
         $this->statutCourrierRepo = $statutCourrierRepo;
         $this->paginator = $paginator;
         $this->userRepo = $userRepo;
-        $this->dateMaker = $dateMaker;
+        $this->dateMakerService = $dateMakerService;
         $this->expediteurRepo = $expediteurRepo;
         $this->clientRepo = $clientRepo;
     }
@@ -46,8 +49,8 @@ class DataFinder
         $data = $this->statutCourrierRepo->findCourriers(
             $request->get('order') ?? "DESC",
             $request->get('recherche'),
-            $this->dateMaker->convertDateDefault($request->get('dateMin')),
-            $this->dateMaker->convertDateDefault($request->get('dateMax')),
+            $this->dateMakerService->convertDateDefault($request->get('dateMin')),
+            $this->dateMakerService->convertDateDefault($request->get('dateMax')),
             $raison
         );
         return $data;
@@ -93,6 +96,18 @@ class DataFinder
     public function getRaisonSocialActive()
     {
         return $this->clientRepo->findActiveClients();
+    }
+
+    public function getFacteur(Request $request)
+    {
+        $recherchefacteur = $request->get('recherche');
+        if($recherchefacteur != null){
+            $data = $this->facteurRepo->findLike($recherchefacteur);
+
+        }else{
+            $data = $this->facteurRepo->findAll();
+        }
+        return $data;
     }
 
     /**

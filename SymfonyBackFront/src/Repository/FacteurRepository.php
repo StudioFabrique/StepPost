@@ -39,6 +39,23 @@ class FacteurRepository extends ServiceEntityRepository
         }
     }
 
+    public function findLike($nom){
+        return $this->_em->createQueryBuilder('e')
+            ->select('
+                e.id,
+                e.email,
+                e.nom,
+                e.roles,
+                e.createdAt,
+                e.updatedAt
+            ')
+            ->from('App\Entity\Facteur' ,'e')
+            ->where('e.nom LIKE :nom')
+            ->setParameter('nom', '%' . $nom . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Facteur[] Returns an array of Facteur objects
     //     */
@@ -63,4 +80,4 @@ class FacteurRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-}
+    }
