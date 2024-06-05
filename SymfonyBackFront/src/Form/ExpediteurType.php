@@ -81,7 +81,7 @@ class ExpediteurType extends AbstractType
                     ],
                 ])
                 ->add('telephone', TextType::class, [
-                    'constraints' => new Length(min: 9, max: 10),
+                    'constraints' => new Length(min: 10, max: 20),
                     'label' => 'Telephone *',
                     'label_attr' => ['class' => 'block text-gray-700 text-sm font-bold mb-2'],
                     'attr' => [

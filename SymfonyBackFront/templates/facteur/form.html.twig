@@ -10,11 +10,11 @@
 <div>
 {% if isAdding == true %}
 
-    <form class="w-[95%] m-auto" data-controller="facteur" data-mode="add">
-        <h1 class=" mt-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
+    <form class="w-[95%] m-auto mt-5" data-controller="facteur" data-mode="add">
+        <h1 class="  text-xl font-semibold text-[#140A82] ">{{ title }}</h1>
         <div class="flex justify-between items-center">
             <div></div>
-            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
+            <a class="text-white bg-[#F24E1E] p-2 hover:bg-red-700 rounded" href="{{ path('app_facteur') }}">Retour</a>
         </div>
         <p> Les champs obligatoires sont marqués par un * </p>
             <label for="email">Email</label>
@@ -23,25 +23,25 @@
             <input id="nom" name="nom" type="text" class = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'>
             <label for="password">Password</label>
             <input type="password" name="password" id="password" class = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'>
-            <button id="facteur_submit" class="text-white bg-[#24A640] p-2 rounded">Sauvegarder</button>
+            <button id="facteur_submit" class="text-white bg-[#24A640] hover:bg-green-800 p-2 rounded">Sauvegarder</button>
     </form>
 {% elseif isEdit == true %}
     <form class="w-[95%] m-auto" data-controller="facteur" data-id={{ facteurId }} data-mode="editPassword">
-        <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
+        <h1 class=" mb-4 mt-5 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
         <div class="flex justify-between items-center">
             <div></div>
-            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
+            <a class="text-white bg-[#F24E1E] hover:bg-red-700 p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
         </div>
             <label for="password">Password</label>
             <input type="password" name="password" id="password" class = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4'>
-            <button id="facteur_submit" class="text-white bg-[#24A640] p-2 rounded">Sauvegarder</button>
+            <button id="facteur_submit" class="text-white bg-[#24A640] hover:bg-green-700 p-2 rounded">Sauvegarder</button>
     </form>
 {% else %}
     <div class="w-[95%] m-auto" data-controller="facteur">
-            <h1 class=" mb-4 text-xl font-semibold text-[#140A82]">{{ title }}</h1>
+            <h1 class=" mb-4 text-xl mt-5 font-semibold text-[#140A82]">{{ title }}</h1>
             <div class="flex justify-between items-center">
                 <div></div>
-                <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
+                <a class="text-white bg-[#F24E1E] hover:bg-red-700 p-2 rounded" href="{{ path('app_facteur') }}">Retour</a>
             </div>
             {{ form(form) }}
     </div>

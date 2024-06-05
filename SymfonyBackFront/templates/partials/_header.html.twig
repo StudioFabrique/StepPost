@@ -16,9 +16,9 @@
                     <h1 class="text-black text-xl font-bold mr-3" id="dropdownDefault" data-dropdown-toggle="dropdown"> {{app.user.nom|title}}</h1>
                     {% endif %}
                     {% if 'ROLE_GESTION' in app.user.roles %}
-                    <a data-turbo="false" href="{{ path('app_statistiques') }}" class="mr-3">Statistiques</a>
+                    <a data-turbo="false" href="{{ path('app_statistiques') }}" class="mr-3 hover:text-gray-400">Statistiques</a>
                     {% endif %}
-                    <a href="{{ path('app_logout') }}">Déconnexion</a>
+                    <a href="{{ path('app_logout') }}" class="hover:text-gray-400 ">Déconnexion</a>
                     {% endif %}
                     {% if 'ROLE_MAIRIE' in app.user.roles ?? 'LOGOUT' %}
                     <img class="block h-10 w-auto ml-10" src="{{asset('build/images/logo_pau.png')}}" alt="logo_pau">

@@ -46,7 +46,7 @@
                         <a class={{ "ROLE_DELETED" in expediteur.roles ? 'text-red-500' : 'text-gray-500'}} href="{{ path('app_detailsExpediteur', {expediteurId:expediteur.id, redirectTo:'app_expediteur'}) }}">{{ expediteur.email }}</a>
                     </td>
                     <td class="px-6 py-4">
-                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                        <a class="text-blue-800 bg-blue-100 hover:bg-blue-700 hover:text-white p-2 rounded"
                             href="{{ path('app_deleteClientRaisonSociale',{expediteurId : expediteur.id, raisonId: expediteur.client.id}) }}">
                             détacher
                         </a>

@@ -12,7 +12,7 @@
     <div class="flex justify-between items-center">
         <div></div>
         <div class="my-5">
-            <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_clientsRaisonSociale', {raisonId: raisonId}) }}">Retour</a>
+            <a class="text-white bg-[#F24E1E] p-2 hover:bg-red-700 rounded" href="{{ path('app_clientsRaisonSociale', {raisonId: raisonId}) }}">Retour</a>
         </div>
     </div>
 
@@ -47,7 +47,7 @@
                         {{ expediteur.email }}
                     </td>
                     <td class="px-6 py-4">
-                        <a class="text-blue-800 bg-blue-100 p-2 rounded"
+                        <a class="text-blue-800 bg-blue-100 hover:bg-blue-700 hover:text-white p-2 rounded"
                             href="{{ path('app_addTheClientRaisonSociale',{expediteurId : expediteur.id, raisonId: raisonId}) }}">
                             Ajouter
                         </a>

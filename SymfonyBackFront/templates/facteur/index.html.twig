@@ -96,13 +96,13 @@
                 </form>
                     </td>
                     <td class="px-6 py-4" >
-                        <a class="text-blue-800 bg-blue-100 p-2 rounded whitespace-nowrap"
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded whitespace-nowrap hover:bg-blue-700 hover:text-white"
                             href="{{ path('app_editFacteur', {id: facteur.id, isadding: false, isEdit: false}) }}">
                             Modifier
                         </a>
                     </td>
                     <td class="py-4 whitespace-nowrap">
-                        <a class="text-blue-800 bg-blue-100 p-2 rounded whitespace-nowrap"
+                        <a class="text-blue-800 bg-blue-100 p-2 rounded whitespace-nowrap hover:bg-blue-700 hover:text-white"
                             href="{{ path('app_editFacteur', {id: facteur.id, isadding: false, isEdit: true}) }}">
                             Modifier le mot de passe
                         </a>
@@ -118,7 +118,7 @@
                         </div>
                     </td> #}
                     <td class="px-6 py-4">
-                        <a class="text-green-800 bg-green-300 p-2 rounded whitespace-nowrap"
+                        <a class="text-green-800 bg-green-300 p-2 hover:bg-green-700 hover:text-white rounded whitespace-nowrap"
                             href="{{ path('app_statistiques_facteur', {facteur: facteur.nom}) }}">
                             Statistiques
                         </a>

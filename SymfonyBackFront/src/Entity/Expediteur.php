@@ -59,7 +59,6 @@ class Expediteur implements UserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $telephone;
 
-    #[Assert\Regex(pattern:"/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/", message:"Le mot de passe doit faire 8 caractères minimum et contenir une lettre minuscule + une majuscule, un caractère spéciale et un numéro")]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $password;
 

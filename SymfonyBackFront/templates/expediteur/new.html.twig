@@ -11,7 +11,7 @@
     <h1 class=" mt-4 text-xl font-semibold text-[#140A82]">Créer un expéditeur</h1>
     <div class="flex justify-between items-center">
         <div></div>
-        <a class="text-white bg-[#F24E1E] p-2 rounded" href="{{ path('app_expediteur') }}">Retour</a>
+        <a class="text-white bg-[#F24E1E] hover:bg-red-700 p-2 rounded" href="{{ path('app_expediteur') }}">Retour</a>
     </div>
     <p> Les champs obligatoires sont marqués par un * </p>
     {{ include('expediteur/_form.html.twig') }}

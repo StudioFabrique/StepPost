@@ -10,9 +10,9 @@
     <div class="flex justify-between">
         <div></div>
         <div>
-            <a class="text-white bg-[#140A82] p-2 rounded whitespace-nowrap"
+            <a class="text-white bg-[#140A82] p-2 rounded whitespace-nowrap hover:bg-blue-700 hover:text-white" 
                 href="{{ path('app_editExpediteur', {id: expediteur.id}) }}">Modifier</a>
-            <a class="text-white bg-[#F24E1E] p-2 rounded whitespace-nowrap"
+            <a class="text-white bg-[#F24E1E] p-2 rounded whitespace-nowrap hover:bg-red-700"
                 href="{{ path(redirectTo, {recherche: recherche ?? null, dateMin: dateMin ?? null, dateMax: dateMax ?? null}) }}">Retour</a>
         </div>
     </div>

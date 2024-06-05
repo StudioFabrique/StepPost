@@ -71,18 +71,18 @@
                                 {{ expediteur.prenom }}
                             </td>
                             <td class="px-6 py-4">
-                                <a class="text-blue-800 bg-blue-100 p-2 rounded whitespace-nowrap"
+                                <a class="text-blue-800 bg-blue-100 hover:bg-blue-700 p-2 rounded whitespace-nowrap"
                                     href="{{ path('app_editExpediteur', {id: expediteur.id}) }}">
                                     Modifier
                                 </a>
                             </td>
                             <td class="px-6 py-4">
                                 <a href="{{ path('app_deleteExpediteur', {id: expediteur.id, mode: 'def'}) }}"
-                                    class="text-red-800 bg-red-100 p-2 rounded whitespace-nowrap">Supprimer</a>
+                                    class="text-red-800 bg-red-100 hover:bg-red-700 p-2 rounded whitespace-nowrap">Supprimer</a>
                             </td>
                             <td class="px-6 py-4">
                                 {% if expediteur.pswLength > 1 %}
-                                <a href="{{ path('app_activateExpediteur', {expediteurId: expediteur.id}) }}" class="text-blue-800 bg-blue-100 p-2 rounded">Activer</a>
+                                <a href="{{ path('app_activateExpediteur', {expediteurId: expediteur.id}) }}" class="text-blue-800 bg-blue-100 hover:bg-blue-700 p-2 rounded">Activer</a>
                                 {% else %}
                                 <a class="text-gray-100 bg-gray-200 p-2 rounded hover:cursor-no-drop whitespace-nowrap">Activer</a>
                                 {% endif %}
@@ -101,7 +101,7 @@
     {% endif %}
     {% endif %}
     {% if isSearch != null ? true : false %}
-    <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] p-2 rounded whitespace-nowrap">Annuler
+    <a href="{{ path('app_expediteur') }}" class="text-white bg-[#F24E1E] hover:bg-red-700 p-2 rounded whitespace-nowrap">Annuler
         recherche</a>
     {% endif %}
     <section class="flex justify-between items-center m-2">
@@ -223,7 +223,7 @@
                         <div id="confirmBox" class="absolute -ml-40 bg-[#140A82] rounded-lg p-2">
                             <p class="text-white">Êtes-vous sûr de vouloir supprimer cet expéditeur ? </p>
                             <button id="hideButton"
-                                class="bg-red-100 border-2 border-black rounded-lg p-0.5 mx-12 text-red-800">Annuler</button>
+                                class="bg-red-100 border-2 border-black hover:bg-red-700 rounded-lg p-0.5 mx-12 text-red-800">Annuler</button>
                             <a href="{{ path('app_deleteExpediteur', {id: expediteur.id, mode: 'temp'}) }}"
                                 class="bg-red-700 border-2 border-black rounded-lg p-1 mx-4 text-white whitespace-nowrap">Confirmer</a>
                         </div>
