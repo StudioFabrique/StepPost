@@ -45,12 +45,12 @@
                  <div class="my-2 mr-10 w-[30%]">
                     <form class="max-w-md mx-auto w-[100%]">  
                         <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                        <div class="relative flex justify-center">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none left-0 ml-2 ">
+                        <div class="relative flex gap-2 justify-center w-[120%]">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none left-0 ">
                                 <img  src="{{asset('build/images/inputsearch.svg')}}" alt="détail" width="25" height="25">
                             </div>
                         
-                            <input name="recherche" type="search" class="block w-full p-4 ps-10 text-sm text-gray-900 border font-semibold border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            <input name="recherche" type="search" class="pl-5 block w-full p-4 ps-10 text-sm text-gray-900 border font-semibold border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="{{ recherche ?? "Rechercher par nom, prénom ou bordereau " }}" aria-label="" aria-describedby="button-addon2" required >
 
                             <button type="submit" class="bg-blue-500 text-white right-0 mt-2 mr-3 absolute end-2.5 bottom-2.5   hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-colors">Search</button>

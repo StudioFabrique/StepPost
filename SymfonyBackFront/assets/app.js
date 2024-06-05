@@ -6,26 +6,27 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.css';
+import "./styles/app.css";
 
-import './img/logo.svg';
+import "./img/logo.svg";
 
-import './img/arrow.svg';
+import "./img/arrow.svg";
 
-import './img/mail.svg';
+import "./img/mail.svg";
 
-import './img/person.svg';
+import "./img/person.svg";
 
-import './img/favicon.ico';
+import "./img/favicon.ico";
 
-import './img/logo.png'
+import "./img/logo.png";
 
-import './img/logo_pau.png'
+import "./img/logo_pau.png";
 
-import './img/search.svg'
+import "./img/search.svg";
 
-import './img/recherche.svg'
+import "./img/recherche.svg";
+
+import "./img/inputsearch.svg";
 
 // start the Stimulus application
-import './bootstrap';
-
+import "./bootstrap";
