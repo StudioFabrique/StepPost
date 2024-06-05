@@ -89,11 +89,12 @@ class AccueilController extends AbstractController
 
         try {
             if ($exportType === 'Csv' || $exportType === 'Xls') {
-                $this->{'export' . $exportType}->ExportFile($data); // like : call_user_func(array($this, 'export' . $exportType))->exportFile($data);
-                return $this->{'export' . $exportType}->GetFile();
+                $this->{'export' . $exportType . 'Service'}->ExportFile($data); // like : call_user_func(array($this, 'export' . $exportType))->exportFile($data);
+                return $this->{'export' . $exportType . 'Service'}->GetFile();
             }
             throw new Exception("Unknow exportation problem", 1);
         } catch (Exception $e) {
+            dd($e);
             return $this->redirectToRoute('app_accueil', $this->messageService->GetErrorMessage("Exportation CSV", 1), Response::HTTP_SEE_OTHER);
         }
     }
