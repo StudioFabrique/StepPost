@@ -69,6 +69,8 @@ jobs:
           envkey_MAILER_DSN: ${{ secrets.TEST_APP_MAILER_DSN }}
           envkey_PASS_PHRASE: ${{ secrets.TEST_APP_PASS_PHRASE }}
           envkey_SETUP_PASS: ${{ secrets.TEST_SETUP_PASS }}
+          envkey_ENCRYPTION_KEY_IV: ${{ secrets.TEST_ENCRYPTION_KEY_IV }}
+          envkey_ENCRYPTION_KEY_SECRET: ${{ secrets.TEST_ENCRYPTION_KEY_SECRET }}
           file_name: .env
       - name: move .env to the symfony folder
         run: mv ../.env .env && ls -a
