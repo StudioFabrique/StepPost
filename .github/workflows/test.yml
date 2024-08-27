@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Create openvpn config
-        run: echo "${{ secrets.TEST_OVPN_FILE_CONTENT }}" >> .github/workflows/openvpn_config.ovpn
+        run: echo "${{ secrets.TEST_OVPN_FILE_CONTENT }}" > .github/workflows/openvpn_config.ovpn
       - name: Install OpenVPN
         run: |
           sudo apt update
