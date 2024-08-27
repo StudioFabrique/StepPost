@@ -1,5 +1,3 @@
-# [27/08/2024] trigger action
-
 name: Symfony Deploy Test
 
 on:
@@ -12,17 +10,6 @@ permissions:
   contents: read
 
 jobs:
-  ipAdressPrint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Public IP
-        id: ip
-        uses: haythem/public-ip@v1.3
-
-      - name: Print Public IP
-        run: |
-          echo ${{ steps.ip.outputs.ipv4 }}
-          echo ${{ steps.ip.outputs.ipv6 }}
   symfonyDev:
     runs-on: ubuntu-latest
     defaults:
@@ -31,6 +18,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Create openvpn config
+        run: echo ${{ secrets.TEST_OVPN_FILE_CONTENT }} >> .github/workflows/openvpn_config.ovpn
+      - name: Install OpenVPN
+        run: |
+          sudo apt update
+          sudo apt install -y openvpn openvpn-systemd-resolved
+      - name: Connect to VPN
+        uses: "kota65535/github-openvpn-connect-action@v2"
+        with:
+          config_file: .github/workflows/openvpn_config.ovpn
+          username: ${{ secrets.TEST_OVPN_USERNAME }}
+          password: ${{ secrets.TEST_OVPN_PASSWORD }}
+          client_key: ${{ secrets.TEST_OPENVPN_KEY }}
       # Php
       - name: setup php version 8.1
         uses: shivammathur/setup-php@v2
